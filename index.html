@@ -259,7 +259,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/07/02/My-first-blog/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/07/03/Summary_of_interview_knowledge/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="">
@@ -278,7 +278,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2021/07/02/My-first-blog/" itemprop="url">My-first-blog</a></h1>
+                <a class="post-title-link" href="/2021/07/03/Summary_of_interview_knowledge/" itemprop="url">安全运营工程师面试知识点汇总</a></h1>
         
 
         <div class="post-meta">
@@ -290,8 +290,8 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2021-07-02T18:27:48+08:00">
-                2021-07-02
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2021-07-03T23:06:14+08:00">
+                2021-07-03
               </time>
             
 
@@ -330,7 +330,188 @@
       
         
           
-            
+            <h2 id="WEB"><a href="#WEB" class="headerlink" title="WEB"></a>WEB</h2><ul>
+<li>SQL注入<ul>
+<li>分类</li>
+<li>手写mysql手注payload（union、报错、延时）</li>
+<li>如何区分后端数据库</li>
+<li>oracle/sqlserver注入</li>
+<li>不同注入场景下注入<ul>
+<li>宽字节注入</li>
+<li>二次注入</li>
+<li>order by注入</li>
+<li>limit 注入</li>
+<li>table 名注入</li>
+<li>update/insert 注入</li>
+</ul>
+</li>
+<li>绕过方式</li>
+<li>getshell<ul>
+<li>general_log</li>
+<li>select into dump_file 有什么条件</li>
+<li>站库分离怎么办</li>
+</ul>
+</li>
+<li>提权<ul>
+<li>UDF提权</li>
+</ul>
+</li>
+<li>防御方式<ul>
+<li>使用预编译是否可以防止所有sql注入？</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>XSS<ul>
+<li>分类（反射、DOM、存储）<ul>
+<li>DOM 一定不经过服务器吗？</li>
+</ul>
+</li>
+<li>防御方式（转义、CSP）</li>
+<li>相关概念（同源策略、Jsonp、CORS）</li>
+<li>利用方式（除盗cookie外）</li>
+</ul>
+</li>
+<li>CSRF<ul>
+<li>防御方式<ul>
+<li>使用Referer防御是否一定可靠？</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>SSRF<ul>
+<li>绕过<ul>
+<li>host 绕过</li>
+<li>ip进制绕过</li>
+<li>控制域名解析</li>
+<li>302跳转</li>
+<li>dns rebinding (ttl)</li>
+</ul>
+</li>
+<li>有回显利用<ul>
+<li>端口扫描</li>
+<li>攻击redis</li>
+</ul>
+</li>
+<li>无回显利用<ul>
+<li>dnslog</li>
+</ul>
+</li>
+<li>防御</li>
+</ul>
+</li>
+<li>文件上传<ul>
+<li>绕过方式</li>
+<li>防御方式</li>
+</ul>
+</li>
+<li>命令执行<ul>
+<li>php<ul>
+<li>绕过姿势</li>
+<li>shell_exec和exec的区别</li>
+</ul>
+</li>
+<li>Java反序列化<ul>
+<li>Shiro<ul>
+<li>550</li>
+<li>721</li>
+<li>权限绕过</li>
+</ul>
+</li>
+<li>Fastjson<ul>
+<li>漏洞原理</li>
+<li>黑名单检查函数</li>
+<li>利用链</li>
+</ul>
+</li>
+<li>Weblogic<ul>
+<li>漏洞类型、原理</li>
+<li>漏洞函数</li>
+</ul>
+</li>
+<li>ysoserial<ul>
+<li>原理</li>
+<li>链</li>
+</ul>
+</li>
+<li>SpEL/OGNL 表达式注入</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>其它<ul>
+<li>XXE</li>
+<li>https握手流程</li>
+<li>中间人攻击原理</li>
+</ul>
+</li>
+</ul>
+<h2 id="渗透"><a href="#渗透" class="headerlink" title="渗透"></a>渗透</h2><ul>
+<li>反弹shell<ul>
+<li>类型</li>
+<li>检测原理</li>
+</ul>
+</li>
+<li>正向shell<ul>
+<li>reg</li>
+<li>?</li>
+</ul>
+</li>
+<li>webshell<ul>
+<li>disable_functions绕过</li>
+<li>内存马</li>
+</ul>
+</li>
+<li>权限维持<ul>
+<li>系统后门</li>
+<li>无文件攻击</li>
+<li>dll劫持，dll注入</li>
+</ul>
+</li>
+<li>痕迹清理<ul>
+<li>C2隐藏 </li>
+</ul>
+</li>
+<li>钓鱼<ul>
+<li>姿势</li>
+</ul>
+</li>
+</ul>
+<h2 id="名词概念"><a href="#名词概念" class="headerlink" title="名词概念"></a>名词概念</h2><ul>
+<li>ATT&amp;CK</li>
+<li>SPF</li>
+<li>DMARC</li>
+</ul>
+<h2 id="应急"><a href="#应急" class="headerlink" title="应急"></a>应急</h2><ul>
+<li>病毒排查及溯源</li>
+<li>Webshell排查及溯源</li>
+</ul>
+<h2 id="内网渗透"><a href="#内网渗透" class="headerlink" title="内网渗透"></a>内网渗透</h2><ul>
+<li>linux/Windows提权</li>
+<li>域认证方式</li>
+<li>域内委派</li>
+<li>bypass uac 技巧，方法 ，原理</li>
+<li>$IPC连接</li>
+<li>wmic用法</li>
+<li>psexec用法</li>
+<li>黄金票据</li>
+<li>白银票据</li>
+<li>PTH/PTT</li>
+<li>Windows defender安全机制</li>
+</ul>
+<h3 id="常见漏洞"><a href="#常见漏洞" class="headerlink" title="常见漏洞"></a>常见漏洞</h3><ul>
+<li>Tomcat</li>
+<li>Springboot</li>
+<li>最近曝光有重大影响的漏洞</li>
+<li>nmap指纹识别原理及用法</li>
+</ul>
+<h2 id="场景"><a href="#场景" class="headerlink" title="场景"></a>场景</h2><ul>
+<li>注册场景</li>
+<li>登录场景</li>
+<li>活动场景</li>
+<li>支付场景</li>
+</ul>
+
           
         
       
@@ -378,7 +559,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/07/02/hello-world/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/07/03/hello-world/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="">
@@ -397,7 +578,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2021/07/02/hello-world/" itemprop="url">Hello World</a></h1>
+                <a class="post-title-link" href="/2021/07/03/hello-world/" itemprop="url">Hello World</a></h1>
         
 
         <div class="post-meta">
@@ -409,8 +590,8 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2021-07-02T18:07:54+08:00">
-                2021-07-02
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2021-07-03T22:58:21+08:00">
+                2021-07-03
               </time>
             
 
@@ -449,19 +630,8 @@
       
         
           
-            <p>Welcome to <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a target="_blank" rel="noopener" href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a target="_blank" rel="noopener" href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a target="_blank" rel="noopener" href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/writing.html">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/server.html">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/generating.html">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
+            <p>习惯成自然</p>
+<p>Habit is secone nature.</p>
 
           
         
