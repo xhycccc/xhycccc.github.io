@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="CTF,逆向,mobile," />
+  <meta name="keywords" content="SSRF," />
 
 
 
@@ -79,32 +79,21 @@
 
 
 
-<meta name="description" content="前言作为一个mobile小白，花了一天时间才做出这道题，踩了很多坑的同时也收获了很多，特此记录一下。 题目描述根据弹出的提示，并得到一串字符。  附件中是一个apk，打开后只有一个界面。  反编译apk使用jadx-gui打开apk，看反编译代码：  先看入口MainActivity。使用DES解密函数解密一个base64字符串，将结果传入getflag函数（该函数是通过native接口调用的so">
+<meta name="description" content="DNS TTLTTL值全称是“生存时间（Time To Live)”，简单的说它表示DNS记录在DNS服务器上缓存时间，数值越小，修改记录各地生效时间越快。 当各地的DNS(LDNS)服务器接受到解析请求时，就会向域名指定的授权DNS服务器发出解析请求从而获得解析记录；该解析记录会在DNS(LDNS)服务器中保存一段时间，这段时间内如果再接到这个域名的解析请求，DNS服务器将不再向授权DNS服务器">
 <meta property="og:type" content="article">
-<meta property="og:title" content="一道入门mobile题writeup">
-<meta property="og:url" content="http://example.com/2020/11/01/ctf-mobile-writeup/index.html">
+<meta property="og:title" content="DNS Rebinding">
+<meta property="og:url" content="http://example.com/2020/05/22/dns-rebinding/index.html">
 <meta property="og:site_name" content="欣海余诚&#39;s blog">
-<meta property="og:description" content="前言作为一个mobile小白，花了一天时间才做出这道题，踩了很多坑的同时也收获了很多，特此记录一下。 题目描述根据弹出的提示，并得到一串字符。  附件中是一个apk，打开后只有一个界面。  反编译apk使用jadx-gui打开apk，看反编译代码：  先看入口MainActivity。使用DES解密函数解密一个base64字符串，将结果传入getflag函数（该函数是通过native接口调用的so">
+<meta property="og:description" content="DNS TTLTTL值全称是“生存时间（Time To Live)”，简单的说它表示DNS记录在DNS服务器上缓存时间，数值越小，修改记录各地生效时间越快。 当各地的DNS(LDNS)服务器接受到解析请求时，就会向域名指定的授权DNS服务器发出解析请求从而获得解析记录；该解析记录会在DNS(LDNS)服务器中保存一段时间，这段时间内如果再接到这个域名的解析请求，DNS服务器将不再向授权DNS服务器">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://example.com/2020/11/01/ctf-mobile-writeup/1.png">
-<meta property="og:image" content="http://example.com/2020/11/01/ctf-mobile-writeup/2.png">
-<meta property="og:image" content="http://example.com/2020/11/01/ctf-mobile-writeup/3.png">
-<meta property="og:image" content="http://example.com/2020/11/01/ctf-mobile-writeup/4.png">
-<meta property="og:image" content="http://example.com/2020/11/01/ctf-mobile-writeup/5.png">
-<meta property="og:image" content="http://example.com/2020/11/01/ctf-mobile-writeup/6.png">
-<meta property="og:image" content="http://example.com/2020/11/01/ctf-mobile-writeup/7.png">
-<meta property="og:image" content="http://example.com/2020/11/01/ctf-mobile-writeup/8.png">
-<meta property="og:image" content="http://example.com/2020/11/01/ctf-mobile-writeup/9.png">
-<meta property="og:image" content="http://example.com/2020/11/01/ctf-mobile-writeup/10.png">
-<meta property="og:image" content="http://example.com/2020/11/01/ctf-mobile-writeup/11.png">
-<meta property="article:published_time" content="2020-11-01T12:39:48.000Z">
-<meta property="article:modified_time" content="2021-07-06T08:24:28.068Z">
+<meta property="og:image" content="http://example.com/2020/05/22/dns-rebinding/1.jpg">
+<meta property="og:image" content="http://example.com/2020/05/22/dns-rebinding/2.jpg">
+<meta property="article:published_time" content="2020-05-22T09:47:19.000Z">
+<meta property="article:modified_time" content="2021-07-06T08:36:35.810Z">
 <meta property="article:author" content="欣海余诚">
-<meta property="article:tag" content="CTF">
-<meta property="article:tag" content="逆向">
-<meta property="article:tag" content="mobile">
+<meta property="article:tag" content="SSRF">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/2020/11/01/ctf-mobile-writeup/1.png">
+<meta name="twitter:image" content="http://example.com/2020/05/22/dns-rebinding/1.jpg">
 
 
 
@@ -134,13 +123,13 @@
 
 
 
-  <link rel="canonical" href="http://example.com/2020/11/01/ctf-mobile-writeup/"/>
+  <link rel="canonical" href="http://example.com/2020/05/22/dns-rebinding/"/>
 
 
 
 
 
-  <title>一道入门mobile题writeup | 欣海余诚's blog</title>
+  <title>DNS Rebinding | 欣海余诚's blog</title>
   
 
 
@@ -277,7 +266,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2020/11/01/ctf-mobile-writeup/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/05/22/dns-rebinding/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="">
@@ -294,7 +283,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">一道入门mobile题writeup</h1>
+          <h1 class="post-title" itemprop="name headline">DNS Rebinding</h1>
         
 
         <div class="post-meta">
@@ -306,8 +295,8 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-11-01T20:39:48+08:00">
-                2020-11-01
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-05-22T17:47:19+08:00">
+                2020-05-22
               </time>
             
 
@@ -329,8 +318,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/CTF/" itemprop="url" rel="index">
-                    <span itemprop="name">CTF</span>
+                  <a href="/categories/WEB%E5%AE%89%E5%85%A8/" itemprop="url" rel="index">
+                    <span itemprop="name">WEB安全</span>
                   </a>
                 </span>
 
@@ -366,44 +355,25 @@
       
 
       
-        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>作为一个mobile小白，花了一天时间才做出这道题，踩了很多坑的同时也收获了很多，特此记录一下。</p>
-<h2 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h2><p>根据弹出的提示，并得到一串字符。</p>
-<p><img src="1.png" alt="image"></p>
-<p>附件中是一个apk，打开后只有一个界面。</p>
-<p><img src="2.png" alt="image"></p>
-<h2 id="反编译apk"><a href="#反编译apk" class="headerlink" title="反编译apk"></a>反编译apk</h2><p>使用jadx-gui打开apk，看反编译代码：</p>
-<p><img src="3.png" alt="image"></p>
-<p>先看入口MainActivity。使用DES解密函数解密一个base64字符串，将结果传入getflag函数（该函数是通过native接口调用的so库中的函数），对比getflag结果和在界面上输入的key值。如果不一致，显示“这是个陷阱，快醒醒！”，如果一致，提示“再使用函数获取 Flag”。</p>
-<p>其中DES解密函数在CryptoUtil类：</p>
-<p><img src="4.png" alt="image"></p>
-<p>乍一看，需要让这个判断相等，就能得到flag。现在回过头看，这里并没有获取flag的代码，仅仅是弹一个消息框。</p>
-<p>apk中还有另外两个资源文件：<code>Addon.jar</code>和<code>libnative.so</code>。前者是MainApplication.java中使用，用于通过字节异或的方式生成CryptoUtil.jar，调用其中的DES解密方法进行解密。后者是通过native接口加载，调用其getflag方法。</p>
-<p>对于一个小白来说，每个线索都不想放过，所以我针对Addon.jar一顿研究和操作，最后得到的代码是这样的：</p>
-<p><img src="5.png" alt="image"></p>
-<p>WTF??!解密函数直接throw一个异常。上当的我这才发现事情不对，转去研究libnative.so。</p>
-<h2 id="逆向so库"><a href="#逆向so库" class="headerlink" title="逆向so库"></a>逆向so库</h2><p>ida打开，定位getFlag函数：</p>
-<p><img src="6.png" alt="image"></p>
-<p>大致逻辑为：对一个字符串先进行base64解密，再进行AES解密，返回最后的result。中间穿插着各种无用的代码。。</p>
-<p>字符串是已知的，双击texta就能刚看到：</p>
-<p><img src="7.png" alt="image"></p>
-<p>接下来解决AES解密。</p>
-<h2 id="AES解密"><a href="#AES解密" class="headerlink" title="AES解密"></a>AES解密</h2><p>首先要知道，AES解密需要有密文、密钥、初始向量、密钥长度、填充模式、加密模式。decryptAES256cbc函数已经告诉了密钥长度是256位（32字节）、加密模式cbc。初始向量iv双击也可以看到，仅剩密钥未知。</p>
-<p><img src="8.png" alt="image"></p>
-<p>目光聚焦至v7变量。v7调用了GetStringUTFChars函数（该函数声明如下），获取了传入的参数a3的地址。</p>
-<p>根据MainActivity中对getflag的调用，传入的参数是一串密文经过base64和DES解密后的值。盲猜这个解密后的密文就是这里的密钥。</p>
-<p><img src="9.png" alt="image"></p>
-<p>对MainActivity中的密文进行<code>base64</code>+<code>DES</code>解密，得<code>FebRuAry*29th^TweNty-0ne_hUndrEd</code>，刚好32位。</p>
-<p><img src="10.png" alt="image"></p>
-<p>参数齐了，在线AES解密一波，得flag。</p>
-<p><img src="11.png" alt="image"></p>
-<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
-<li><p><a target="_blank" rel="noopener" href="https://www.keylala.cn/aes">AES在线加密</a> </p>
-</li>
-<li><p><a target="_blank" rel="noopener" href="https://docs.oracle.com/javase/8/docs/technotes/guides/jni/spec/functions.html#NewStringUTF">Chapter 4: JNI Functions</a> </p>
-</li>
-<li><p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/duanxz/p/3651347.html">Java native关键字</a> </p>
-</li>
-</ul>
+        <h3 id="DNS-TTL"><a href="#DNS-TTL" class="headerlink" title="DNS TTL"></a>DNS TTL</h3><p>TTL值全称是“生存时间（Time To Live)”，简单的说它表示DNS记录在DNS服务器上缓存时间，数值越小，修改记录各地生效时间越快。</p>
+<p>当各地的DNS(LDNS)服务器接受到解析请求时，就会向域名指定的授权DNS服务器发出解析请求从而获得解析记录；该解析记录会在DNS(LDNS)服务器中保存一段时间，这段时间内如果再接到这个域名的解析请求，DNS服务器将不再向授权DNS服务器发出请求，而是直接返回刚才获得的记录；而这个记录在DNS服务器上保留的时间，就是TTL值。</p>
+<h5 id="常见的设置TTL值的场景"><a href="#常见的设置TTL值的场景" class="headerlink" title="常见的设置TTL值的场景"></a>常见的设置TTL值的场景</h5><ol>
+<li>增大TTL值，以节约域名解析时间</li>
+<li>减小TTL值，减少更新域名记录时的不可访问时间</li>
+</ol>
+<h3 id="DNS-Rebinding"><a href="#DNS-Rebinding" class="headerlink" title="DNS Rebinding"></a>DNS Rebinding</h3><p>原理就是上面的第二种，设置一个非常小的TTL值，让客户端发出的两次请求获得的解析结果不同。</p>
+<p>常见ssrf防御场景：</p>
+<p>php的waf做判断的时候，第一次会解析域名的ip，然后判断这个ip是不是内网ip，如果不是内网ip的时候，再去真正用curl请求这个域名。</p>
+<p>这就牵涉到了，curl请求这个域名会做第二次域名解析，重新对dns服务器进行请求，获得到一个内网ip，这时候就是绕过限制请求到了内网资源。</p>
+<p>当然需要ttl设置为0</p>
+<p><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s?__biz=MjM5MTYxNjQxOA==&mid=2652852236&idx=1&sn=e95f715b513c1deaded7258d9077607f&scene=21#wechat_redirect">示例代码：</a></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">$dst = @$_GET[&#x27;KR&#x27;];</span><br><span class="line">$res = @parse_url($dst);</span><br><span class="line">$ip = @dns_get_record($res[&#x27;host&#x27;], DNS_A)[0][&#x27;ip&#x27;];</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">$dev_ip = &quot;54.87.54.87&quot;;</span><br><span class="line"></span><br><span class="line">if($ip === $dev_ip) &#123;</span><br><span class="line"></span><br><span class="line">    $content = file_get_contents($dst);</span><br><span class="line"></span><br><span class="line">    echo $content;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>使用<a target="_blank" rel="noopener" href="https://lock.cmpxchg8b.com/rebinder.html?tdsourcetag=s_pctim_aiomsg">dns rebinding测试网站提供的域名</a>（测试不太好使，解析不到该域名，待研究），随机返回两个ip地址。（使用时应该需要多测几遍）</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">$ host 7f000001.c0a80001.rbndr.us</span><br><span class="line">7f000001.c0a80001.rbndr.us has address 192.168.0.1</span><br><span class="line">$ host 7f000001.c0a80001.rbndr.us</span><br><span class="line">7f000001.c0a80001.rbndr.us has address 127.0.0.1</span><br><span class="line">$ host 7f000001.c0a80001.rbndr.us</span><br><span class="line">7f000001.c0a80001.rbndr.us has address 127.0.0.1</span><br><span class="line">$ host 7f000001.c0a80001.rbndr.us</span><br><span class="line">7f000001.c0a80001.rbndr.us has address 192.168.0.1</span><br><span class="line">$ host 7f000001.c0a80001.rbndr.us</span><br><span class="line">7f000001.c0a80001.rbndr.us has address 127.0.0.1</span><br><span class="line">$ host 7f000001.c0a80001.rbndr.us</span><br><span class="line">7f000001.c0a80001.rbndr.us has address 127.0.0.1</span><br><span class="line">$ host 7f000001.c0a80001.rbndr.us</span><br><span class="line">7f000001.c0a80001.rbndr.us has address 192.168.0.1</span><br></pre></td></tr></table></figure>
+
+<h4 id="http-rbnd-gl0-eu-dnsbin"><a href="#http-rbnd-gl0-eu-dnsbin" class="headerlink" title="http://rbnd.gl0.eu/dnsbin"></a><a target="_blank" rel="noopener" href="http://rbnd.gl0.eu/dnsbin">http://rbnd.gl0.eu/dnsbin</a></h4><p><img src="1.jpg" alt="image"></p>
+<p>在record中设置要解析的ip地址，submit后会自动生成一个domain。解析这个domain就会得到填写的ip地址。</p>
+<p><img src="2.jpg" alt="image"></p>
 
       
     </div>
@@ -421,11 +391,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/CTF/" rel="tag"># CTF</a>
-          
-            <a href="/tags/%E9%80%86%E5%90%91/" rel="tag"># 逆向</a>
-          
-            <a href="/tags/mobile/" rel="tag"># mobile</a>
+            <a href="/tags/SSRF/" rel="tag"># SSRF</a>
           
         </div>
       
@@ -438,8 +404,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2020/09/22/blindsql-injection-poc/" rel="next" title="挖洞经历之SQLServer time-based注入">
-                <i class="fa fa-chevron-left"></i> 挖洞经历之SQLServer time-based注入
+              <a href="/2019/12/04/ssrf-referrence/" rel="next" title="SSRF笔记">
+                <i class="fa fa-chevron-left"></i> SSRF笔记
               </a>
             
           </div>
@@ -448,8 +414,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2021/07/03/hello-world/" rel="prev" title="Hello World">
-                Hello World <i class="fa fa-chevron-right"></i>
+              <a href="/2020/06/02/pwnhub-web-writeup/" rel="prev" title="Pwnhub公开赛之WEB题WriteUp">
+                Pwnhub公开赛之WEB题WriteUp <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -582,7 +548,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE%E6%8F%8F%E8%BF%B0"><span class="nav-number">2.</span> <span class="nav-text">题目描述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%8D%E7%BC%96%E8%AF%91apk"><span class="nav-number">3.</span> <span class="nav-text">反编译apk</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%86%E5%90%91so%E5%BA%93"><span class="nav-number">4.</span> <span class="nav-text">逆向so库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AES%E8%A7%A3%E5%AF%86"><span class="nav-number">5.</span> <span class="nav-text">AES解密</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="nav-number">6.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#DNS-TTL"><span class="nav-number">1.</span> <span class="nav-text">DNS TTL</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E7%9A%84%E8%AE%BE%E7%BD%AETTL%E5%80%BC%E7%9A%84%E5%9C%BA%E6%99%AF"><span class="nav-number">1.0.1.</span> <span class="nav-text">常见的设置TTL值的场景</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DNS-Rebinding"><span class="nav-number">2.</span> <span class="nav-text">DNS Rebinding</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#http-rbnd-gl0-eu-dnsbin"><span class="nav-number">2.1.</span> <span class="nav-text">http:&#x2F;&#x2F;rbnd.gl0.eu&#x2F;dnsbin</span></a></li></ol></li></ol></div>
             
 
           </div>

