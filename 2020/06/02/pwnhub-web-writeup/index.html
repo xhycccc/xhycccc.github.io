@@ -82,25 +82,25 @@
 <meta name="description" content="0x00 前言前段时间刚好看了p师傅的《Python安全 - 从SSRF到命令执行惨案》，没想到这次pwnhub公开赛就碰到了，思路几乎一模一样，都是通过ssrf结合python urllib的http头注入漏洞，对redis进行利用。 本人总结的原文思路如下图：  0x01 SSRF随意注册账号后进入系统，检查了一遍只有一个 flag-spider功能，让输入url。猜测是考ssrf。  测试了">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Pwnhub公开赛之WEB题WriteUp">
-<meta property="og:url" content="http://example.com/2020/06/02/pwnhub-web-writeup/index.html">
+<meta property="og:url" content="https://xhycccc.github.io/2020/06/02/pwnhub-web-writeup/index.html">
 <meta property="og:site_name" content="欣海余诚&#39;s blog">
 <meta property="og:description" content="0x00 前言前段时间刚好看了p师傅的《Python安全 - 从SSRF到命令执行惨案》，没想到这次pwnhub公开赛就碰到了，思路几乎一模一样，都是通过ssrf结合python urllib的http头注入漏洞，对redis进行利用。 本人总结的原文思路如下图：  0x01 SSRF随意注册账号后进入系统，检查了一遍只有一个 flag-spider功能，让输入url。猜测是考ssrf。  测试了">
 <meta property="og:locale">
-<meta property="og:image" content="http://example.com/2020/06/02/pwnhub-web-writeup/1.png">
-<meta property="og:image" content="http://example.com/2020/06/02/pwnhub-web-writeup/2.png">
-<meta property="og:image" content="http://example.com/2020/06/02/pwnhub-web-writeup/3.png">
-<meta property="og:image" content="http://example.com/2020/06/02/pwnhub-web-writeup/4.png">
-<meta property="og:image" content="http://example.com/2020/06/02/pwnhub-web-writeup/5.png">
-<meta property="og:image" content="http://example.com/2020/06/02/pwnhub-web-writeup/6.png">
-<meta property="og:image" content="http://example.com/2020/06/02/pwnhub-web-writeup/7.png">
-<meta property="og:image" content="http://example.com/2020/06/02/pwnhub-web-writeup/8.png">
-<meta property="og:image" content="http://example.com/2020/06/02/pwnhub-web-writeup/9.png">
-<meta property="og:image" content="http://example.com/2020/06/02/pwnhub-web-writeup/10.png">
-<meta property="og:image" content="http://example.com/2020/06/02/pwnhub-web-writeup/11.png">
-<meta property="og:image" content="http://example.com/2020/06/02/pwnhub-web-writeup/12.png">
-<meta property="og:image" content="http://example.com/2020/06/02/pwnhub-web-writeup/13.png">
-<meta property="og:image" content="http://example.com/2020/06/02/pwnhub-web-writeup/14.png">
-<meta property="og:image" content="http://example.com/2020/06/02/pwnhub-web-writeup/15.png">
+<meta property="og:image" content="https://xhycccc.github.io/2020/06/02/pwnhub-web-writeup/1.png">
+<meta property="og:image" content="https://xhycccc.github.io/2020/06/02/pwnhub-web-writeup/2.png">
+<meta property="og:image" content="https://xhycccc.github.io/2020/06/02/pwnhub-web-writeup/3.png">
+<meta property="og:image" content="https://xhycccc.github.io/2020/06/02/pwnhub-web-writeup/4.png">
+<meta property="og:image" content="https://xhycccc.github.io/2020/06/02/pwnhub-web-writeup/5.png">
+<meta property="og:image" content="https://xhycccc.github.io/2020/06/02/pwnhub-web-writeup/6.png">
+<meta property="og:image" content="https://xhycccc.github.io/2020/06/02/pwnhub-web-writeup/7.png">
+<meta property="og:image" content="https://xhycccc.github.io/2020/06/02/pwnhub-web-writeup/8.png">
+<meta property="og:image" content="https://xhycccc.github.io/2020/06/02/pwnhub-web-writeup/9.png">
+<meta property="og:image" content="https://xhycccc.github.io/2020/06/02/pwnhub-web-writeup/10.png">
+<meta property="og:image" content="https://xhycccc.github.io/2020/06/02/pwnhub-web-writeup/11.png">
+<meta property="og:image" content="https://xhycccc.github.io/2020/06/02/pwnhub-web-writeup/12.png">
+<meta property="og:image" content="https://xhycccc.github.io/2020/06/02/pwnhub-web-writeup/13.png">
+<meta property="og:image" content="https://xhycccc.github.io/2020/06/02/pwnhub-web-writeup/14.png">
+<meta property="og:image" content="https://xhycccc.github.io/2020/06/02/pwnhub-web-writeup/15.png">
 <meta property="article:published_time" content="2020-06-02T03:25:35.000Z">
 <meta property="article:modified_time" content="2021-07-06T09:53:57.730Z">
 <meta property="article:author" content="欣海余诚">
@@ -110,7 +110,7 @@
 <meta property="article:tag" content="CRLF">
 <meta property="article:tag" content="CTF">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/2020/06/02/pwnhub-web-writeup/1.png">
+<meta name="twitter:image" content="https://xhycccc.github.io/2020/06/02/pwnhub-web-writeup/1.png">
 
 
 
@@ -140,7 +140,7 @@
 
 
 
-  <link rel="canonical" href="http://example.com/2020/06/02/pwnhub-web-writeup/"/>
+  <link rel="canonical" href="https://xhycccc.github.io/2020/06/02/pwnhub-web-writeup/"/>
 
 
 
@@ -295,7 +295,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2020/06/02/pwnhub-web-writeup/">
+    <link itemprop="mainEntityOfPage" href="https://xhycccc.github.io/2020/06/02/pwnhub-web-writeup/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="">
