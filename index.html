@@ -277,7 +277,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://xhycccc.github.io/v2ray-tutorials.html">
+    <link itemprop="mainEntityOfPage" href="https://xhycccc.github.io/2021/07/30/v2ray-tutorials/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="">
@@ -296,7 +296,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/v2ray-tutorials.html" itemprop="url">centos+v2ray+nginx科学上网教程</a></h1>
+                <a class="post-title-link" href="/2021/07/30/v2ray-tutorials/" itemprop="url">centos+v2ray+nginx科学上网教程</a></h1>
         
 
         <div class="post-meta">
@@ -446,7 +446,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://xhycccc.github.io/Summary_of_interview_knowledge.html">
+    <link itemprop="mainEntityOfPage" href="https://xhycccc.github.io/2021/07/06/Summary_of_interview_knowledge/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="">
@@ -465,7 +465,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/Summary_of_interview_knowledge.html" itemprop="url">安全运营工程师面试知识点汇总</a></h1>
+                <a class="post-title-link" href="/2021/07/06/Summary_of_interview_knowledge/" itemprop="url">安全运营工程师面试知识点汇总</a></h1>
         
 
         <div class="post-meta">
@@ -768,7 +768,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://xhycccc.github.io/hello-world.html">
+    <link itemprop="mainEntityOfPage" href="https://xhycccc.github.io/2021/07/03/hello-world/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="">
@@ -787,7 +787,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/hello-world.html" itemprop="url">Hello World</a></h1>
+                <a class="post-title-link" href="/2021/07/03/hello-world/" itemprop="url">Hello World</a></h1>
         
 
         <div class="post-meta">
@@ -889,7 +889,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://xhycccc.github.io/ctf-mobile-writeup.html">
+    <link itemprop="mainEntityOfPage" href="https://xhycccc.github.io/2020/11/01/ctf-mobile-writeup/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="">
@@ -908,7 +908,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/ctf-mobile-writeup.html" itemprop="url">一道入门mobile题writeup</a></h1>
+                <a class="post-title-link" href="/2020/11/01/ctf-mobile-writeup/" itemprop="url">一道入门mobile题writeup</a></h1>
         
 
         <div class="post-meta">
@@ -984,34 +984,34 @@
           
             <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>作为一个mobile小白，花了一天时间才做出这道题，踩了很多坑的同时也收获了很多，特此记录一下。</p>
 <h2 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h2><p>根据弹出的提示，并得到一串字符。</p>
-<p><img src="1.png" alt="image"></p>
+<p><img src="./1.png" alt="image"></p>
 <p>附件中是一个apk，打开后只有一个界面。</p>
-<p><img src="2.png" alt="image"></p>
+<p><img src="./2.png" alt="image"></p>
 <h2 id="反编译apk"><a href="#反编译apk" class="headerlink" title="反编译apk"></a>反编译apk</h2><p>使用jadx-gui打开apk，看反编译代码：</p>
-<p><img src="3.png" alt="image"></p>
+<p><img src="./3.png" alt="image"></p>
 <p>先看入口MainActivity。使用DES解密函数解密一个base64字符串，将结果传入getflag函数（该函数是通过native接口调用的so库中的函数），对比getflag结果和在界面上输入的key值。如果不一致，显示“这是个陷阱，快醒醒！”，如果一致，提示“再使用函数获取 Flag”。</p>
 <p>其中DES解密函数在CryptoUtil类：</p>
-<p><img src="4.png" alt="image"></p>
+<p><img src="./4.png" alt="image"></p>
 <p>乍一看，需要让这个判断相等，就能得到flag。现在回过头看，这里并没有获取flag的代码，仅仅是弹一个消息框。</p>
 <p>apk中还有另外两个资源文件：<code>Addon.jar</code>和<code>libnative.so</code>。前者是MainApplication.java中使用，用于通过字节异或的方式生成CryptoUtil.jar，调用其中的DES解密方法进行解密。后者是通过native接口加载，调用其getflag方法。</p>
 <p>对于一个小白来说，每个线索都不想放过，所以我针对Addon.jar一顿研究和操作，最后得到的代码是这样的：</p>
-<p><img src="5.png" alt="image"></p>
+<p><img src="./5.png" alt="image"></p>
 <p>WTF??!解密函数直接throw一个异常。上当的我这才发现事情不对，转去研究libnative.so。</p>
 <h2 id="逆向so库"><a href="#逆向so库" class="headerlink" title="逆向so库"></a>逆向so库</h2><p>ida打开，定位getFlag函数：</p>
-<p><img src="6.png" alt="image"></p>
+<p><img src="./6.png" alt="image"></p>
 <p>大致逻辑为：对一个字符串先进行base64解密，再进行AES解密，返回最后的result。中间穿插着各种无用的代码。。</p>
 <p>字符串是已知的，双击texta就能刚看到：</p>
-<p><img src="7.png" alt="image"></p>
+<p><img src="./7.png" alt="image"></p>
 <p>接下来解决AES解密。</p>
 <h2 id="AES解密"><a href="#AES解密" class="headerlink" title="AES解密"></a>AES解密</h2><p>首先要知道，AES解密需要有密文、密钥、初始向量、密钥长度、填充模式、加密模式。decryptAES256cbc函数已经告诉了密钥长度是256位（32字节）、加密模式cbc。初始向量iv双击也可以看到，仅剩密钥未知。</p>
-<p><img src="8.png" alt="image"></p>
+<p><img src="./8.png" alt="image"></p>
 <p>目光聚焦至v7变量。v7调用了GetStringUTFChars函数（该函数声明如下），获取了传入的参数a3的地址。</p>
 <p>根据MainActivity中对getflag的调用，传入的参数是一串密文经过base64和DES解密后的值。盲猜这个解密后的密文就是这里的密钥。</p>
-<p><img src="9.png" alt="image"></p>
+<p><img src="./9.png" alt="image"></p>
 <p>对MainActivity中的密文进行<code>base64</code>+<code>DES</code>解密，得<code>FebRuAry*29th^TweNty-0ne_hUndrEd</code>，刚好32位。</p>
-<p><img src="10.png" alt="image"></p>
+<p><img src="./10.png" alt="image"></p>
 <p>参数齐了，在线AES解密一波，得flag。</p>
-<p><img src="11.png" alt="image"></p>
+<p><img src="./11.png" alt="image"></p>
 <h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
 <li><p><a target="_blank" rel="noopener" href="https://www.keylala.cn/aes">AES在线加密</a> </p>
 </li>
@@ -1068,7 +1068,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://xhycccc.github.io/office-miner-events.html">
+    <link itemprop="mainEntityOfPage" href="https://xhycccc.github.io/2020/10/16/office-miner-events/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="">
@@ -1087,7 +1087,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/office-miner-events.html" itemprop="url">办公网挖矿病毒事件调查</a></h1>
+                <a class="post-title-link" href="/2020/10/16/office-miner-events/" itemprop="url">办公网挖矿病毒事件调查</a></h1>
         
 
         <div class="post-meta">
@@ -1229,7 +1229,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://xhycccc.github.io/blindsql-injection-poc.html">
+    <link itemprop="mainEntityOfPage" href="https://xhycccc.github.io/2020/09/22/blindsql-injection-poc/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="">
@@ -1248,7 +1248,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/blindsql-injection-poc.html" itemprop="url">挖洞经历之SQLServer time-based注入</a></h1>
+                <a class="post-title-link" href="/2020/09/22/blindsql-injection-poc/" itemprop="url">挖洞经历之SQLServer time-based注入</a></h1>
         
 
         <div class="post-meta">
@@ -1385,7 +1385,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://xhycccc.github.io/sql-manual-injection-referrence.html">
+    <link itemprop="mainEntityOfPage" href="https://xhycccc.github.io/2020/09/19/sql-manual-injection-referrence/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="">
@@ -1404,7 +1404,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/sql-manual-injection-referrence.html" itemprop="url">SQL手注参考笔记</a></h1>
+                <a class="post-title-link" href="/2020/09/19/sql-manual-injection-referrence/" itemprop="url">SQL手注参考笔记</a></h1>
         
 
         <div class="post-meta">
@@ -1614,7 +1614,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://xhycccc.github.io/reverse-shell-feature-research.html">
+    <link itemprop="mainEntityOfPage" href="https://xhycccc.github.io/2020/06/03/reverse-shell-feature-research/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="">
@@ -1633,7 +1633,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/reverse-shell-feature-research.html" itemprop="url">反弹shell特征研究</a></h1>
+                <a class="post-title-link" href="/2020/06/03/reverse-shell-feature-research/" itemprop="url">反弹shell特征研究</a></h1>
         
 
         <div class="post-meta">
@@ -1803,7 +1803,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://xhycccc.github.io/pwnhub-web-writeup.html">
+    <link itemprop="mainEntityOfPage" href="https://xhycccc.github.io/2020/06/02/pwnhub-web-writeup/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="">
@@ -1822,7 +1822,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/pwnhub-web-writeup.html" itemprop="url">Pwnhub公开赛之WEB题WriteUp</a></h1>
+                <a class="post-title-link" href="/2020/06/02/pwnhub-web-writeup/" itemprop="url">Pwnhub公开赛之WEB题WriteUp</a></h1>
         
 
         <div class="post-meta">
@@ -2028,7 +2028,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://xhycccc.github.io/dns-rebinding.html">
+    <link itemprop="mainEntityOfPage" href="https://xhycccc.github.io/2020/05/22/dns-rebinding/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="">
@@ -2047,7 +2047,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/dns-rebinding.html" itemprop="url">DNS Rebinding</a></h1>
+                <a class="post-title-link" href="/2020/05/22/dns-rebinding/" itemprop="url">DNS Rebinding</a></h1>
         
 
         <div class="post-meta">

