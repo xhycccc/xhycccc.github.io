@@ -74,7 +74,7 @@
 
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="SSRF," />
 
 
 
@@ -85,17 +85,21 @@
 
 
 
-<meta name="description" content="习惯成自然 Habit is secone nature.">
+<meta name="description" content="DNS TTLTTL值全称是“生存时间（Time To Live)”，简单的说它表示DNS记录在DNS服务器上缓存时间，数值越小，修改记录各地生效时间越快。 当各地的DNS(LDNS)服务器接受到解析请求时，就会向域名指定的授权DNS服务器发出解析请求从而获得解析记录；该解析记录会在DNS(LDNS)服务器中保存一段时间，这段时间内如果再接到这个域名的解析请求，DNS服务器将不再向授权DNS服务器">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Hello World">
-<meta property="og:url" content="https://xhycccc.github.io/2021/07/03/hello-world/index.html">
+<meta property="og:title" content="DNS Rebinding">
+<meta property="og:url" content="https://xhycccc.github.io/dns-rebinding.html">
 <meta property="og:site_name" content="欣海余诚&#39;s blog">
-<meta property="og:description" content="习惯成自然 Habit is secone nature.">
+<meta property="og:description" content="DNS TTLTTL值全称是“生存时间（Time To Live)”，简单的说它表示DNS记录在DNS服务器上缓存时间，数值越小，修改记录各地生效时间越快。 当各地的DNS(LDNS)服务器接受到解析请求时，就会向域名指定的授权DNS服务器发出解析请求从而获得解析记录；该解析记录会在DNS(LDNS)服务器中保存一段时间，这段时间内如果再接到这个域名的解析请求，DNS服务器将不再向授权DNS服务器">
 <meta property="og:locale">
-<meta property="article:published_time" content="2021-07-03T15:42:56.445Z">
-<meta property="article:modified_time" content="2021-07-03T15:42:56.440Z">
+<meta property="og:image" content="https://xhycccc.github.io/1.jpg">
+<meta property="og:image" content="https://xhycccc.github.io/2.jpg">
+<meta property="article:published_time" content="2020-05-22T09:47:19.000Z">
+<meta property="article:modified_time" content="2021-07-06T08:54:01.442Z">
 <meta property="article:author" content="欣海余诚">
+<meta property="article:tag" content="SSRF">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://xhycccc.github.io/1.jpg">
 
 
 
@@ -125,13 +129,13 @@
 
 
 
-  <link rel="canonical" href="https://xhycccc.github.io/2021/07/03/hello-world/"/>
+  <link rel="canonical" href="https://xhycccc.github.io/dns-rebinding.html"/>
 
 
 
 
 
-  <title>Hello World | 欣海余诚's blog</title>
+  <title>DNS Rebinding | 欣海余诚's blog</title>
   
 
 
@@ -280,7 +284,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://xhycccc.github.io/2021/07/03/hello-world/">
+    <link itemprop="mainEntityOfPage" href="https://xhycccc.github.io/dns-rebinding.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="">
@@ -297,7 +301,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Hello World</h1>
+          <h1 class="post-title" itemprop="name headline">DNS Rebinding</h1>
         
 
         <div class="post-meta">
@@ -309,8 +313,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-07-03T23:42:56+08:00">
-                2021-07-03
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-05-22T17:47:19+08:00">
+                2020-05-22
               </time>
             
 
@@ -319,6 +323,28 @@
             
           </span>
 
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/WEB%E5%AE%89%E5%85%A8/" itemprop="url" rel="index">
+                    <span itemprop="name">WEB安全</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
           
 
           
@@ -352,8 +378,27 @@
       
 
       
-        <p>习惯成自然</p>
-<p>Habit is secone nature.</p>
+        <h2 id="DNS-TTL"><a href="#DNS-TTL" class="headerlink" title="DNS TTL"></a>DNS TTL</h2><p>TTL值全称是“生存时间（Time To Live)”，简单的说它表示DNS记录在DNS服务器上缓存时间，数值越小，修改记录各地生效时间越快。</p>
+<p>当各地的DNS(LDNS)服务器接受到解析请求时，就会向域名指定的授权DNS服务器发出解析请求从而获得解析记录；该解析记录会在DNS(LDNS)服务器中保存一段时间，这段时间内如果再接到这个域名的解析请求，DNS服务器将不再向授权DNS服务器发出请求，而是直接返回刚才获得的记录；而这个记录在DNS服务器上保留的时间，就是TTL值。</p>
+<p>常见的设置TTL值的场景：</p>
+<ol>
+<li>增大TTL值，以节约域名解析时间</li>
+<li>减小TTL值，减少更新域名记录时的不可访问时间</li>
+</ol>
+<h2 id="DNS-Rebinding"><a href="#DNS-Rebinding" class="headerlink" title="DNS Rebinding"></a>DNS Rebinding</h2><p>原理就是上面的第二种，设置一个非常小的TTL值，让客户端发出的两次请求获得的解析结果不同。</p>
+<p>常见ssrf防御场景：</p>
+<p>php的waf做判断的时候，第一次会解析域名的ip，然后判断这个ip是不是内网ip，如果不是内网ip的时候，再去真正用curl请求这个域名。</p>
+<p>这就牵涉到了，curl请求这个域名会做第二次域名解析，重新对dns服务器进行请求，获得到一个内网ip，这时候就是绕过限制请求到了内网资源。</p>
+<p>当然需要ttl设置为0</p>
+<p><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s?__biz=MjM5MTYxNjQxOA==&mid=2652852236&idx=1&sn=e95f715b513c1deaded7258d9077607f&scene=21#wechat_redirect">示例代码：</a></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">$dst = @$_GET[&#x27;KR&#x27;];</span><br><span class="line">$res = @parse_url($dst);</span><br><span class="line">$ip = @dns_get_record($res[&#x27;host&#x27;], DNS_A)[0][&#x27;ip&#x27;];</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">$dev_ip = &quot;54.87.54.87&quot;;</span><br><span class="line"></span><br><span class="line">if($ip === $dev_ip) &#123;</span><br><span class="line"></span><br><span class="line">    $content = file_get_contents($dst);</span><br><span class="line"></span><br><span class="line">    echo $content;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>使用<a target="_blank" rel="noopener" href="https://lock.cmpxchg8b.com/rebinder.html?tdsourcetag=s_pctim_aiomsg">dns rebinding测试网站提供的域名</a>（测试不太好使，解析不到该域名，待研究），随机返回两个ip地址。（使用时应该需要多测几遍）</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">$ host 7f000001.c0a80001.rbndr.us</span><br><span class="line">7f000001.c0a80001.rbndr.us has address 192.168.0.1</span><br><span class="line">$ host 7f000001.c0a80001.rbndr.us</span><br><span class="line">7f000001.c0a80001.rbndr.us has address 127.0.0.1</span><br><span class="line">$ host 7f000001.c0a80001.rbndr.us</span><br><span class="line">7f000001.c0a80001.rbndr.us has address 127.0.0.1</span><br><span class="line">$ host 7f000001.c0a80001.rbndr.us</span><br><span class="line">7f000001.c0a80001.rbndr.us has address 192.168.0.1</span><br><span class="line">$ host 7f000001.c0a80001.rbndr.us</span><br><span class="line">7f000001.c0a80001.rbndr.us has address 127.0.0.1</span><br><span class="line">$ host 7f000001.c0a80001.rbndr.us</span><br><span class="line">7f000001.c0a80001.rbndr.us has address 127.0.0.1</span><br><span class="line">$ host 7f000001.c0a80001.rbndr.us</span><br><span class="line">7f000001.c0a80001.rbndr.us has address 192.168.0.1</span><br></pre></td></tr></table></figure>
+
+<p>一个自定义dns解析的网站：<a target="_blank" rel="noopener" href="http://rbnd.gl0.eu/dnsbin">http://rbnd.gl0.eu/dnsbin</a></p>
+<p><img src="1.jpg" alt="image"></p>
+<p>在record中设置要解析的ip地址，submit后会自动生成一个domain。解析这个domain就会得到填写的ip地址。</p>
+<p><img src="2.jpg" alt="image"></p>
 
       
     </div>
@@ -369,6 +414,12 @@
 
     <footer class="post-footer">
       
+        <div class="post-tags">
+          
+            <a href="/tags/SSRF/" rel="tag"># SSRF</a>
+          
+        </div>
+      
 
       
       
@@ -378,8 +429,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2020/11/01/ctf-mobile-writeup/" rel="next" title="一道入门mobile题writeup">
-                <i class="fa fa-chevron-left"></i> 一道入门mobile题writeup
+              <a href="/ssrf-referrence.html" rel="next" title="SSRF笔记">
+                <i class="fa fa-chevron-left"></i> SSRF笔记
               </a>
             
           </div>
@@ -388,8 +439,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2021/07/06/Summary_of_interview_knowledge/" rel="prev" title="安全运营工程师面试知识点汇总">
-                安全运营工程师面试知识点汇总 <i class="fa fa-chevron-right"></i>
+              <a href="/pwnhub-web-writeup.html" rel="prev" title="Pwnhub公开赛之WEB题WriteUp">
+                Pwnhub公开赛之WEB题WriteUp <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -445,8 +496,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -506,6 +566,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#DNS-TTL"><span class="nav-number">1.</span> <span class="nav-text">DNS TTL</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DNS-Rebinding"><span class="nav-number">2.</span> <span class="nav-text">DNS Rebinding</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       

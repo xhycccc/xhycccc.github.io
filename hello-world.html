@@ -74,7 +74,7 @@
 
 
 
-  <meta name="keywords" content="CTF,逆向,mobile," />
+  <meta name="keywords" content="Hexo, NexT" />
 
 
 
@@ -85,32 +85,17 @@
 
 
 
-<meta name="description" content="前言作为一个mobile小白，花了一天时间才做出这道题，踩了很多坑的同时也收获了很多，特此记录一下。 题目描述根据弹出的提示，并得到一串字符。  附件中是一个apk，打开后只有一个界面。  反编译apk使用jadx-gui打开apk，看反编译代码：  先看入口MainActivity。使用DES解密函数解密一个base64字符串，将结果传入getflag函数（该函数是通过native接口调用的so">
+<meta name="description" content="习惯成自然 Habit is secone nature.">
 <meta property="og:type" content="article">
-<meta property="og:title" content="一道入门mobile题writeup">
-<meta property="og:url" content="https://xhycccc.github.io/2020/11/01/ctf-mobile-writeup/index.html">
+<meta property="og:title" content="Hello World">
+<meta property="og:url" content="https://xhycccc.github.io/hello-world.html">
 <meta property="og:site_name" content="欣海余诚&#39;s blog">
-<meta property="og:description" content="前言作为一个mobile小白，花了一天时间才做出这道题，踩了很多坑的同时也收获了很多，特此记录一下。 题目描述根据弹出的提示，并得到一串字符。  附件中是一个apk，打开后只有一个界面。  反编译apk使用jadx-gui打开apk，看反编译代码：  先看入口MainActivity。使用DES解密函数解密一个base64字符串，将结果传入getflag函数（该函数是通过native接口调用的so">
+<meta property="og:description" content="习惯成自然 Habit is secone nature.">
 <meta property="og:locale">
-<meta property="og:image" content="https://xhycccc.github.io/2020/11/01/ctf-mobile-writeup/1.png">
-<meta property="og:image" content="https://xhycccc.github.io/2020/11/01/ctf-mobile-writeup/2.png">
-<meta property="og:image" content="https://xhycccc.github.io/2020/11/01/ctf-mobile-writeup/3.png">
-<meta property="og:image" content="https://xhycccc.github.io/2020/11/01/ctf-mobile-writeup/4.png">
-<meta property="og:image" content="https://xhycccc.github.io/2020/11/01/ctf-mobile-writeup/5.png">
-<meta property="og:image" content="https://xhycccc.github.io/2020/11/01/ctf-mobile-writeup/6.png">
-<meta property="og:image" content="https://xhycccc.github.io/2020/11/01/ctf-mobile-writeup/7.png">
-<meta property="og:image" content="https://xhycccc.github.io/2020/11/01/ctf-mobile-writeup/8.png">
-<meta property="og:image" content="https://xhycccc.github.io/2020/11/01/ctf-mobile-writeup/9.png">
-<meta property="og:image" content="https://xhycccc.github.io/2020/11/01/ctf-mobile-writeup/10.png">
-<meta property="og:image" content="https://xhycccc.github.io/2020/11/01/ctf-mobile-writeup/11.png">
-<meta property="article:published_time" content="2020-11-01T12:39:48.000Z">
-<meta property="article:modified_time" content="2021-07-06T08:24:28.068Z">
+<meta property="article:published_time" content="2021-07-03T15:42:56.445Z">
+<meta property="article:modified_time" content="2021-07-03T15:42:56.440Z">
 <meta property="article:author" content="欣海余诚">
-<meta property="article:tag" content="CTF">
-<meta property="article:tag" content="逆向">
-<meta property="article:tag" content="mobile">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://xhycccc.github.io/2020/11/01/ctf-mobile-writeup/1.png">
 
 
 
@@ -140,13 +125,13 @@
 
 
 
-  <link rel="canonical" href="https://xhycccc.github.io/2020/11/01/ctf-mobile-writeup/"/>
+  <link rel="canonical" href="https://xhycccc.github.io/hello-world.html"/>
 
 
 
 
 
-  <title>一道入门mobile题writeup | 欣海余诚's blog</title>
+  <title>Hello World | 欣海余诚's blog</title>
   
 
 
@@ -295,7 +280,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://xhycccc.github.io/2020/11/01/ctf-mobile-writeup/">
+    <link itemprop="mainEntityOfPage" href="https://xhycccc.github.io/hello-world.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="">
@@ -312,7 +297,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">一道入门mobile题writeup</h1>
+          <h1 class="post-title" itemprop="name headline">Hello World</h1>
         
 
         <div class="post-meta">
@@ -324,8 +309,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-11-01T20:39:48+08:00">
-                2020-11-01
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-07-03T23:42:56+08:00">
+                2021-07-03
               </time>
             
 
@@ -334,28 +319,6 @@
             
           </span>
 
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/CTF/" itemprop="url" rel="index">
-                    <span itemprop="name">CTF</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
           
 
           
@@ -389,44 +352,8 @@
       
 
       
-        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>作为一个mobile小白，花了一天时间才做出这道题，踩了很多坑的同时也收获了很多，特此记录一下。</p>
-<h2 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h2><p>根据弹出的提示，并得到一串字符。</p>
-<p><img src="1.png" alt="image"></p>
-<p>附件中是一个apk，打开后只有一个界面。</p>
-<p><img src="2.png" alt="image"></p>
-<h2 id="反编译apk"><a href="#反编译apk" class="headerlink" title="反编译apk"></a>反编译apk</h2><p>使用jadx-gui打开apk，看反编译代码：</p>
-<p><img src="3.png" alt="image"></p>
-<p>先看入口MainActivity。使用DES解密函数解密一个base64字符串，将结果传入getflag函数（该函数是通过native接口调用的so库中的函数），对比getflag结果和在界面上输入的key值。如果不一致，显示“这是个陷阱，快醒醒！”，如果一致，提示“再使用函数获取 Flag”。</p>
-<p>其中DES解密函数在CryptoUtil类：</p>
-<p><img src="4.png" alt="image"></p>
-<p>乍一看，需要让这个判断相等，就能得到flag。现在回过头看，这里并没有获取flag的代码，仅仅是弹一个消息框。</p>
-<p>apk中还有另外两个资源文件：<code>Addon.jar</code>和<code>libnative.so</code>。前者是MainApplication.java中使用，用于通过字节异或的方式生成CryptoUtil.jar，调用其中的DES解密方法进行解密。后者是通过native接口加载，调用其getflag方法。</p>
-<p>对于一个小白来说，每个线索都不想放过，所以我针对Addon.jar一顿研究和操作，最后得到的代码是这样的：</p>
-<p><img src="5.png" alt="image"></p>
-<p>WTF??!解密函数直接throw一个异常。上当的我这才发现事情不对，转去研究libnative.so。</p>
-<h2 id="逆向so库"><a href="#逆向so库" class="headerlink" title="逆向so库"></a>逆向so库</h2><p>ida打开，定位getFlag函数：</p>
-<p><img src="6.png" alt="image"></p>
-<p>大致逻辑为：对一个字符串先进行base64解密，再进行AES解密，返回最后的result。中间穿插着各种无用的代码。。</p>
-<p>字符串是已知的，双击texta就能刚看到：</p>
-<p><img src="7.png" alt="image"></p>
-<p>接下来解决AES解密。</p>
-<h2 id="AES解密"><a href="#AES解密" class="headerlink" title="AES解密"></a>AES解密</h2><p>首先要知道，AES解密需要有密文、密钥、初始向量、密钥长度、填充模式、加密模式。decryptAES256cbc函数已经告诉了密钥长度是256位（32字节）、加密模式cbc。初始向量iv双击也可以看到，仅剩密钥未知。</p>
-<p><img src="8.png" alt="image"></p>
-<p>目光聚焦至v7变量。v7调用了GetStringUTFChars函数（该函数声明如下），获取了传入的参数a3的地址。</p>
-<p>根据MainActivity中对getflag的调用，传入的参数是一串密文经过base64和DES解密后的值。盲猜这个解密后的密文就是这里的密钥。</p>
-<p><img src="9.png" alt="image"></p>
-<p>对MainActivity中的密文进行<code>base64</code>+<code>DES</code>解密，得<code>FebRuAry*29th^TweNty-0ne_hUndrEd</code>，刚好32位。</p>
-<p><img src="10.png" alt="image"></p>
-<p>参数齐了，在线AES解密一波，得flag。</p>
-<p><img src="11.png" alt="image"></p>
-<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
-<li><p><a target="_blank" rel="noopener" href="https://www.keylala.cn/aes">AES在线加密</a> </p>
-</li>
-<li><p><a target="_blank" rel="noopener" href="https://docs.oracle.com/javase/8/docs/technotes/guides/jni/spec/functions.html#NewStringUTF">Chapter 4: JNI Functions</a> </p>
-</li>
-<li><p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/duanxz/p/3651347.html">Java native关键字</a> </p>
-</li>
-</ul>
+        <p>习惯成自然</p>
+<p>Habit is secone nature.</p>
 
       
     </div>
@@ -442,16 +369,6 @@
 
     <footer class="post-footer">
       
-        <div class="post-tags">
-          
-            <a href="/tags/CTF/" rel="tag"># CTF</a>
-          
-            <a href="/tags/%E9%80%86%E5%90%91/" rel="tag"># 逆向</a>
-          
-            <a href="/tags/mobile/" rel="tag"># mobile</a>
-          
-        </div>
-      
 
       
       
@@ -461,8 +378,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2020/10/16/office-miner-events/" rel="next" title="办公网挖矿病毒事件调查">
-                <i class="fa fa-chevron-left"></i> 办公网挖矿病毒事件调查
+              <a href="/ctf-mobile-writeup.html" rel="next" title="一道入门mobile题writeup">
+                <i class="fa fa-chevron-left"></i> 一道入门mobile题writeup
               </a>
             
           </div>
@@ -471,8 +388,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2021/07/03/hello-world/" rel="prev" title="Hello World">
-                Hello World <i class="fa fa-chevron-right"></i>
+              <a href="/Summary_of_interview_knowledge.html" rel="prev" title="安全运营工程师面试知识点汇总">
+                安全运营工程师面试知识点汇总 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -528,17 +445,8 @@
       
 
       
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            站点概览
-          </li>
-        </ul>
-      
 
-      <section class="site-overview-wrap sidebar-panel">
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -598,22 +506,6 @@
         </div>
       </section>
 
-      
-      <!--noindex-->
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-              
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE%E6%8F%8F%E8%BF%B0"><span class="nav-number">2.</span> <span class="nav-text">题目描述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%8D%E7%BC%96%E8%AF%91apk"><span class="nav-number">3.</span> <span class="nav-text">反编译apk</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%86%E5%90%91so%E5%BA%93"><span class="nav-number">4.</span> <span class="nav-text">逆向so库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AES%E8%A7%A3%E5%AF%86"><span class="nav-number">5.</span> <span class="nav-text">AES解密</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="nav-number">6.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
-            
-
-          </div>
-        </section>
-      <!--/noindex-->
       
 
       
