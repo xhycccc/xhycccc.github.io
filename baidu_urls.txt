@@ -5,6 +5,7 @@ https://xhycccc.github.io/2020/11/01/ctf-mobile-writeup/
 https://xhycccc.github.io/2020/10/16/office-miner-events/
 https://xhycccc.github.io/2020/09/22/blindsql-injection-poc/
 https://xhycccc.github.io/2020/09/19/sql-manual-injection-referrence/
+https://xhycccc.github.io/2020/06/07/hash-length-extension-attack/
 https://xhycccc.github.io/2020/06/03/reverse-shell-feature-research/
 https://xhycccc.github.io/2020/06/02/pwnhub-web-writeup/
 https://xhycccc.github.io/2020/05/22/dns-rebinding/

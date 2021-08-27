@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://xhycccc.github.io/2020/06/07/hash-length-extension-attack/</loc>
+    <lastmod>2021-08-27</lastmod>
+  </url>
+  <url>
     <loc>https://xhycccc.github.io/2020/11/01/ctf-mobile-writeup/</loc>
     <lastmod>2021-08-17</lastmod>
   </url>

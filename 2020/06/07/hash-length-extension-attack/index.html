@@ -74,7 +74,7 @@
 
 
 
-  <meta name="keywords" content="安全运营,面经," />
+  <meta name="keywords" content="CTF,Hash,密码学," />
 
 
 
@@ -85,19 +85,25 @@
 
 
 
-<meta name="description" content="WEB SQL注入 分类 手写mysql手注payload（union、报错、延时） 如何区分后端数据库 oracle&#x2F;sqlserver注入 不同注入场景下注入 宽字节注入 二次注入 order by注入 limit 注入 table 名注入 update&#x2F;insert 注入   绕过方式 getshell general_log select into dump_file 有什么条件 站库分离">
+<meta name="description" content="Hash算法原理简化版 分组不够56字节用\x80\x00\x00…补够，然后最后八字节为长度描述符，由Hash算法补充，一共64字节。  长度描述符计算的是文本的真实长度（单位bit，1字节&#x3D;8 it），不包含填充长度。 Hash长度扩展攻击原理从图1中可以看出，Hash算法初始向量是固定的，第n个向量可以通过第n-1个向量与第n个分组计算得出。这个第n个向量经高低位互换后也就是这个文本的Has">
 <meta property="og:type" content="article">
-<meta property="og:title" content="安全运营工程师面试知识点汇总">
-<meta property="og:url" content="https://xhycccc.github.io/2021/07/06/Summary_of_interview_knowledge/index.html">
+<meta property="og:title" content="学习Hash长度扩展攻击">
+<meta property="og:url" content="https://xhycccc.github.io/2020/06/07/hash-length-extension-attack/index.html">
 <meta property="og:site_name" content="欣海余诚&#39;s blog">
-<meta property="og:description" content="WEB SQL注入 分类 手写mysql手注payload（union、报错、延时） 如何区分后端数据库 oracle&#x2F;sqlserver注入 不同注入场景下注入 宽字节注入 二次注入 order by注入 limit 注入 table 名注入 update&#x2F;insert 注入   绕过方式 getshell general_log select into dump_file 有什么条件 站库分离">
+<meta property="og:description" content="Hash算法原理简化版 分组不够56字节用\x80\x00\x00…补够，然后最后八字节为长度描述符，由Hash算法补充，一共64字节。  长度描述符计算的是文本的真实长度（单位bit，1字节&#x3D;8 it），不包含填充长度。 Hash长度扩展攻击原理从图1中可以看出，Hash算法初始向量是固定的，第n个向量可以通过第n-1个向量与第n个分组计算得出。这个第n个向量经高低位互换后也就是这个文本的Has">
 <meta property="og:locale">
-<meta property="article:published_time" content="2021-07-06T10:00:20.692Z">
-<meta property="article:modified_time" content="2021-07-06T10:00:20.687Z">
+<meta property="og:image" content="https://xhycccc.github.io/2020/06/07/hash-length-extension-attack/1.png">
+<meta property="og:image" content="https://xhycccc.github.io/2020/06/07/hash-length-extension-attack/2.png">
+<meta property="og:image" content="https://xhycccc.github.io/2020/06/07/hash-length-extension-attack/3.png">
+<meta property="og:image" content="https://xhycccc.github.io/2020/06/07/hash-length-extension-attack/4.png">
+<meta property="article:published_time" content="2020-06-07T07:35:44.000Z">
+<meta property="article:modified_time" content="2021-08-27T07:42:20.395Z">
 <meta property="article:author" content="欣海余诚">
-<meta property="article:tag" content="安全运营">
-<meta property="article:tag" content="面经">
+<meta property="article:tag" content="CTF">
+<meta property="article:tag" content="Hash">
+<meta property="article:tag" content="密码学">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://xhycccc.github.io/2020/06/07/hash-length-extension-attack/1.png">
 
 
 
@@ -127,13 +133,13 @@
 
 
 
-  <link rel="canonical" href="https://xhycccc.github.io/2021/07/06/Summary_of_interview_knowledge/"/>
+  <link rel="canonical" href="https://xhycccc.github.io/2020/06/07/hash-length-extension-attack/"/>
 
 
 
 
 
-  <title>安全运营工程师面试知识点汇总 | 欣海余诚's blog</title>
+  <title>学习Hash长度扩展攻击 | 欣海余诚's blog</title>
   
 
 
@@ -282,7 +288,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://xhycccc.github.io/2021/07/06/Summary_of_interview_knowledge/">
+    <link itemprop="mainEntityOfPage" href="https://xhycccc.github.io/2020/06/07/hash-length-extension-attack/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="">
@@ -299,7 +305,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">安全运营工程师面试知识点汇总</h1>
+          <h1 class="post-title" itemprop="name headline">学习Hash长度扩展攻击</h1>
         
 
         <div class="post-meta">
@@ -311,8 +317,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-07-06T18:00:20+08:00">
-                2021-07-06
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-06-07T15:35:44+08:00">
+                2020-06-07
               </time>
             
 
@@ -334,8 +340,30 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E9%9D%A2%E7%BB%8F/" itemprop="url" rel="index">
-                    <span itemprop="name">面经</span>
+                  <a href="/categories/%E5%AF%86%E7%A0%81%E5%AD%A6/" itemprop="url" rel="index">
+                    <span itemprop="name">密码学</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%AF%86%E7%A0%81%E5%AD%A6/CTF/" itemprop="url" rel="index">
+                    <span itemprop="name">CTF</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%AF%86%E7%A0%81%E5%AD%A6/CTF/Web%E5%AE%89%E5%85%A8/" itemprop="url" rel="index">
+                    <span itemprop="name">Web安全</span>
                   </a>
                 </span>
 
@@ -376,186 +404,38 @@
       
 
       
-        <h2 id="WEB"><a href="#WEB" class="headerlink" title="WEB"></a>WEB</h2><ul>
-<li>SQL注入<ul>
-<li>分类</li>
-<li>手写mysql手注payload（union、报错、延时）</li>
-<li>如何区分后端数据库</li>
-<li>oracle/sqlserver注入</li>
-<li>不同注入场景下注入<ul>
-<li>宽字节注入</li>
-<li>二次注入</li>
-<li>order by注入</li>
-<li>limit 注入</li>
-<li>table 名注入</li>
-<li>update/insert 注入</li>
-</ul>
-</li>
-<li>绕过方式</li>
-<li>getshell<ul>
-<li>general_log</li>
-<li>select into dump_file 有什么条件</li>
-<li>站库分离怎么办</li>
-</ul>
-</li>
-<li>提权<ul>
-<li>UDF提权</li>
-</ul>
-</li>
-<li>防御方式<ul>
-<li>使用预编译是否可以防止所有sql注入？</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>XSS<ul>
-<li>分类（反射、DOM、存储）<ul>
-<li>DOM 一定不经过服务器吗？</li>
-</ul>
-</li>
-<li>防御方式（转义、CSP）</li>
-<li>相关概念（同源策略、Jsonp、CORS）</li>
-<li>利用方式（除盗cookie外）</li>
-</ul>
-</li>
-<li>CSRF<ul>
-<li>防御方式<ul>
-<li>使用Referer防御是否一定可靠？</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>SSRF<ul>
-<li>绕过<ul>
-<li>host 绕过</li>
-<li>ip进制绕过</li>
-<li>控制域名解析</li>
-<li>302跳转</li>
-<li>dns rebinding (ttl)</li>
-</ul>
-</li>
-<li>有回显利用<ul>
-<li>端口扫描</li>
-<li>攻击redis</li>
-</ul>
-</li>
-<li>无回显利用<ul>
-<li>dnslog</li>
-</ul>
-</li>
-<li>防御</li>
-</ul>
-</li>
-<li>文件上传<ul>
-<li>绕过方式</li>
-<li>防御方式</li>
-</ul>
-</li>
-<li>命令执行<ul>
-<li>php<ul>
-<li>绕过姿势</li>
-<li>shell_exec和exec的区别</li>
-</ul>
-</li>
-<li>Java反序列化<ul>
-<li>Shiro<ul>
-<li>550</li>
-<li>721</li>
-<li>权限绕过</li>
-</ul>
-</li>
-<li>Fastjson<ul>
-<li>漏洞原理</li>
-<li>黑名单检查函数</li>
-<li>利用链</li>
-</ul>
-</li>
-<li>Weblogic<ul>
-<li>漏洞类型、原理</li>
-<li>漏洞函数</li>
-</ul>
-</li>
-<li>ysoserial<ul>
-<li>原理</li>
-<li>链</li>
-</ul>
-</li>
-<li>SpEL/OGNL 表达式注入</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>其它<ul>
-<li>XXE</li>
-<li>https握手流程</li>
-<li>中间人攻击原理</li>
-</ul>
-</li>
-</ul>
-<h2 id="渗透"><a href="#渗透" class="headerlink" title="渗透"></a>渗透</h2><ul>
-<li>反弹shell<ul>
-<li>类型</li>
-<li>检测原理</li>
-</ul>
-</li>
-<li>正向shell<ul>
-<li>reg</li>
-<li>?</li>
-</ul>
-</li>
-<li>webshell<ul>
-<li>disable_functions绕过</li>
-<li>内存马</li>
-</ul>
-</li>
-<li>权限维持<ul>
-<li>系统后门</li>
-<li>无文件攻击</li>
-<li>dll劫持，dll注入</li>
-</ul>
-</li>
-<li>痕迹清理<ul>
-<li>C2隐藏 </li>
-</ul>
-</li>
-<li>钓鱼<ul>
-<li>姿势</li>
-</ul>
-</li>
-</ul>
-<h2 id="名词概念"><a href="#名词概念" class="headerlink" title="名词概念"></a>名词概念</h2><ul>
-<li>ATT&amp;CK</li>
-<li>SPF</li>
-<li>DMARC</li>
-</ul>
-<h2 id="应急"><a href="#应急" class="headerlink" title="应急"></a>应急</h2><ul>
-<li>病毒排查及溯源</li>
-<li>Webshell排查及溯源</li>
-</ul>
-<h2 id="内网渗透"><a href="#内网渗透" class="headerlink" title="内网渗透"></a>内网渗透</h2><ul>
-<li>linux/Windows提权</li>
-<li>域认证方式</li>
-<li>域内委派</li>
-<li>bypass uac 技巧，方法 ，原理</li>
-<li>$IPC连接</li>
-<li>wmic用法</li>
-<li>psexec用法</li>
-<li>黄金票据</li>
-<li>白银票据</li>
-<li>PTH/PTT</li>
-<li>Windows defender安全机制</li>
-</ul>
-<h3 id="常见漏洞"><a href="#常见漏洞" class="headerlink" title="常见漏洞"></a>常见漏洞</h3><ul>
-<li>Tomcat</li>
-<li>Springboot</li>
-<li>最近曝光有重大影响的漏洞</li>
-<li>nmap指纹识别原理及用法</li>
-</ul>
-<h2 id="场景"><a href="#场景" class="headerlink" title="场景"></a>场景</h2><ul>
-<li>注册场景</li>
-<li>登录场景</li>
-<li>活动场景</li>
-<li>支付场景</li>
+        <h3 id="Hash算法原理简化版"><a href="#Hash算法原理简化版" class="headerlink" title="Hash算法原理简化版"></a>Hash算法原理简化版</h3><p><img src="1.png" alt="image"></p>
+<p>分组不够56字节用\x80\x00\x00…补够，然后最后八字节为长度描述符，由Hash算法补充，一共64字节。</p>
+<p><img src="2.png" alt="image"></p>
+<p>长度描述符计算的是文本的真实长度（单位bit，1字节=8 it），不包含填充长度。</p>
+<h3 id="Hash长度扩展攻击原理"><a href="#Hash长度扩展攻击原理" class="headerlink" title="Hash长度扩展攻击原理"></a>Hash长度扩展攻击原理</h3><p>从图1中可以看出，Hash算法初始向量是固定的，第n个向量可以通过第n-1个向量与第n个分组计算得出。这个第n个向量经高低位互换后也就是这个文本的Hash值。</p>
+<p>假设有两个不同的字符串str1和str2，他们的分组1相同，str2有分组2而str1没有。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">str1: 分组1</span><br><span class="line">str2: 分组1 分组2</span><br></pre></td></tr></table></figure>
+<p>那么由于他们的分组1相同，所以向量1也相同（初始向量和分组1计算得到向量1）。</p>
+<p>正常的Hahs算法为下图中的实线部分。</p>
+<p><img src="3.png" alt="image"></p>
+<p>解释虚线部分：</p>
+<p>由str1的Hash值（经高低位互换后成为向量1）和str2的分组2计算也可以得到str2的Hash值。这个就是Hash长度扩展攻击的利用原理。</p>
+<p>利用场景如下。</p>
+<h3 id="Demo"><a href="#Demo" class="headerlink" title="Demo"></a><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/106534008?utm_source=wechat_session">Demo</a></h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">include &quot;secret.php&quot;;</span><br><span class="line">@$username=(string)$_POST[&#x27;username&#x27;]; </span><br><span class="line">function enc($text)&#123;</span><br><span class="line">    global $key;</span><br><span class="line">    return md5($key.$text);</span><br><span class="line">&#125;</span><br><span class="line">if(enc($username) === $_COOKIE[&#x27;verify&#x27;])&#123;</span><br><span class="line">    if(is_numeric(strpos($username, &quot;admin&quot;)))&#123;</span><br><span class="line">        echo $key;</span><br><span class="line">    &#125;</span><br><span class="line">    else&#123;</span><br><span class="line">        die(&quot;you are not admin&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">else&#123;</span><br><span class="line">    setcookie(&quot;verify&quot;, enc(&quot;guest&quot;), time()+60*60*24*7);</span><br><span class="line">    setcookie(&quot;len&quot;, strlen($key), time()+60*60*24*7);</span><br><span class="line">&#125;</span><br><span class="line">show_source(__FILE__);</span><br><span class="line">?&gt;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>这里的md5($key.$text) 就相当于上面str1的Hash值，分组1是</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$key(21字节) + &quot;guest&quot;(5字节) + &quot;\x80\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00&quot;(30字节) + &quot;\x00\x00\x00\x00\x00\x00\x00\xd0&quot;(8字节)</span><br></pre></td></tr></table></figure>
+
+<p>根据前面的原理，我们构造一个str2，让它的分组1和str1的分组1相同，分组2为包含<code>admin</code>用以绕过检查。然后用str1的分组1（已知，即str1的hash值高低位互换）计算出str2的hash值。</p>
+<p>str2字符串的值为：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$key(21字节) + &quot;guest&quot;(5字节) + &quot;\x80\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00&quot;(30字节) + &quot;\x00\x00\x00\x00\x00\x00\x00\xd0&quot;(8字节) + &quot;admin&quot;</span><br></pre></td></tr></table></figure>
+
+<p>Hashdump可以帮我们自动化计算:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">root@kali2018:~/md5/HashPump# ./hashpump </span><br><span class="line">Input Signature: f8d7a112644f7e71e1e8ad068f144f61 [已知str1的hash值]</span><br><span class="line">Input Data: guest [username, hash中已知的data]</span><br><span class="line">Input Key Length: 26  [length($key + guest)]</span><br><span class="line">Input Data to Add: admin [用来绕过admin检查]</span><br><span class="line">84b4590d78bf2a8cdd5612cad68e4ab5 [str2的hash]</span><br><span class="line">guest\x80\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\xf8\x00\x00\x00\x00\x00\x00\x00admin</span><br></pre></td></tr></table></figure>
+
+
+<p>所以提交<code>$_COOKIE[&#39;verify&#39;]=84b4590d78bf2a8cdd5612cad68e4ab5</code>，<code>username=guest%80%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%f8%00%00%00%00%00%00%00admin</code>即可。</p>
+<p><img src="4.png" alt="image"></p>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ul>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/pcat/p/5478509.html">https://www.cnblogs.com/pcat/p/5478509.html</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/syh_486_007/article/details/51228628">https://blog.csdn.net/syh_486_007/article/details/51228628</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.freebuf.com/articles/web/69264.html">https://www.freebuf.com/articles/web/69264.html</a></li>
 </ul>
 
       
@@ -574,9 +454,11 @@
       
         <div class="post-tags">
           
-            <a href="/tags/%E5%AE%89%E5%85%A8%E8%BF%90%E8%90%A5/" rel="tag"># 安全运营</a>
+            <a href="/tags/CTF/" rel="tag"># CTF</a>
           
-            <a href="/tags/%E9%9D%A2%E7%BB%8F/" rel="tag"># 面经</a>
+            <a href="/tags/Hash/" rel="tag"># Hash</a>
+          
+            <a href="/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/" rel="tag"># 密码学</a>
           
         </div>
       
@@ -589,8 +471,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2021/07/03/hello-world/" rel="next" title="Hello World">
-                <i class="fa fa-chevron-left"></i> Hello World
+              <a href="/2020/06/03/reverse-shell-feature-research/" rel="next" title="反弹shell特征研究">
+                <i class="fa fa-chevron-left"></i> 反弹shell特征研究
               </a>
             
           </div>
@@ -599,8 +481,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2021/07/30/v2ray-tutorials/" rel="prev" title="centos+v2ray+nginx科学上网教程">
-                centos+v2ray+nginx科学上网教程 <i class="fa fa-chevron-right"></i>
+              <a href="/2020/09/19/sql-manual-injection-referrence/" rel="prev" title="SQL手注参考笔记">
+                SQL手注参考笔记 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -736,7 +618,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#WEB"><span class="nav-number">1.</span> <span class="nav-text">WEB</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B8%97%E9%80%8F"><span class="nav-number">2.</span> <span class="nav-text">渗透</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%8D%E8%AF%8D%E6%A6%82%E5%BF%B5"><span class="nav-number">3.</span> <span class="nav-text">名词概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BA%94%E6%80%A5"><span class="nav-number">4.</span> <span class="nav-text">应急</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F"><span class="nav-number">5.</span> <span class="nav-text">内网渗透</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E6%BC%8F%E6%B4%9E"><span class="nav-number">5.1.</span> <span class="nav-text">常见漏洞</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9C%BA%E6%99%AF"><span class="nav-number">6.</span> <span class="nav-text">场景</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Hash%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86%E7%AE%80%E5%8C%96%E7%89%88"><span class="nav-number">1.</span> <span class="nav-text">Hash算法原理简化版</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Hash%E9%95%BF%E5%BA%A6%E6%89%A9%E5%B1%95%E6%94%BB%E5%87%BB%E5%8E%9F%E7%90%86"><span class="nav-number">2.</span> <span class="nav-text">Hash长度扩展攻击原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Demo"><span class="nav-number">3.</span> <span class="nav-text">Demo</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">4.</span> <span class="nav-text">参考</span></a></li></ol></div>
             
 
           </div>

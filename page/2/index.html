@@ -277,6 +277,168 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://xhycccc.github.io/2020/05/22/dns-rebinding/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="欣海余诚's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/05/22/dns-rebinding/" itemprop="url">DNS Rebinding</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-05-22T17:47:19+08:00">
+                2020-05-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/WEB%E5%AE%89%E5%85%A8/" itemprop="url" rel="index">
+                    <span itemprop="name">WEB安全</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="DNS-TTL"><a href="#DNS-TTL" class="headerlink" title="DNS TTL"></a>DNS TTL</h2><p>TTL值全称是“生存时间（Time To Live)”，简单的说它表示DNS记录在DNS服务器上缓存时间，数值越小，修改记录各地生效时间越快。</p>
+<p>当各地的DNS(LDNS)服务器接受到解析请求时，就会向域名指定的授权DNS服务器发出解析请求从而获得解析记录；该解析记录会在DNS(LDNS)服务器中保存一段时间，这段时间内如果再接到这个域名的解析请求，DNS服务器将不再向授权DNS服务器发出请求，而是直接返回刚才获得的记录；而这个记录在DNS服务器上保留的时间，就是TTL值。</p>
+<p>常见的设置TTL值的场景：</p>
+<ol>
+<li>增大TTL值，以节约域名解析时间</li>
+<li>减小TTL值，减少更新域名记录时的不可访问时间</li>
+</ol>
+<h2 id="DNS-Rebinding"><a href="#DNS-Rebinding" class="headerlink" title="DNS Rebinding"></a>DNS Rebinding</h2><p>原理就是上面的第二种，设置一个非常小的TTL值，让客户端发出的两次请求获得的解析结果不同。</p>
+<p>常见ssrf防御场景：</p>
+<p>php的waf做判断的时候，第一次会解析域名的ip，然后判断这个ip是不是内网ip，如果不是内网ip的时候，再去真正用curl请求这个域名。</p>
+<p>这就牵涉到了，curl请求这个域名会做第二次域名解析，重新对dns服务器进行请求，获得到一个内网ip，这时候就是绕过限制请求到了内网资源。</p>
+<p>当然需要ttl设置为0</p>
+<p><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s?__biz=MjM5MTYxNjQxOA==&mid=2652852236&idx=1&sn=e95f715b513c1deaded7258d9077607f&scene=21#wechat_redirect">示例代码：</a></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">$dst = @$_GET[&#x27;KR&#x27;];</span><br><span class="line">$res = @parse_url($dst);</span><br><span class="line">$ip = @dns_get_record($res[&#x27;host&#x27;], DNS_A)[0][&#x27;ip&#x27;];</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">$dev_ip = &quot;54.87.54.87&quot;;</span><br><span class="line"></span><br><span class="line">if($ip === $dev_ip) &#123;</span><br><span class="line"></span><br><span class="line">    $content = file_get_contents($dst);</span><br><span class="line"></span><br><span class="line">    echo $content;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>使用<a target="_blank" rel="noopener" href="https://lock.cmpxchg8b.com/rebinder.html?tdsourcetag=s_pctim_aiomsg">dns rebinding测试网站提供的域名</a>（测试不太好使，解析不到该域名，待研究），随机返回两个ip地址。（使用时应该需要多测几遍）</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">$ host 7f000001.c0a80001.rbndr.us</span><br><span class="line">7f000001.c0a80001.rbndr.us has address 192.168.0.1</span><br><span class="line">$ host 7f000001.c0a80001.rbndr.us</span><br><span class="line">7f000001.c0a80001.rbndr.us has address 127.0.0.1</span><br><span class="line">$ host 7f000001.c0a80001.rbndr.us</span><br><span class="line">7f000001.c0a80001.rbndr.us has address 127.0.0.1</span><br><span class="line">$ host 7f000001.c0a80001.rbndr.us</span><br><span class="line">7f000001.c0a80001.rbndr.us has address 192.168.0.1</span><br><span class="line">$ host 7f000001.c0a80001.rbndr.us</span><br><span class="line">7f000001.c0a80001.rbndr.us has address 127.0.0.1</span><br><span class="line">$ host 7f000001.c0a80001.rbndr.us</span><br><span class="line">7f000001.c0a80001.rbndr.us has address 127.0.0.1</span><br><span class="line">$ host 7f000001.c0a80001.rbndr.us</span><br><span class="line">7f000001.c0a80001.rbndr.us has address 192.168.0.1</span><br></pre></td></tr></table></figure>
+
+<p>一个自定义dns解析的网站：<a target="_blank" rel="noopener" href="http://rbnd.gl0.eu/dnsbin">http://rbnd.gl0.eu/dnsbin</a></p>
+<p><img src="1.jpg" alt="image"></p>
+<p>在record中设置要解析的ip地址，submit后会自动生成一个domain。解析这个domain就会得到填写的ip地址。</p>
+<p><img src="2.jpg" alt="image"></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://xhycccc.github.io/2019/12/04/ssrf-referrence/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -767,7 +929,7 @@ curl直接发起gopher攻击：
               
                 <a href="/archives/%7C%7C%20archive">
               
-                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-count">13</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -778,7 +940,7 @@ curl直接发起gopher攻击：
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-count">8</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -789,7 +951,7 @@ curl直接发起gopher攻击：
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-count">16</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
