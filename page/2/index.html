@@ -277,6 +277,180 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://xhycccc.github.io/2020/06/07/hash-length-extension-attack/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="欣海余诚's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/06/07/hash-length-extension-attack/" itemprop="url">学习Hash长度扩展攻击</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-06-07T15:35:44+08:00">
+                2020-06-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%AF%86%E7%A0%81%E5%AD%A6/" itemprop="url" rel="index">
+                    <span itemprop="name">密码学</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="Hash算法原理简化版"><a href="#Hash算法原理简化版" class="headerlink" title="Hash算法原理简化版"></a>Hash算法原理简化版</h3><p><img src="1.png" alt="image"></p>
+<p>分组不够56字节用\x80\x00\x00…补够，然后最后八字节为长度描述符，由Hash算法补充，一共64字节。</p>
+<p><img src="2.png" alt="image"></p>
+<p>长度描述符计算的是文本的真实长度（单位bit，1字节=8 it），不包含填充长度。</p>
+<h3 id="Hash长度扩展攻击原理"><a href="#Hash长度扩展攻击原理" class="headerlink" title="Hash长度扩展攻击原理"></a>Hash长度扩展攻击原理</h3><p>从图1中可以看出，Hash算法初始向量是固定的，第n个向量可以通过第n-1个向量与第n个分组计算得出。这个第n个向量经高低位互换后也就是这个文本的Hash值。</p>
+<p>假设有两个不同的字符串str1和str2，他们的分组1相同，str2有分组2而str1没有。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">str1: 分组1</span><br><span class="line">str2: 分组1 分组2</span><br></pre></td></tr></table></figure>
+<p>那么由于他们的分组1相同，所以向量1也相同（初始向量和分组1计算得到向量1）。</p>
+<p>正常的Hahs算法为下图中的实线部分。</p>
+<p><img src="3.png" alt="image"></p>
+<p>解释虚线部分：</p>
+<p>由str1的Hash值（经高低位互换后成为向量1）和str2的分组2计算也可以得到str2的Hash值。这个就是Hash长度扩展攻击的利用原理。</p>
+<p>利用场景如下。</p>
+<h3 id="Demo"><a href="#Demo" class="headerlink" title="Demo"></a><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/106534008?utm_source=wechat_session">Demo</a></h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">include &quot;secret.php&quot;;</span><br><span class="line">@$username=(string)$_POST[&#x27;username&#x27;]; </span><br><span class="line">function enc($text)&#123;</span><br><span class="line">    global $key;</span><br><span class="line">    return md5($key.$text);</span><br><span class="line">&#125;</span><br><span class="line">if(enc($username) === $_COOKIE[&#x27;verify&#x27;])&#123;</span><br><span class="line">    if(is_numeric(strpos($username, &quot;admin&quot;)))&#123;</span><br><span class="line">        echo $key;</span><br><span class="line">    &#125;</span><br><span class="line">    else&#123;</span><br><span class="line">        die(&quot;you are not admin&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">else&#123;</span><br><span class="line">    setcookie(&quot;verify&quot;, enc(&quot;guest&quot;), time()+60*60*24*7);</span><br><span class="line">    setcookie(&quot;len&quot;, strlen($key), time()+60*60*24*7);</span><br><span class="line">&#125;</span><br><span class="line">show_source(__FILE__);</span><br><span class="line">?&gt;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>这里的md5($key.$text) 就相当于上面str1的Hash值，分组1是</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$key(21字节) + &quot;guest&quot;(5字节) + &quot;\x80\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00&quot;(30字节) + &quot;\x00\x00\x00\x00\x00\x00\x00\xd0&quot;(8字节)</span><br></pre></td></tr></table></figure>
+
+<p>根据前面的原理，我们构造一个str2，让它的分组1和str1的分组1相同，分组2为包含<code>admin</code>用以绕过检查。然后用str1的分组1（已知，即str1的hash值高低位互换）计算出str2的hash值。</p>
+<p>str2字符串的值为：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$key(21字节) + &quot;guest&quot;(5字节) + &quot;\x80\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00&quot;(30字节) + &quot;\x00\x00\x00\x00\x00\x00\x00\xd0&quot;(8字节) + &quot;admin&quot;</span><br></pre></td></tr></table></figure>
+
+<p>Hashdump可以帮我们自动化计算:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">root@kali2018:~/md5/HashPump# ./hashpump </span><br><span class="line">Input Signature: f8d7a112644f7e71e1e8ad068f144f61 [已知str1的hash值]</span><br><span class="line">Input Data: guest [username, hash中已知的data]</span><br><span class="line">Input Key Length: 26  [length($key + guest)]</span><br><span class="line">Input Data to Add: admin [用来绕过admin检查]</span><br><span class="line">84b4590d78bf2a8cdd5612cad68e4ab5 [str2的hash]</span><br><span class="line">guest\x80\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\xf8\x00\x00\x00\x00\x00\x00\x00admin</span><br></pre></td></tr></table></figure>
+
+
+<p>所以提交<code>$_COOKIE[&#39;verify&#39;]=84b4590d78bf2a8cdd5612cad68e4ab5</code>，<code>username=guest%80%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%f8%00%00%00%00%00%00%00admin</code>即可。</p>
+<p><img src="4.png" alt="image"></p>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ul>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/pcat/p/5478509.html">https://www.cnblogs.com/pcat/p/5478509.html</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/syh_486_007/article/details/51228628">https://blog.csdn.net/syh_486_007/article/details/51228628</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.freebuf.com/articles/web/69264.html">https://www.freebuf.com/articles/web/69264.html</a></li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://xhycccc.github.io/2020/06/03/reverse-shell-feature-research/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1520,7 +1694,7 @@ curl直接发起gopher攻击：
               
                 <a href="/archives/%7C%7C%20archive">
               
-                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-count">17</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
